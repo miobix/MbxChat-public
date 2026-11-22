@@ -1,6 +1,6 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 0 (scaffold) built on branch `unit-0-scaffold`; PR not opened yet.
+**Phase:** unit 0 merged (PR #1, CI green, image on GHCR). Next: unit 1.
 
 ## Next
 - **Unit 0:** open the PR when the user says so; CI (`test`, `image`) must go green on it.
