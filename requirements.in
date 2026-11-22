@@ -1,2 +1,10 @@
 psycopg[binary]==3.3.9
 python-telegram-bot==22.8
+langgraph==1.2.20
+langgraph-checkpoint-postgres==3.2.0
+langchain-ollama==1.1.0
+langchain-core==1.7.6
+psycopg-pool==3.3.3
+kiwipiepy==0.24.1
+arize-phoenix-otel==0.17.3
+openinference-instrumentation-langchain==0.1.82

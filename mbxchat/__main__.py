@@ -1,10 +1,11 @@
 import logging
+import os
 import sys
 import threading
 
 from telegram import Update
 
-from mbxchat import config, db, importer
+from mbxchat import capture, config, db, importer
 from mbxchat.bot import build_app
 from mbxchat.health import make_server
 
@@ -23,7 +24,14 @@ def main() -> None:
     server = make_server("0.0.0.0", config.HEALTH_PORT)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     log.info("health endpoint on :%s", config.HEALTH_PORT)
-    build_app(config.TELEGRAM_BOT_TOKEN).run_polling(allowed_updates=[Update.MESSAGE, Update.CALLBACK_QUERY])
+    if problem := capture.model_problem():
+        log.warning("capture model: %s", problem)
+    if os.getenv("PHOENIX_COLLECTOR_ENDPOINT"):
+        from phoenix.otel import register
+
+        register(project_name="mbxchat", auto_instrument=True, batch=True)
+    graph = capture.build(db.checkpointer())
+    build_app(config.TELEGRAM_BOT_TOKEN, graph).run_polling(allowed_updates=[Update.MESSAGE, Update.CALLBACK_QUERY])
 
 
 if __name__ == "__main__":

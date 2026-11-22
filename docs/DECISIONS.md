@@ -50,3 +50,19 @@
 - **MbxWrite is a one-time source (user):** its future is open, so the data files are a fork owned here (never re-synced) and wishes import once; later runs skip them. MbxRead terms still refresh on every run.
 - **Known is reversible:** asking `/grammar` for a known point offers `[↩ Not known]`. Basics are seeded on the first import only, so an un-known basic stays un-known across restarts.
 - **Nothing reads MbxWrite at run time (user, hardening):** MbxWrite will not exist in production. The wish importer, `MBXWRITE_DB` and their tests are removed after the one-time import; the `wish` kind stays in the schema for the imported rows. The Postgres volume is now the only copy of those wishes, which makes backups (hardening pass after unit 4) matter.
+
+## 2026-11-22 Unit 3: capture as a fixed workflow
+- **Ollama is MbxRead's compose service** (user): same `gemma4:e4b`, no second 6.6 GB copy, and our own CPU service would be no faster. It runs on CPU (not the GPU, as first assumed). If MbxRead is retired, MbxChat gets its own service; only `OLLAMA_URL` changes.
+- **Thinking off** (`reasoning=False`): gemma4 spent ~900 hidden tokens and 70 s on a two-sentence draft; off, the same call takes ~5 s. A capture is ~30-50 s end to end.
+- **krdict through MbxRead's `/api/dict`, not a client of our own:** MbxRead already caches lookups and stops all calls after one failure, and krdict has blocked this IP for bursts. One client per IP keeps that rule in one place; no second key, no XML parsing. MbxChat still spaces lookups 3 s apart. Cost: krdict is unavailable when MbxRead is down, which the workflow tolerates.
+- **Library usage was already there** (MbxRead `POST /api/usage`, unit 5 of MbxRead), so no MbxRead change was needed (user chose "add an endpoint" before this was found).
+- **krdict only for lemmas outside the NIKL pool** (user); usage for up to two lemmas outside the pool or graded B/C. Grade-A words gave useless usage hits (주, 회사).
+- **One thread per capture**, not per chat: several captures can wait on buttons at once.
+- **The bot drives the graph; the graph sends nothing.** Telegram messages are sent from the handler after each stream step and interrupt, so no node has a side effect that a resume could repeat. `review` holds one `interrupt()` per chunk and only collects decisions; `save` writes with `ON CONFLICT DO NOTHING`.
+- **Sync LangGraph in worker threads** (`asyncio.to_thread(next, stream)`), same reason as unit 2: the async Postgres driver fails on Windows' default loop, where tests run. The checkpointer sits on a `psycopg_pool` pool so a dropped connection is replaced instead of poisoning every later capture.
+- **Model output is cleaned in code where the model is unreliable:** shortened source sentences are mapped back to the full reviewed sentence, and critic entries without `→` are dropped (gemma sometimes returns `["casual", "polite"]`). Prompt quality is left to the unit 6 eval.
+- **Phoenix 21.0.0, auth off:** it enables auth for any non-loopback bind, which a container always is; the port is published on 127.0.0.1 only, like the health endpoint.
+- **Model pin:** Ollama pins by tag only, so the expected digest prefix (`dc35e8d9c606`) is config and checked at startup with a warning.
+- **Term import guard** (from a side review during this unit): an answer with under half the stored terms is refused, so a wrong or empty MbxRead cannot wipe the pool.
+- **Image 133 → 460 MB** (kiwipiepy model, numpy, gRPC for OTel). Accepted.
+- **Verified:** 65 tests (real graph and Postgres checkpointer; model and MbxRead faked). Live, outside Telegram: three captures ran end to end (~28-50 s), the approved chunk was saved, and a traced run showed 19 spans in Phoenix covering every node and model call.

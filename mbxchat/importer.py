@@ -123,8 +123,13 @@ def import_personal(url: str | None = None) -> list[str]:
         terms = fetch_terms(config.MBXREAD_URL)
     except (OSError, ValueError) as e:
         return [f"term: skipped, MbxRead unavailable ({e})"]
+    rows = term_rows(terms)
     with psycopg.connect(url or config.DATABASE_URL) as conn:
-        return [_line("term", replace(conn, "term", term_rows(terms)))]
+        have = conn.execute("SELECT count(*) FROM item WHERE kind = 'term'").fetchone()[0]
+        if have and len(rows) < have / 2:  # an empty or wrong MbxRead would wipe the pool
+            return [f"term: refused, MbxRead sent {len(rows)} terms but {have} are stored; "
+                    "check MBXREAD_URL points at the daily MbxRead"]
+        return [_line("term", replace(conn, "term", rows))]
 
 
 def _has(conn: psycopg.Connection, kind: str) -> bool:
