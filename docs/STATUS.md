@@ -1,20 +1,17 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 0 merged (PR #1, CI green, image on GHCR). Next: unit 1.
+**Phase:** unit 0 merged (PR #1). Unit 1 in progress on branch `unit-1-bot`.
 
 ## Next
-- **Unit 0:** open the PR when the user says so; CI (`test`, `image`) must go green on it.
-- **Start of unit 1: design talk on the command map** (commands, free text, buttons, and what
-  the agent routes itself after unit 7); result goes into SPEC as a "Commands" section.
-  The user wants a polished button UI, beyond a bot that takes numbers: cover inline keyboards
-  edited in place, callback data design, the `/` menu and its scopes, formatting, and whether a
-  Telegram Mini App earns a place.
-- Before unit 1, the user creates the bot with Telegram's BotFather and puts the token and
-  their user ID in `.env`.
+- **Unit 1:** command map and chat UI decided (SPEC §7a, §7b). Build: long polling, allowlist,
+  `/start` `/help`, per-chat `/` menu, errors in chat, the UI building blocks with a demo each.
+- In BotFather, turn off "Allow Groups" (`/setjoingroups` → Disable) so the bot cannot be
+  added to group chats.
 
 ## Facts
-- Remote: `miobix/MbxChat`, private. Rulesets are not enforced on private repos on GitHub Free;
-  add them when the repo goes public (unit 11).
+- Remote: `miobix/MbxChat`, private. Rulesets are not enforced on private repos on GitHub Free,
+  so until unit 11 "never merge red" is a working rule. The user merges every PR on GitHub.
+- Bot token and allowed user ID are in `.env` (2026-11-22).
 - Compose: `bot` health on `127.0.0.1:8005`, `db` on `127.0.0.1:5434` (5432 and 5433 are taken).
   Tests need `docker compose up -d --wait db`. `.env` must exist (copy `.env.example`).
 - Tests: 5 passing (`.venv/Scripts/python -m pytest tests -q`).
