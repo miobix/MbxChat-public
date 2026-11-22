@@ -34,21 +34,21 @@ flowchart LR
     mcp[mcp: tool server]
     db[(Postgres: items, memory, checkpoints)]
     gec[gec: small Korean GEC model]
-    llm[ollama: local LLM]
     phoenix[Phoenix: traces + evals]
     prom[Prometheus] --> grafana[Grafana]
   end
   subgraph mbxread [compose project: mbxread, separate repo]
     reader[MbxRead API :8002]
+    llm[ollama: gemma4:e4b, CPU]
   end
   bot --> mcp
   bot --> db
   bot --> gec
-  bot --> llm
+  bot -->|host.docker.internal:11434| llm
   bot -.OTel.-> phoenix
   prom -.scrape /metrics.-> bot
   mcp -->|host.docker.internal:8002| reader
-  mcp -->|krdict API, paced| krdict[(krdict)]
+  reader -->|krdict API, cached, breaker| krdict[(krdict)]
   mcp -->|host.docker.internal:8765| anki[Anki desktop + AnkiConnect]
 ```
 
@@ -60,8 +60,12 @@ flowchart LR
   the tool reports "unavailable" and the agent carries on without library examples.
 - **Anki** runs on the desktop; AnkiConnect is reached at `host.docker.internal:8765`, as in
   MbxRead. Card writes queue while Anki is closed.
-- **Ollama:** the stack has its own `ollama` service. `OLLAMA_URL` can point at an Ollama that
-  already runs on the machine instead, so models are not stored or loaded twice.
+- **Ollama:** MbxRead's compose `ollama` service (CPU, `gemma4:e4b`), reached at
+  `host.docker.internal:11434` (`OLLAMA_URL`), so the model is not stored or loaded twice. If
+  MbxRead is retired, MbxChat gets its own `ollama` service; only the URL changes.
+- **krdict goes through MbxRead's `GET /api/dict`**, which caches every lookup and stops all
+  calls after one failure. One client per IP keeps the "never burst" rule in one place (krdict
+  has blocked this IP before). MbxChat still spaces its own lookups 3 s apart.
 - **CPU only.** Every model must be usable on CPU. GPU passthrough gets one timeboxed attempt
   (unit 6); it is a speed-up, never a requirement.
 
@@ -83,7 +87,7 @@ flowchart LR
 | Concern | Choice | Notes |
 |---|---|---|
 | Bot | `python-telegram-bot` | long polling; its JobQueue runs the scheduled pings |
-| Orchestration | **LangGraph** | `interrupt()` for Approve/Edit/Skip; Postgres checkpointer keyed by chat |
+| Orchestration | **LangGraph** | `interrupt()` for Approve/Edit/Skip; Postgres checkpointer, one thread per capture |
 | Structured output | Pydantic models | every model step returns a schema-validated object; invalid output is retried once, then reported |
 | Models | open models on CPU | configured in one place; see §6 |
 | Tools | MCP server | krdict, MbxRead usage, item pool, Anki; the agent loads them through LangChain's MCP adapters |
@@ -194,6 +198,30 @@ Built on the NIKL grammar pool and its refreshers (explanation, 2-3 examples, re
   that the user keeps getting wrong comes back (learner memory, unit 8).
 - Optional later: an extra example from the user's MbxRead library, if its index can find
   sentences by grammar ending.
+
+## 7c. Capture workflow (unit 3)
+
+A LangGraph `StateGraph`, one thread per capture (`thread_id` = `capture.id`), Postgres
+checkpointer. Nodes:
+
+1. **draft** (LLM): the user's text → `Draft {casual, polite, note}`.
+2. **lookup**: kiwipiepy lemmas of the drafts' content words. Lemmas outside the NIKL word pool
+   are checked against krdict (via MbxRead); up to two of the rarest lemmas get library usage
+   from MbxRead `POST /api/usage` (2 hits each). Either source down → noted, not fatal; krdict
+   stops at its first failure.
+3. **critic** (LLM): drafts + findings → `Review {casual, polite, issues}`.
+4. **chunks** (LLM): reviewed drafts → `Chunks {items: 0-3 × {ko, gloss, kind, register_note,
+   sentence}}`.
+5. **review**: one `interrupt()` per chunk, resumed with approve / edit (new Korean) / skip. No
+   side effects here, so re-running it on resume is safe.
+6. **save**: approved chunks into `chunk` (unique on capture + Korean, so a re-run adds nothing).
+
+Model steps use Pydantic schemas through Ollama structured output, thinking off; invalid output
+is retried once, then the capture fails with a message in the chat. The bot drives the graph:
+it streams node updates into the progress message, and sends one card per interrupt (callback
+`ch:<capture>:<chunk>:<action>`). ✏️ answers with a copy button; the next text the user sends
+is the edited chunk. Tracing: OpenInference's LangChain instrumentation to Phoenix
+(`127.0.0.1:6006`) when `PHOENIX_COLLECTOR_ENDPOINT` is set.
 
 ## 8. Units
 

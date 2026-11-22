@@ -15,9 +15,17 @@ services:
     env_file: .env
     environment:
       DATABASE_URL: postgresql://mbxchat:${POSTGRES_PASSWORD:-mbxchat}@db:5432/mbxchat
+      # MbxRead's compose stack: API (usage, krdict) and its Ollama.
+      MBXREAD_URL: http://host.docker.internal:8002
+      OLLAMA_URL: http://host.docker.internal:11434
+      PHOENIX_COLLECTOR_ENDPOINT: http://phoenix:6006
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy
+      phoenix:
+        condition: service_started
     restart: unless-stopped
     logging: *logging
 
@@ -41,5 +49,20 @@ services:
     restart: unless-stopped
     logging: *logging
 
+  phoenix:
+    image: arizephoenix/phoenix:version-21.0.0@sha256:1f9a144a5357b4973e93a15718f050247cb7a4ee7b7c6c06ecb91b5eed3fbaad
+    environment:
+      PHOENIX_WORKING_DIR: /mnt/data
+      # Auth defaults on for a non-loopback bind; the port is published on 127.0.0.1 only.
+      PHOENIX_ENABLE_AUTH: "false"
+    # Localhost only: the UI has no auth.
+    ports:
+      - "127.0.0.1:6006:6006"
+    volumes:
+      - mbxchat-phoenix:/mnt/data
+    restart: unless-stopped
+    logging: *logging
+
 volumes:
   mbxchat-pg:
+  mbxchat-phoenix:

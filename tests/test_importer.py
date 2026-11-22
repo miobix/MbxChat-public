@@ -82,3 +82,11 @@ def test_basics_are_seeded_on_the_first_import_only(db_url):
     importer.import_public()
     with psycopg.connect(db_url) as conn:
         assert conn.execute("SELECT count(*) FROM known_grammar").fetchone()[0] == 0
+
+
+def test_a_sharp_drop_in_terms_is_refused(db_url, monkeypatch):
+    monkeypatch.setattr(importer, "fetch_terms", lambda url: TERMS)
+    importer.import_personal()
+    monkeypatch.setattr(importer, "fetch_terms", lambda url: [])
+    assert importer.import_personal()[0].startswith("term: refused, MbxRead sent 0 terms but 2 are stored")
+    assert _counts(db_url) == {"term": 2}

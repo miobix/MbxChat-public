@@ -48,7 +48,7 @@ def test_help_lists_every_menu_command():
 def test_free_text_asks_before_capturing():
     update = MagicMock()
     update.message.reply_html = AsyncMock()
-    run(bot.free_text(update, MagicMock()))
+    run(bot.free_text(update, MagicMock(chat_data={})))
     call = update.message.reply_html.await_args
     assert call.args[0] == "Capture this?"
     assert [b.callback_data for b in call.kwargs["reply_markup"].inline_keyboard[0]] == ["cap:yes", "cap:no"]
@@ -64,13 +64,6 @@ def _query(data, original_text=None):
     q.message.delete = AsyncMock()
     q.message.reply_to_message = MagicMock(text=original_text) if original_text else None
     return update, q
-
-
-def test_capture_yes_edits_in_place_with_escaped_original():
-    update, q = _query("cap:yes", "how do I say <this>?")
-    run(bot.on_capture(update, MagicMock()))
-    assert "how do I say &lt;this&gt;?" in q.edit_message_text.await_args.args[0]
-    q.message.delete.assert_not_awaited()
 
 
 def test_capture_no_removes_the_question():
@@ -127,7 +120,7 @@ def test_menu_is_cleared_globally_and_set_for_the_allowed_chat_only():
 def test_build_app_registers_handlers_without_network():
     app = bot.build_app("123:fake")
     assert [type(h).__name__ for h in app.handlers[-1]] == ["TypeHandler"]  # gate runs first
-    assert len(app.handlers[0]) == 7
+    assert len(app.handlers[0]) == 8
     assert app.error_handlers
 
 

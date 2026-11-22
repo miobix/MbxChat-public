@@ -17,6 +17,9 @@ docker compose up -d --build  # bot (health on 127.0.0.1:8005) + Postgres (127.0
 curl http://127.0.0.1:8005/health
 ```
 
+Captures need MbxRead's compose stack running (its API on :8002 for krdict and library usage, its
+Ollama on :11434 with `gemma4:e4b`). Traces: Phoenix at http://127.0.0.1:6006.
+
 ## Content
 
 Public pools (NIKL grammar, refreshers, sentences, vocabulary) load at every bot start.
