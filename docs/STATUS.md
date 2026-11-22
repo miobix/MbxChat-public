@@ -5,7 +5,10 @@ model eval).
 
 ## Next
 - **Unit 6:** rules → GEC → LLM router, labeled error set, model comparison (SPEC §6, §9). Its
-  eval covers the grading problems seen live (DECISIONS, unit 5).
+  eval covers the grading problems seen live (DECISIONS, unit 5). Also in unit 6: show the
+  corrected line as a word diff (strikethrough → bold, `ui.correction`), one line when it equals
+  the model answer. Start by checking current open models on Hugging Face (global rule), since
+  the SPEC §6 candidates may be outdated.
 - **Practice is shaped by use:** the user tweaks prompts, mix and grading as real use shows what
   to change; record each change in DECISIONS.
 - **Model quality pass:** remember to compare grading and capture quality across different
