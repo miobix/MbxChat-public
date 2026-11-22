@@ -192,7 +192,7 @@ def test_buttons_and_edit_walk_through_every_chunk(offline, graph, db_url):
 
     update, q = _tap(f"ch:{cid}:1:ok")
     asyncio.run(bot.on_chunk(update, context))
-    assert _sent(context)[-1] == "Done: 2 chunks saved."
+    assert _sent(context)[-1] == "Done: 2 chunks saved. Anki is closed: 2 cards queued, sent once it opens."
     assert _chunks(db_url) == [("다음 주로 미루다",), ("회의가 미뤄지다",)]
 
 

@@ -16,7 +16,7 @@ from telegram.ext import (
     filters,
 )
 
-from mbxchat import capture, config, grammar
+from mbxchat import anki, capture, config, grammar
 from mbxchat.ui import Progress, copy_button, correction, esc, fold, keyboard, spoiler
 
 log = logging.getLogger(__name__)
@@ -25,6 +25,7 @@ log = logging.getLogger(__name__)
 COMMANDS = [
     ("help", "What I can do"),
     ("grammar", "Explain a grammar point: /grammar 는데"),
+    ("queue", "Cards waiting for Anki"),
     ("demo", "Preview of the chat UI"),
 ]
 
@@ -32,7 +33,7 @@ HELP = (
     "<b>MbxChat</b>: practise writing Korean.\n\n"
     "Send me any text and I'll offer to capture it (\"how do I say…\").\n\n"
     + "\n".join(f"/{name}  {desc}" for name, desc in COMMANDS)
-    + "\n\nComing next: /practice, /stop, /pause, /queue, /stats."
+    + "\n\nComing next: /practice, /stop, /pause, /stats."
 )
 
 
@@ -102,7 +103,49 @@ async def _run(context, chat_id: int, capture_id: int, graph_input, progress: Pr
         await _send_card(context.bot, chat_id, capture_id, state.interrupts[0].value, len(state.values["chunks"]))
     elif progress is None:
         n = state.values.get("saved", 0)
-        await context.bot.send_message(chat_id, f"Done: {n} chunk{'' if n == 1 else 's'} saved.")
+        text = f"Done: {n} chunk{'' if n == 1 else 's'} saved."
+        if n:
+            text += " " + await _to_anki()
+        await context.bot.send_message(chat_id, text)
+
+
+async def _to_anki() -> str:
+    try:
+        await asyncio.to_thread(anki.push)
+    except anki.Closed:
+        n = len(await asyncio.to_thread(anki.queued))
+        return f"Anki is closed: {n} card{'' if n == 1 else 's'} queued, sent once it opens."
+    return "In Anki."
+
+
+async def queue_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    status = await _to_anki()
+    rows = await asyncio.to_thread(anki.queued)
+    if not rows:
+        await update.message.reply_html("Nothing waiting: every chunk is in Anki.")
+        return
+    lines = [f"• {esc(ko)}" + (f"  ⚠️ <i>{esc(err)}</i>" if err else "") for ko, err in rows]
+    head = esc(status) if status.startswith("Anki is closed") else "Anki refused these:"
+    await update.message.reply_html(head + "\n" + "\n".join(lines))
+
+
+async def anki_retry(app: Application) -> None:
+    """Every minute, send queued chunks; quiet while Anki is closed, one log line per new error."""
+    last = None
+    while True:
+        await asyncio.sleep(config.ANKI_RETRY_SECONDS)
+        try:
+            if n := await asyncio.to_thread(anki.push):
+                await app.bot.send_message(
+                    config.TELEGRAM_ALLOWED_USER_ID, f"📇 {n} queued card{'' if n == 1 else 's'} now in Anki."
+                )
+            last = None
+        except anki.Closed:
+            pass
+        except Exception as e:
+            if repr(e) != last:
+                log.exception("Anki retry failed")
+            last = repr(e)
 
 
 def _summary(v: dict) -> str:
@@ -303,6 +346,7 @@ async def report_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
 async def post_init(app: Application) -> None:
     await app.bot.delete_my_commands()  # default scope: strangers see no menu
     await app.bot.set_my_commands(COMMANDS, scope=BotCommandScopeChat(config.TELEGRAM_ALLOWED_USER_ID))
+    app.bot_data["anki_retry"] = asyncio.create_task(anki_retry(app))
 
 
 def build_app(token: str, graph=None) -> Application:
@@ -313,6 +357,7 @@ def build_app(token: str, graph=None) -> Application:
     app.add_handler(CommandHandler(["start", "help"], help_cmd, filters=private))
     app.add_handler(CommandHandler("demo", demo_cmd, filters=private))
     app.add_handler(CommandHandler("grammar", grammar_cmd, filters=private))
+    app.add_handler(CommandHandler("queue", queue_cmd, filters=private))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & private, free_text))
     app.add_handler(CallbackQueryHandler(on_capture, pattern=r"^cap:", block=False))  # long on CPU
     app.add_handler(CallbackQueryHandler(on_chunk, pattern=r"^ch:\d+:\d+:(ok|ed|sk)$"))

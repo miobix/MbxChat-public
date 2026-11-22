@@ -18,6 +18,7 @@ TEST_DATABASE_URL = os.getenv(
 def _no_live_db(monkeypatch):
     """The default URL is the live database; a test that didn't ask for db_url must fail."""
     monkeypatch.setattr(config, "DATABASE_URL", "postgresql://nobody@127.0.0.1:9/none?connect_timeout=1")
+    monkeypatch.setattr(config, "ANKI_URL", "http://127.0.0.1:9")  # Anki may be open on this machine
 
 
 @pytest.fixture(scope="session")
