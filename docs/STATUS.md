@@ -10,7 +10,7 @@
   traces (both tiny today; revisit at unit 9 monitoring). Backups sit on the same disk as the
   database; copying them off the machine is the user's call.
 - **Skill proposal, on hold:** `capture-smoke` (`.claude/skills/`), scratch-DB traced capture.
-  The user reconsiders it if the pattern repeats.
+  The user reconsiders it if the pattern repeats. Skills in use: CLAUDE.md, "Skills".
 - Capture quality (critic wording, chunk choice, register slips like a polite draft without 요) is
   for the unit 6 eval, not prompt tweaks by feel.
 

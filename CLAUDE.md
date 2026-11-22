@@ -12,6 +12,11 @@ session, if present.
 - `docs/DECISIONS.md`: append-only log of what was decided and why. Never rewrite.
 - `docs/DATA.md` (from unit 2): provenance and licence of every content source.
 
+## Skills (`.claude/skills/`)
+- `finish-unit`: tests, docs, commit, PR, CI watch and report; after a merge, the next branch
+  from a fresh `main`. Reach for it whenever a unit's code is done or the user reports a merge.
+- Cycle boundaries (units 4, 8, 11) also use the user-level `hardening-pass` skill.
+
 ## Rules
 1. **One unit = one branch + one PR**, green CI, docs updated. When a unit is done, push it,
    open the PR, watch CI and report. **The user merges on GitHub**; never merge yourself.

@@ -89,3 +89,8 @@ Checked, evidence first:
 - **Pins:** images by digest, actions by SHA, Python deps with hashes, Ollama model by digest check. Nothing floating.
 - **Silent overwrite:** the term import refuses a short answer; Anki notes are only added, never updated; nothing else computes names.
 - **Found and fixed: no backups.** The Postgres volume was the only copy of the imported MbxWrite wishes and of every capture. Added MbxRead's `backup` service (nightly `pg_dump -Fc`, newest 14, same pinned image) and a README restore section. Verified: first dump written; restored into a scratch database, row counts of item, chunk, checkpoints and known_grammar match the live DB. The dumps sit on the same disk; copying them off the machine is left to the user.
+
+## 2026-11-22 Skills from cycle 1 (user)
+- **`finish-unit` (`.claude/skills/`):** the close-a-unit sequence (tests, docs, commit, PR, CI watch, post-merge branch) ran five times in cycle 1 and slipped twice: a follow-up pushed toward an already-merged PR, and "no checks reported" read right after `gh pr create`.
+- **`hardening-pass` (user-level, `~/.claude/skills/`):** the cycle 1 pass took real re-derivation (log normalization, restore check) and returns after units 8 and 11 and in other repos. Indexed in this repo's CLAUDE.md and the user's global one.
+- **`capture-smoke` not written:** unit 4 did not need it; the user reconsiders if the pattern repeats.
