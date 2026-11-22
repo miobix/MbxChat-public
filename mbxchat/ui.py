@@ -1,4 +1,5 @@
 """Chat UI building blocks (SPEC §7a). Helpers that take `html` expect already-escaped HTML."""
+import difflib
 import html as _html
 
 from telegram import Bot, CopyTextButton, InlineKeyboardButton, InlineKeyboardMarkup
@@ -14,6 +15,21 @@ def esc(text: str) -> str:
 
 def correction(wrong: str, right: str) -> str:
     return f"<s>{esc(wrong)}</s> → <b>{esc(right)}</b>"
+
+
+def word_diff(old: str, new: str) -> str:
+    """`new` with the words that changed from `old` shown as <s>old</s> <b>new</b>."""
+    a, b = old.split(), new.split()
+    out = []
+    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(a=a, b=b, autojunk=False).get_opcodes():
+        if op == "equal":
+            out.append(esc(" ".join(a[i1:i2])))
+            continue
+        if i2 > i1:
+            out.append(f"<s>{esc(' '.join(a[i1:i2]))}</s>")
+        if j2 > j1:
+            out.append(f"<b>{esc(' '.join(b[j1:j2]))}</b>")
+    return " ".join(out)
 
 
 def spoiler(html: str) -> str:

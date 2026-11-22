@@ -4,8 +4,13 @@
 model eval).
 
 ## Next
-- **Unit 6:** rules → GEC → LLM router, labeled error set, model comparison (SPEC §6, §9). Its
-  eval covers the grading problems seen live (DECISIONS, unit 5).
+- **Unit 6a (PR open, `unit-6-router`):** shortlist recorded (DECISIONS, SPEC §6); labeled
+  grading set `evals/grader_set.md` (66 items) drafted; corrected line shown as a word diff.
+  Phone check: the diff in a graded reply.
+- **User proofreads `evals/grader_set.md`** at their own pace (`check: ok | fix … | drop` per
+  item). This gates 6b; unchecked items are not used.
+- **Unit 6b, gated on the proofread:** eval harness (runs in Phoenix), the six LLMs + dadeum on
+  the set, side-by-side capture pass, reference-match + hints router, GPU attempt (SPEC §8).
 - **Practice is shaped by use:** the user tweaks prompts, mix and grading as real use shows what
   to change; record each change in DECISIONS.
 - **Model quality pass:** remember to compare grading and capture quality across different
@@ -44,7 +49,7 @@ model eval).
   is the outbox; retried every 60 s.
 - Errors: reported in the chat, except Telegram network errors (logged; polling retries alone).
   `httpx` logging is held at WARNING because request URLs contain the token.
-- Tests: 88 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 90 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
   MbxRead terms via `.venv/Scripts/python -m mbxchat.importer` on the host (refuses an answer

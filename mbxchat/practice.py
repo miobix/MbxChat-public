@@ -183,12 +183,12 @@ def grade(p: dict, answer: str) -> Grade:
     lines.append(f"Learner's answer: {answer}")
     g = ask(Grade, GRADER_SYSTEM, "\n".join(lines))
     g.issues = [i for i in g.issues if "→" in i]
-    if g.verdict == "correct" and (g.issues or _bare(g.corrected) != _bare(answer)):
+    if g.verdict == "correct" and (g.issues or bare(g.corrected) != bare(answer)):
         g.verdict = "minor"  # gemma sometimes fixes the sentence and still says correct
     return g
 
 
-def _bare(s: str) -> str:
+def bare(s: str) -> str:
     return re.sub(r"[\s.?!,]", "", s)
 
 

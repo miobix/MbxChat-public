@@ -125,6 +125,14 @@ def test_answer_in_a_session_is_graded_and_the_next_prompt_follows(pool):
     assert "In Korean:" in context.bot.send_message.await_args.args[1]  # the next prompt
 
 
+def test_graded_reply_diffs_the_correction_and_skips_a_duplicate_model_answer():
+    g = BAD.model_copy(update={"verdict": "minor"})
+    text = bot._graded("회의가 미뤄요.", g)
+    assert "<s>회의가</s> <b>회의를</b> 미뤄요." in text and "Model answer" not in text
+    other = g.model_copy(update={"model_answer": "회의를 다음 주로 미뤄요."})
+    assert "<b>Model answer:</b> <tg-spoiler>" in bot._graded("회의가 미뤄요.", other)
+
+
 def test_skip_and_stop_buttons(pool):
     context = _context()
     s = practice.open_session()

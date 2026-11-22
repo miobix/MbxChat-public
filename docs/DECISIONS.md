@@ -108,3 +108,29 @@ Checked, evidence first:
 - **Reusable loop helper** `forever()` runs both background loops (Anki retry, pings): every call guarded, a repeated error logged once.
 - **Verified:** 88 tests (model faked; real Postgres). Live: grader on three real answers, 9-19 s each; pings run on the configured zone.
 - **Phone check (user):** the 21:00 KST ping opened a session on time; an answer was graded live (minor, next due in 3 days). The miss path (wrong → due tomorrow) is covered by tests, not yet seen live.
+
+## 2026-11-22 Unit 6a: eval groundwork
+- **Unit 5 miss path seen live** (correcting the note above): in the user's full test a deliberate miss put the capture at step 0, due the next day; correct answers moved to step 1, minor held step 0, a skip created no drill row.
+- **Unit 6 split into 6a and 6b (user):** the labeled set is proofread by the user in an `.md` file at their own pace, which gates the eval; groundwork that does not depend on it ships first.
+- **Model survey, 2026-11-22, from the Hugging Face API** (not memory). Host: Ryzen 5 5600X, 6 cores, Docker 31 GB RAM, CPU only.
+- **GEC finding:** open Korean GEC models target native writing. dadeum-gec-base's own card scores it F0.5 .80-.90 on native text and .089 on Kor-Lang8 (learner writing corrected by people); the best on learners, gec_kr, reaches .266. (Their table, with Claude-written gold.) So the GEC tier cannot say "this answer is correct"; it becomes a hint source, and a reference match is the only free verdict. SPEC §6 updated.
+- **Included, and why:**
+  - `gemma4:e4b` (Google, 8B E4B, Apache-2.0): the production model; the baseline every other model is measured against.
+  - A.X 4.0 Light (SKT, 7.3B, Apache-2.0, 2025-07): trained Korean-first; the only A.X that fits a CPU (A.X-K1/K2 are 100B+ class).
+  - Mi:dm 2.0 Mini (KT, 2.3B, MIT, 2025-07): Korean-first at a third of gemma's size; tests whether small and Korean-native matches large and general at a fraction of the latency.
+  - Nemotron-3.5-Bolt-E4B (NVIDIA, 8B E4B, OpenMDW-1.1, 2026-10): the newest model in gemma's size class, Korean listed, trending; a like-for-like challenger.
+  - Olala-v1.0-mini-7A1B (OVH, 7B MoE with 1B active, Apache-2.0, 2026-10): the speed candidate; only ~1B parameters run per token, so CPU latency could drop several times.
+  - Qwen3.5-4B (Alibaba, 4.7B, Apache-2.0, 2026-02): the most-used open family; a widely known reference point in the middle of the size range.
+  - `dadeum-gec-base` (124M KoBART, CC BY-SA 4.0, 2026-11): tier 1 hint source; minimal edits, guards against rewrites, ~120 ms per sentence.
+- **Left out, and why:**
+  - `Soyoung97/gec_kr` (2022): rewrites freely, so its output cannot serve as minimal-fix hints, and .266 on learner text is too low to decide verdicts.
+  - `j5ng/et5-typos-corrector`, KoGrammar (theSOL1): typo-only, and below dadeum on every column of its comparison.
+  - kanana-2-3b-instruct (Kakao): Korean-native, but under Kakao's own licence; Mi:dm Mini fills the small Korean-native slot under MIT.
+  - LFM3-1.7B (LiquidAI): licence capped by revenue; Korean is one of many languages; the small slot is taken by Mi:dm Mini.
+  - Qwen3.5-9B, Mi:dm 2.0 Base (11.5B): same families as shortlisted models, slower on CPU; added only if their smaller sibling comes close to the top.
+  - EXAONE 4.0 1.2B / 4.5 33B (LG): non-commercial licence; the repo goes public and keeps to open licences.
+  - HyperCLOVA X SEED 0.5B/1.5B/14B (Naver): no small release since 2025; 14B too slow on CPU.
+  - A.X-K2, K-EXAONE 2.0, Solar Open, LFM2.5-24B-A2B: 24B-750B total parameters; beyond 31 GB RAM at usable quantization, or too slow.
+- **Labeled set as an `.md` with a `check:` line per item** (user): proofread at the user's pace; 6b parses it and uses only checked items. 66 items: 18 correct (false-alarm check), 48 with known errors across spacing/spelling, particles, voice/tense/form, register/honorifics, connectives and missing target grammar, word choice, and mixed. Verdict rubric at the top of the file.
+- **Moving hosts** (user question): quality scores carry across machines, latency and RAM fit do not; a new host reruns the harness for latency only. SPEC §6.
+- **Corrected line as a word diff** (`ui.word_diff`, difflib over words): changed words as <s>old</s> <b>new</b>; the model answer is dropped when it equals the corrected sentence (spaces and punctuation ignored).

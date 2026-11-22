@@ -4,7 +4,17 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from telegram.error import BadRequest
 
-from mbxchat.ui import COPY_TEXT_LIMIT, Progress, copy_button, correction, fold, keyboard, spoiler
+from mbxchat.ui import COPY_TEXT_LIMIT, Progress, copy_button, correction, fold, keyboard, spoiler, word_diff
+
+
+def test_word_diff_marks_only_changed_words():
+    assert word_diff("가게 갈거야, 사올게 있니?", "가게 갈 거야, 사 올 거 있어?") == (
+        "가게 <s>갈거야, 사올게 있니?</s> <b>갈 거야, 사 올 거 있어?</b>"
+    )
+    assert word_diff("저는 매운 음식이 좋아해요.", "저는 매운 음식을 좋아해요.") == (
+        "저는 매운 <s>음식이</s> <b>음식을</b> 좋아해요."
+    )
+    assert word_diff("a < b", "a < b") == "a &lt; b"
 
 
 def test_correction_escapes_both_sides():

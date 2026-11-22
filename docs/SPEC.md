@@ -126,12 +126,21 @@ wishes imported once; MbxChat owns both.
 Grading free-form Korean has a real cost/quality trade-off, so the grader is a ladder, cheapest
 first:
 
-1. **Rules:** kiwipiepy for spacing and morphology checks. Free, instant.
-2. **Small GEC model** (grammatical error correction), candidates `dadeum-gec-base` (KoBART,
-   124M) and `Soyoung97/gec_kr`. Fast on CPU.
-3. **Local LLM** only for naturalness, register, explanations, or when the cheaper tiers are
-   unsure. Candidates: **A.X 4.0 Light** (SKT, 7B, Apache-2.0), `gemma4:e4b`, Mi:dm 2.0 (KT,
-   MIT). Licences are checked on each model card before adoption.
+0. **Reference match:** the answer equals the reference (spaces and punctuation ignored) → correct,
+   no model call.
+1. **Rules + small GEC model:** kiwipiepy and `dadeum-gec-base` (KoBART, 124M, ~120 ms on CPU)
+   flag spelling, spacing and particle slips. They do not decide the verdict: open GEC models are
+   trained on native writing and miss most learner errors (word choice, voice, register), so
+   their fixes go to the LLM as hints and feed the word diff.
+2. **Local LLM** decides the verdict and explains. Shortlist (2026-11-22, reasons in DECISIONS):
+   `gemma4:e4b` (baseline), A.X 4.0 Light, Mi:dm 2.0 Mini, Nemotron-3.5-Bolt-E4B,
+   Olala-v1.0-mini-7A1B, Qwen3.5-4B. Licences are checked on each model card before adoption.
+
+Grading and capture are separate model roles (`GRADER_MODEL`, `CAPTURE_MODEL`); the eval can
+pick a different model for each. **Moving hosts:** quality scores carry over (same weights and
+quantization give the same answers); latency and what fits in RAM do not. On a new machine,
+rerun the harness for latency only and re-pick within the scored models; a stronger machine
+makes bigger models a new experiment against the same set.
 
 Models are configuration entries (name, endpoint, revision/ID, role). **Adding a model that was
 not scoped is a planned experiment:** add the entry, run the eval, compare. The eval decides
@@ -256,7 +265,9 @@ Plain code, no graph (one model call, no pause inside it).
 - **Grader:** one `gemma4:e4b` call, `Grade {issues, corrected, model_answer, note, verdict}`
   (verdict last, so it follows the listed errors). A "correct" whose corrected sentence differs
   (ignoring spaces and punctuation) becomes "minor". Shown as verdict, corrected sentence,
-  issues, model answer under a spoiler, the note (folded when long), 👍 on correct.
+  issues, model answer under a spoiler, the note (folded when long), 👍 on correct. The corrected
+  line is a word diff against the answer (<s>old</s> <b>new</b>); the model answer is left out
+  when it equals the corrected sentence (unit 6a).
 - **Pings:** `PRACTICE_PINGS` (default 10:00, 13:00, 17:00, 21:00) in `PRACTICE_TZ`. A ping fires
   once (the last one sent is stored in `setting`), never more than 30 min late (after
   downtime it is skipped), and not while a session is open or `/pause` is active.
@@ -274,7 +285,8 @@ Each unit is a branch and a PR, ends green in CI, and updates the docs.
 | 3 | **Capture as a fixed workflow:** LangGraph graph draft → krdict → MbxRead usage → critic → chunks → interrupt; Pydantic outputs; Phoenix tracing on | a real capture ends in an approved chunk; every step visible in Phoenix |
 | 4 | **Anki:** chunk note type, AnkiConnect, outbox while Anki is closed, idempotent adds; nightly Postgres backups (hardening) | approve with Anki closed, open Anki, card appears once |
 | 5 | **Practice loop:** `/practice`, `/stop`, `/pause`, pings at 10:00 13:00 17:00 21:00 (configurable), grader, resurfacing ladder (3/10/30/90 days), `[📖 Grammar]` on prompts; capture context (text after `//` is the situation, stored and passed to draft, critic and chunks) | a ping arrives on time, an answer gets graded, a miss comes back sooner |
-| 6 | **Cost router + model eval:** rules → GEC → LLM, labeled error set, model comparison, GPU attempt (timeboxed) | eval shows quality held on the cheap path and the tier mix; model choice recorded |
+| 6a | **Eval groundwork:** model shortlist with reasons, labeled grading set (`evals/grader_set.md`, written for the purpose, proofread by the user), corrected line shown as a word diff | set drafted and in the repo; diff live on the phone |
+| 6b | **Cost router + model eval** (after the proofread): harness with runs in Phoenix, the shortlist on the set, side-by-side capture pass, reference-match + hints router, GPU attempt (timeboxed) | eval shows quality held on the cheap path and the tier mix; grader and capture models chosen and recorded |
 | 7 | **The agent:** tutor agent chooses tools and next drill; tools served by the MCP server; eval agent vs unit 3 workflow | agent beats or matches the workflow on the eval, with numbers on latency and calls |
 | 8 | **Learner memory:** weak points across sessions steer drills (Postgres first; Graphiti/Zep evaluated) | a repeated mistake visibly changes what practice serves |
 | 9 | **Monitoring:** `/metrics`, Prometheus + Grafana, dashboard (calls per tier, latency, errors), alert on stalled polling | stop the bot, the alert fires |
