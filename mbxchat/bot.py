@@ -18,7 +18,7 @@ from telegram.ext import (
 )
 
 from mbxchat import anki, capture, config, grammar, practice
-from mbxchat.ui import Progress, copy_button, correction, esc, fold, keyboard, spoiler
+from mbxchat.ui import Progress, copy_button, correction, esc, fold, keyboard, spoiler, word_diff
 
 log = logging.getLogger(__name__)
 
@@ -204,10 +204,12 @@ async def _send_prompt(bot, chat_id: int, session: int, lead: str = "") -> None:
 
 def _graded(answer: str, g: practice.Grade) -> str:
     lines = [f"<b>{VERDICT[g.verdict]}</b>"]
-    if g.corrected.strip() != answer.strip():
-        lines.append(f"<b>Corrected:</b> {esc(g.corrected)}")
+    fixed = practice.bare(g.corrected) != practice.bare(answer)
+    if fixed:
+        lines.append(f"<b>Corrected:</b> {word_diff(answer, g.corrected)}")
     lines += [f"• {esc(i)}" for i in g.issues]
-    lines.append(f"<b>Model answer:</b> {spoiler(esc(g.model_answer))}")
+    if not fixed or practice.bare(g.corrected) != practice.bare(g.model_answer):
+        lines.append(f"<b>Model answer:</b> {spoiler(esc(g.model_answer))}")
     if g.note:
         lines.append(fold(esc(g.note)) if len(g.note) > 120 else f"<i>{esc(g.note)}</i>")
     return "\n".join(lines)
