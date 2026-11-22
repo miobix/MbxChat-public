@@ -10,3 +10,11 @@
 - **Build the fixed workflow first (unit 3), then the agent (unit 7)**, and compare them on the same eval: the agent has to earn its extra cost.
 - **MbxRead is an optional tool** over `host.docker.internal`; the bot works without it.
 - **Content imported wide and pruned later**; personal sources stay in the local database.
+
+## 2026-11-22 Unit 0: scaffold
+- **Hashed lock from the start:** `requirements*.in` compiled by pip-tools into `requirements*.txt` with `--generate-hashes`; the image and CI install with `--require-hashes`, so every transitive package is pinned and verified. uv would do the same faster; it is not installed here and pip-tools is enough. Compiled on Windows, so the lock includes `tzdata` and `colorama` (Windows-only markers dropped); both are harmless on Linux, and the Linux image build proves nothing is missing.
+- **Only what unit 0 uses is installed** (psycopg; pytest for dev). LangGraph, python-telegram-bot and the rest arrive with the units that use them.
+- **The app process is a stdlib health server** (`/health`, 200 or 503 by a `SELECT 1`), so compose and CI have something real to check before the bot exists. Unit 1 builds the bot around it.
+- **Postgres image reuses MbxRead's pinned pgvector image** (Postgres 18): already vetted and pulled, and the vector extension is there if learner memory ever wants it. Actions reuse MbxRead's SHA pins (vetted 2026-11-18).
+- **Ports:** health `127.0.0.1:8005`, db `127.0.0.1:5434`.
+- **Verified:** 5 tests; image 133 MB, runs as uid 10001; compose healthy; health goes 503 when db stops and back to 200 when it returns, no traceback.
