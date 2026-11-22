@@ -4,7 +4,7 @@ import threading
 
 from telegram import Update
 
-from mbxchat import config
+from mbxchat import config, db, importer
 from mbxchat.bot import build_app
 from mbxchat.health import make_server
 
@@ -17,6 +17,9 @@ log = logging.getLogger("mbxchat")
 def main() -> None:
     if problems := config.bot_config_problems():
         sys.exit("Cannot start: " + "; ".join(problems) + ". See .env.example.")
+    db.init()
+    for line in importer.import_public():
+        log.info("content %s", line)
     server = make_server("0.0.0.0", config.HEALTH_PORT)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     log.info("health endpoint on :%s", config.HEALTH_PORT)

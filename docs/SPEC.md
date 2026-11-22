@@ -110,8 +110,10 @@ Import everything that can be sourced; prune later. Each source gets a provenanc
 | MbxRead saved terms | words the user saved while reading | **personal: local DB only**, read through MbxRead's API |
 | krdict | definitions and example sentences | API terms; cached, paced |
 
-Personal sources are imported by a script that reads from the user's own installs at run time;
-nothing personal is committed.
+Public pools are committed under `data/` and upserted into one `item` table (kind, key, level,
+ko, en, data) at every bot start. Personal sources are imported by `python -m mbxchat.importer`,
+run on the host, which reads the user's own installs; nothing personal is committed. Each kind is
+replaced as a whole, so re-imports are idempotent and source deletions carry over.
 
 ## 6. Models and the cost router
 

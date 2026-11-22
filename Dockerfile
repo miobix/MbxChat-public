@@ -14,6 +14,7 @@ RUN pip install --require-hashes -r requirements.txt
 
 RUN useradd --system --uid 10001 --no-create-home app
 
+COPY data/ data/
 COPY mbxchat/ mbxchat/
 
 USER app

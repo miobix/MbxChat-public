@@ -37,3 +37,13 @@
 - **Pending updates are processed after a restart** (not dropped): a message sent while the bot was down still gets handled; Telegram keeps updates for 24 hours.
 - **Tests mock Telegram entirely** (handlers called with `MagicMock`/`AsyncMock`, run with `asyncio.run`), so CI needs no token and no network; no pytest-asyncio dependency.
 - **Verified:** 26 tests; compose healthy, survives a restart; menu empty in the default scope and `help`, `demo` in the allowed chat; every demo button checked on the phone by the user.
+
+## 2026-11-22 Unit 2: content import and /grammar
+- **Public pools copied into `data/`** (from MbxWrite `5ae386f`) rather than read from the MbxWrite install: the repo goes public, the image and CI need the files, and tests can check the counts. MbxChat now owns its copy; re-copy to sync.
+- **One `item` table** (`kind`, `key`, `level`, `ko`, `en`, `data jsonb`, unique on kind + key) for grammar, sentences, words, wishes and terms. Practice (unit 5) draws from all of them, and their fields barely overlap, so the rest lives in `data`. Vocabulary grades A/B/C stay in `data`; they are not mapped onto levels 1-6.
+- **Each kind is replaced as a whole** (upsert, then delete keys the source no longer has), in one transaction. Re-imports keep ids, and deletions at the source carry over. Revisit when practice history references items (unit 5): deleting a practised item may need to archive instead.
+- **Public import runs at every bot start; personal import is a host command.** The container cannot see `write.db`, and personal data should move only when the user asks. A source that is not set or not reachable is skipped with a reason and its rows are kept.
+- **Known grammar is its own table** (`known_grammar`), so re-imports never reset it. Seeded with 13 level-1 particles (이/가, 과/와, 까지, 은/는, 도, 을/를, 부터, 에, 에서, 의, 하고, 만, 보다), for the user to review; `[✓ I know this]` adds more.
+- **`/grammar` matching is deterministic:** hyphens, digits and spaces dropped, parenthesised parts optional, the NIKL `related` column supplies the allomorphs. Exact match first, then either side of a slash, then substring. Two senses of one form (`-는데1`, `-는데2`) give a choice of buttons that edit the message in place.
+- **DB calls from handlers are sync psycopg in `asyncio.to_thread`:** psycopg's async driver cannot run on Windows' default event loop, where the tests run, and one user does not need a pool.
+- **Verified:** 52 tests; live counts match the sources (grammar 336, sentence 20, word 5543; wishes and terms match their sources, numbers kept out of the repo); a second import changes nothing; personal rows survive a bot restart.

@@ -1,0 +1,11 @@
+id	grammar_id	register	ko	en	glosses	added
+t093-01	g093	office_speech	회의는 원래 계획대로 진행하겠습니다.	We'll go ahead with the meeting as originally planned.	원래=originally; 계획=plan; 진행하다=to proceed	2026-10-19
+t093-02	g093	friend	그냥 네 마음대로 골라.	Just pick whatever you like.	마음=heart, mind; 고르다=to choose	2026-10-19
+t093-03	g093	coworker_chat	설명서대로 했는데 왜 안 되죠?	I did exactly what the manual says, so why isn't it working?	설명서=manual; 되다=to work (function)	2026-10-19
+t093-04	g093	email	첨부한 양식대로 작성하여 금요일까지 제출해 주시기 바랍니다.	Please fill it out following the attached form and submit it by Friday.	양식=form, template; 작성하다=to fill out; 제출하다=to submit	2026-10-19
+t093-05	g093	friend	역시 예상대로 차가 엄청 막히네.	Just as I expected, the traffic is terrible.	예상=expectation; 막히다=to be jammed	2026-10-19
+t106-01	g106	friend	어젯밤에 드라마 보느라 한숨도 못 잤어.	I was up watching a drama last night and didn't sleep a wink.	어젯밤=last night; 드라마=TV drama; 한숨도 못 자다=to not sleep a wink	2026-10-19
+t106-02	g106	coworker_chat	보고서 쓰느라 점심을 거의 못 먹었어요.	I was busy writing a report and barely got to eat lunch.	보고서=report; 거의=almost, barely	2026-10-19
+t106-03	g106	office_speech	다른 회의에 참석하느라 전화를 못 받았습니다.	I was in another meeting, so I couldn't take your call.	참석하다=to attend; 전화를 받다=to answer the phone	2026-10-19
+t106-04	g106	email	프로젝트를 마무리하느라 답장이 늦어 죄송합니다.	Sorry for the late reply; I was busy wrapping up a project.	마무리하다=to wrap up; 답장=reply; 늦다=to be late	2026-10-19
+t106-05	g106	friend	이사 준비하느라 요즘 정신이 하나도 없어.	I've been so busy getting ready to move, I can't think straight.	이사=moving house; 정신이 없다=to be frazzled	2026-10-19
