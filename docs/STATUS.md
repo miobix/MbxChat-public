@@ -6,9 +6,13 @@
 - **Proofread reminder, every session:** count the empty `check:` lines in
   `evals/grader_set.md` (`grep -c '^- check: *$'`). If any remain and the user has not said it is
   done, remind them first thing. Edits to the file land on `unit-6b-eval` with 6b.
-- **Shortlisted models pulled into MbxRead's Ollama** (2026-11-22, Q4_K_M where offered;
-  Nemotron `UD-Q4_K_XL`, Olala `q5_k_m`, the smallest each repo has). Record each digest in
-  DECISIONS when 6b starts; `ollama rm` the losers after the eval.
+- **Shortlisted models pulled into MbxRead's Ollama** (2026-11-22; Q4_K_M where offered, else the
+  smallest quant each repo has). Ollama digests (prefix): `hf.co/mykor/A.X-4.0-Light-gguf:Q4_K_M`
+  `9f0107f24601` (4.4 GB), `hf.co/mykor/Midm-2.0-Mini-Instruct-gguf:Q4_K_M` `68bc4560da12`
+  (1.4 GB), `hf.co/unsloth/NVIDIA-Nemotron-3.5-Bolt-E4B-GGUF:UD-Q4_K_XL` `7988467f401f` (6.1 GB),
+  `hf.co/OVHaiLLM/Olala-v1.0-mini-7A1B-GGUF:q5_k_m` `27bdade0292b` (6.0 GB),
+  `hf.co/unsloth/Qwen3.5-4B-GGUF:Q4_K_M` `d31742299266` (3.4 GB); gemma4:e4b `dc35e8d9c606`.
+  Move to DECISIONS when 6b records the eval; `ollama rm` the losers after it.
 - **Unit 6b, gated on the proofread:** eval harness (runs in Phoenix), the six LLMs + dadeum on
   the set, side-by-side capture pass, reference-match + hints router, GPU attempt (SPEC §8).
   dadeum needs `torch` + `transformers`: keep them out of the bot image (eval-only deps).
