@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from datetime import datetime
 
 from langgraph.types import Command
 from telegram import BotCommandScopeChat, Update
@@ -16,13 +17,16 @@ from telegram.ext import (
     filters,
 )
 
-from mbxchat import anki, capture, config, grammar
+from mbxchat import anki, capture, config, grammar, practice
 from mbxchat.ui import Progress, copy_button, correction, esc, fold, keyboard, spoiler
 
 log = logging.getLogger(__name__)
 
 # The / menu is built from this list, so it can't drift from the handlers registered below.
 COMMANDS = [
+    ("practice", "Start practising"),
+    ("stop", "End the practice session"),
+    ("pause", "Mute pings for a while: /pause 3h"),
     ("help", "What I can do"),
     ("grammar", "Explain a grammar point: /grammar 는데"),
     ("queue", "Cards waiting for Anki"),
@@ -34,7 +38,7 @@ HELP = (
     "Send me any text and I'll offer to capture it (\"how do I say…\"). Add the situation after "
     "<code>//</code>: <i>can we push the meeting // to my boss</i>.\n\n"
     + "\n".join(f"/{name}  {desc}" for name, desc in COMMANDS)
-    + "\n\nComing next: /practice, /stop, /pause, /stats."
+    + "\n\nComing next: /stats."
 )
 
 
@@ -53,11 +57,14 @@ async def free_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if editing := context.chat_data.pop("editing", None):
         await _finish_edit(update, context, *editing)
         return
-    await update.message.reply_html(
-        "Capture this?",
-        reply_markup=keyboard([("➕ Capture", "cap:yes"), ("✖ No", "cap:no")]),
-        do_quote=True,
-    )
+    session = await asyncio.to_thread(practice.current_session)
+    if session and (p := await asyncio.to_thread(practice.waiting, session)):
+        await _answer(context, update.message, p)
+        return
+    rows = [[("➕ Capture", "cap:yes"), ("✖ No", "cap:no")]]
+    if not session and (late := await asyncio.to_thread(practice.waiting, None)):
+        rows.append([("✍️ It's my answer to the last prompt", f"late:{late['id']}")])
+    await update.message.reply_html("Capture this?", reply_markup=keyboard(*rows), do_quote=True)
 
 
 async def on_capture(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -131,23 +138,163 @@ async def queue_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_html(head + "\n" + "\n".join(lines))
 
 
-async def anki_retry(app: Application) -> None:
-    """Every minute, send queued chunks; quiet while Anki is closed, one log line per new error."""
+async def forever(name: str, every: float, step) -> None:
+    """Run step() every `every` seconds for good; a repeated error is logged once."""
     last = None
     while True:
-        await asyncio.sleep(config.ANKI_RETRY_SECONDS)
+        await asyncio.sleep(every)
         try:
-            if n := await asyncio.to_thread(anki.push):
-                await app.bot.send_message(
-                    config.TELEGRAM_ALLOWED_USER_ID, f"📇 {n} queued card{'' if n == 1 else 's'} now in Anki."
-                )
+            await step()
             last = None
-        except anki.Closed:
-            pass
         except Exception as e:
             if repr(e) != last:
-                log.exception("Anki retry failed")
+                log.exception("%s failed", name)
             last = repr(e)
+
+
+async def anki_step(app: Application) -> None:
+    """Send queued chunks; quiet while Anki is closed."""
+    try:
+        n = await asyncio.to_thread(anki.push)
+    except anki.Closed:
+        return
+    if n:
+        await app.bot.send_message(
+            config.TELEGRAM_ALLOWED_USER_ID, f"📇 {n} queued card{'' if n == 1 else 's'} now in Anki."
+        )
+
+
+async def ping_step(app: Application) -> None:
+    at = practice.now()
+    last = await asyncio.to_thread(practice.get_setting, "last_ping")
+    due = practice.ping_due(at, config.PRACTICE_PINGS, datetime.fromisoformat(last) if last else None)
+    if due is None:
+        return
+    await asyncio.to_thread(practice.set_setting, "last_ping", due.isoformat())
+    paused = await asyncio.to_thread(practice.get_setting, "paused_until")
+    if paused and datetime.fromisoformat(paused) > at or await asyncio.to_thread(practice.current_session):
+        return
+    session = await asyncio.to_thread(practice.open_session)
+    await _send_prompt(app.bot, config.TELEGRAM_ALLOWED_USER_ID, session, "🔔 Practice time.\n\n")
+
+
+# --- practice ------------------------------------------------------------------------------
+
+VERDICT = {"correct": "✅ Correct", "minor": "🟡 Nearly", "wrong": "❌ Not quite"}
+
+
+def _prompt_html(p: dict) -> str:
+    if p["kind"] == "grammar":
+        text = f"✍️ Write a sentence with <b>{esc(p['en'])}</b>"
+        return text + (f" using <b>{esc(p['word'])}</b>" if p["word"] else "")
+    lines = [f"✍️ <b>In Korean:</b> {esc(p['en'])}"]
+    lines += [f"📍 {esc(p['situation'])}"] * bool(p["situation"])
+    lines += [f"<i>{esc(p['register'])}</i>"] * bool(p["register"])
+    return "\n".join(lines)
+
+
+async def _send_prompt(bot, chat_id: int, session: int, lead: str = "") -> None:
+    p = await asyncio.to_thread(practice.next_prompt, session)
+    key = f"pr:{p['id']}"
+    row = [("⏭ Skip", f"{key}:sk"), ("⏹ Stop", f"{key}:st")]
+    if p["grammar_id"]:
+        row.insert(0, ("📖 Grammar", f"{key}:gr"))
+    await bot.send_message(chat_id, lead + _prompt_html(p), parse_mode=ParseMode.HTML, reply_markup=keyboard(row))
+
+
+def _graded(answer: str, g: practice.Grade) -> str:
+    lines = [f"<b>{VERDICT[g.verdict]}</b>"]
+    if g.corrected.strip() != answer.strip():
+        lines.append(f"<b>Corrected:</b> {esc(g.corrected)}")
+    lines += [f"• {esc(i)}" for i in g.issues]
+    lines.append(f"<b>Model answer:</b> {spoiler(esc(g.model_answer))}")
+    if g.note:
+        lines.append(fold(esc(g.note)) if len(g.note) > 120 else f"<i>{esc(g.note)}</i>")
+    return "\n".join(lines)
+
+
+async def _answer(context, message, p: dict, late: bool = False) -> None:
+    answer = message.text.strip()
+    progress = Progress(context.bot, message.chat_id)
+    await progress.start("Grading…")
+    try:
+        g = await asyncio.to_thread(practice.grade, p, answer)
+    except Exception as e:
+        log.exception("grading prompt %s failed", p["id"])
+        await progress.done(f"⚠️ Grading failed: <code>{esc(type(e).__name__)}: {esc(str(e)[:200])}</code>")
+        return
+    await asyncio.to_thread(practice.record, p, answer, g)
+    await progress.done(_graded(answer, g))
+    if g.verdict == "correct":
+        await message.set_reaction("👍")
+    session = await asyncio.to_thread(practice.open_session if late else practice.current_session)
+    if session:
+        await _send_prompt(context.bot, message.chat_id, session)
+
+
+async def practice_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    session = await asyncio.to_thread(practice.open_session)
+    await _send_prompt(context.bot, update.message.chat_id, session)
+
+
+async def stop_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    closed = await asyncio.to_thread(practice.close_session)
+    await update.message.reply_html("Session ended." if closed else "No session open.")
+
+
+async def pause_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    arg = " ".join(context.args or [])
+    if arg.lower() in ("off", "0"):
+        await asyncio.to_thread(practice.set_setting, "paused_until", None)
+        await update.message.reply_html("Pings are back on.")
+        return
+    if span := practice.parse_duration(arg):
+        until = practice.now() + span
+        await asyncio.to_thread(practice.set_setting, "paused_until", until.isoformat())
+        await update.message.reply_html(f"Pings muted until {until:%a %H:%M}. <code>/pause off</code> to undo.")
+        return
+    paused = await asyncio.to_thread(practice.get_setting, "paused_until")
+    state = f"muted until {datetime.fromisoformat(paused):%a %H:%M}" if paused and datetime.fromisoformat(paused) > practice.now() else "on"
+    times = ", ".join(f"{t:%H:%M}" for t in config.PRACTICE_PINGS)
+    await update.message.reply_html(f"Pings ({times}) are {state}. Mute with <code>/pause 3h</code>, <code>30m</code> or <code>2d</code>.")
+
+
+async def on_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    _, prompt_id, action = query.data.split(":")
+    p = await asyncio.to_thread(practice.get_prompt, int(prompt_id))
+    if action == "gr":
+        point = await asyncio.to_thread(grammar.get, config.DATABASE_URL, p["grammar_id"])
+        await query.answer()
+        if point:
+            await query.message.reply_html(grammar.explainer(point))
+        return
+    session = await asyncio.to_thread(practice.current_session)
+    if p["answered_at"] or p["skipped"] or session != p["session_id"]:
+        await query.answer("Already handled")
+        await query.edit_message_reply_markup(None)
+        return
+    await query.answer()
+    if action == "st":
+        await asyncio.to_thread(practice.close_session)
+        await query.edit_message_text(_prompt_html(p) + "\n\n⏹ Session ended.", parse_mode=ParseMode.HTML)
+        return
+    await asyncio.to_thread(practice.skip, p["id"])
+    await query.edit_message_text(f"⏭ <s>{esc(p['en'])}</s>", parse_mode=ParseMode.HTML)
+    await _send_prompt(context.bot, query.message.chat_id, session)
+
+
+async def on_late(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    p = await asyncio.to_thread(practice.get_prompt, int(query.data.removeprefix("late:")))
+    original = query.message.reply_to_message
+    if p is None or p["answered_at"] or original is None:
+        await query.answer("Already handled")
+        await query.message.delete()
+        return
+    await query.answer()
+    await query.message.delete()
+    await _answer(context, original, p, late=True)
 
 
 def _summary(v: dict) -> str:
@@ -348,7 +495,10 @@ async def report_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
 async def post_init(app: Application) -> None:
     await app.bot.delete_my_commands()  # default scope: strangers see no menu
     await app.bot.set_my_commands(COMMANDS, scope=BotCommandScopeChat(config.TELEGRAM_ALLOWED_USER_ID))
-    app.bot_data["anki_retry"] = asyncio.create_task(anki_retry(app))
+    app.bot_data["loops"] = [
+        asyncio.create_task(forever("Anki retry", config.ANKI_RETRY_SECONDS, lambda: anki_step(app))),
+        asyncio.create_task(forever("practice ping", 30, lambda: ping_step(app))),
+    ]
 
 
 def build_app(token: str, graph=None) -> Application:
@@ -360,7 +510,12 @@ def build_app(token: str, graph=None) -> Application:
     app.add_handler(CommandHandler("demo", demo_cmd, filters=private))
     app.add_handler(CommandHandler("grammar", grammar_cmd, filters=private))
     app.add_handler(CommandHandler("queue", queue_cmd, filters=private))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & private, free_text))
+    app.add_handler(CommandHandler("practice", practice_cmd, filters=private))
+    app.add_handler(CommandHandler("stop", stop_cmd, filters=private))
+    app.add_handler(CommandHandler("pause", pause_cmd, filters=private))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & private, free_text, block=False))  # grading
+    app.add_handler(CallbackQueryHandler(on_prompt, pattern=r"^pr:\d+:(sk|st|gr)$"))
+    app.add_handler(CallbackQueryHandler(on_late, pattern=r"^late:\d+$", block=False))
     app.add_handler(CallbackQueryHandler(on_capture, pattern=r"^cap:", block=False))  # long on CPU
     app.add_handler(CallbackQueryHandler(on_chunk, pattern=r"^ch:\d+:\d+:(ok|ed|sk)$"))
     app.add_handler(CallbackQueryHandler(on_demo, pattern=r"^demo:"))

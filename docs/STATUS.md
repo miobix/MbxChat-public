@@ -1,11 +1,18 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** cycle 1 (units 0-4) done and verified on the phone; hardening pass and roll-up on
-`cycle-1-hardening`. Next: unit 5 (practice loop).
+**Phase:** unit 5 (practice loop, SPEC §7d) built on `unit-5-practice` and live in the bot.
+Awaiting the phone check: a ping arrives on time, an answer gets graded, a miss comes back.
 
 ## Next
-- **Unit 5:** practice loop (SPEC §8), plus capture context: text after `//` is the situation,
-  stored on `capture` and shown to draft, critic and chunks.
+- **Unit 5 phone check**, then PR.
+- **Practice is shaped by use:** the user tweaks prompts, mix and grading as real use shows what
+  to change; record each change in DECISIONS.
+- **Model quality pass:** remember to compare grading and capture quality across different
+  models, not only `gemma4:e4b` (unit 6 eval is the place).
+- **End of cycle 2 (after unit 8):** run the two imported wishes through capture, then drop the
+  `wish` kind (schema check, SPEC §5, importer notes). This app processes wishes at once; it
+  does not store them.
+- **Cycle 2 boundary:** after unit 8 merges, run the `hardening-pass` skill.
 - **Hardening proposals, not done:** retention for LangGraph checkpoint tables and Phoenix
   traces (both tiny today; revisit at unit 9 monitoring). Backups sit on the same disk as the
   database; copying them off the machine is the user's call.
@@ -22,7 +29,10 @@
   (`127.0.0.1:6006`, auth off, localhost only), `backup` (nightly `pg_dump` to `./backups`,
   newest 14; restore in README). Token and allowed user ID in `.env`; missing either → exit
   with what's missing.
-- `/` menu: set at startup for the allowed chat only. `help`, `grammar`, `queue`, `demo`. Groups
+- Practice (SPEC §7d): `/practice`, `/stop`, `/pause`; pings in `PRACTICE_TZ` (set in `.env`).
+  Tables `session`, `prompt`, `drill`, `setting`.
+- `/` menu: set at startup for the allowed chat only. `practice`, `stop`, `pause`, `help`,
+  `grammar`, `queue`, `demo`. Groups
   disabled in BotFather. `/demo` is a UI preview; remove it once real flows replace it.
 - Capture (SPEC §7c): ➕ runs draft → lookup → critic → chunks (~30-50 s on CPU), then one card
   per chunk; approved and edited chunks land in `chunk`. A pending ✏️ edit lives in memory (a
@@ -33,7 +43,7 @@
   is the outbox; retried every 60 s.
 - Errors: reported in the chat, except Telegram network errors (logged; polling retries alone).
   `httpx` logging is held at WARNING because request URLs contain the token.
-- Tests: 74 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 88 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
   MbxRead terms via `.venv/Scripts/python -m mbxchat.importer` on the host (refuses an answer

@@ -245,6 +245,8 @@ def save(state: State) -> State:
         for c, d in zip(state["chunks"], state["decisions"]) if d["action"] != "skip"
     ]
     with psycopg.connect(config.DATABASE_URL) as conn:
+        r = state["review"]
+        conn.execute("UPDATE capture SET polite = %s, casual = %s WHERE id = %s", (r["polite"], r["casual"], capture_id))
         conn.cursor().executemany(
             "INSERT INTO chunk (capture_id, ko, gloss, kind, register_note, sentence) "
             "VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING", rows
