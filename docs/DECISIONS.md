@@ -18,3 +18,22 @@
 - **Postgres image reuses MbxRead's pinned pgvector image** (Postgres 18): already vetted and pulled, and the vector extension is there if learner memory ever wants it. Actions reuse MbxRead's SHA pins (vetted 2026-11-18).
 - **Ports:** health `127.0.0.1:8005`, db `127.0.0.1:5434`.
 - **Verified:** 5 tests; image 133 MB, runs as uid 10001; compose healthy; health goes 503 when db stops and back to 200 when it returns, no traceback.
+
+## 2026-11-22 Unit 1 design: commands and chat UI
+- **English UI, Korean content; no persistent reply keyboard** (user): the `/` menu plus inline buttons keep the chat clean.
+- **Free text outside a session is assumed to be a capture, confirmed with one tap** (user): fewer accidental captures for the cost of one button.
+- **Buttons edit their own message in place** and callback data carries only a short key into Postgres: the chat reads as a record of outcomes, and Telegram's 64-byte callback limit never constrains a payload.
+- **A live progress message** covers CPU latency and makes the router's tiers visible.
+- **The `/` menu is scoped to the allowed chat**, so strangers see no commands; set from code so it cannot drift from the handlers.
+- **Grammar explainer added (user):** `/grammar <form>` and a `[📖 Grammar]` button on practice prompts, served from the NIKL pool's refreshers with no model call. Basic points (level-1 particles to start, grown by `[✓ I know this]`) are never offered. Lands with content import (unit 2) and the practice loop (unit 5).
+
+## 2026-11-22 Unit 1: bot skeleton and UI kit
+- **python-telegram-bot 22.8** (June 2026, the newest release past the two-week rule). Alternatives: aiogram (async-first, router-based, popular in Russian-speaking communities), pyTelegramBotAPI (simpler, sync by default), raw Bot API over httpx. PTB has the largest docs and examples, a built-in JobQueue for the pings (unit 5) and typed objects for every Bot API feature used here (copy-text buttons, reactions, expandable quotes).
+- **The allowlist is one `TypeHandler` in group -1** that raises `ApplicationHandlerStop` for anyone else, so no handler, present or future, can forget the check. Strangers get silence (no reply reveals that the bot is alive for someone).
+- **The `/` menu is generated from the `COMMANDS` list** and set at startup: default scope cleared, the allowed chat scoped. The help text is built from the same list.
+- **"Capture this?" quotes the user's message** (`do_quote`), and the callback reads the text back from `reply_to_message`. No callback payload and no state table are needed yet; the Postgres-backed key arrives when a button must carry data that is not on screen (unit 3).
+- **Telegram network errors are logged, not sent to the chat:** polling already retries them, and a chat message during an outage would fail anyway. Everything else is reported in the chat.
+- **`httpx` logging held at WARNING:** at INFO it logs every request URL, and Bot API URLs contain the token. Verified: the token does not appear in the container logs.
+- **Pending updates are processed after a restart** (not dropped): a message sent while the bot was down still gets handled; Telegram keeps updates for 24 hours.
+- **Tests mock Telegram entirely** (handlers called with `MagicMock`/`AsyncMock`, run with `asyncio.run`), so CI needs no token and no network; no pytest-asyncio dependency.
+- **Verified:** 26 tests; compose healthy, survives a restart; menu empty in the default scope and `help`, `demo` in the allowed chat; every demo button checked on the phone by the user.
