@@ -5,8 +5,8 @@ to rebuild it. Public pools are committed under `data/` and loaded at bot startu
 (`mbxchat/importer.py`). Personal pools are never committed.*
 
 The public files were copied on 2026-11-22 from MbxWrite `data/` at commit `5ae386f`
-(2026-10-19). They are now maintained here; to pick up later MbxWrite edits, copy the files
-again and run the tests (`tests/test_importer.py` checks counts and refresher completeness).
+(2026-10-19), once. MbxChat owns them from then on: they are edited here and never re-synced
+from MbxWrite. `tests/test_importer.py` checks counts and refresher completeness.
 
 ## Grammar pool: `data/grammar.tsv` → `item.kind = 'grammar'`
 
@@ -52,12 +52,12 @@ homograph merge are recorded in MbxRead `docs/DECISIONS.md` (2026-07-22, Epic 13
 
 ## Personal pools (local database only, never committed)
 
-Imported by `python -m mbxchat.importer` on the host, which reads the user's own installs:
+Never committed. MbxRead terms reload with `python -m mbxchat.importer` on the host:
 
 | Kind | Source | Rows taken |
 |---|---|---|
-| `wish` | MbxWrite `write.db`, table `wish` (path in `MBXWRITE_DB`, opened read-only) | not archived |
+| `wish` | MbxWrite `write.db`, table `wish`, non-archived rows, imported once on 2026-11-22. The importer code was then removed: the local database is now the only copy. | - |
 | `term` | MbxRead `GET /api/terms` (`MBXREAD_URL`) | status `learning` or `known` |
 
-A source that is not configured or not reachable is skipped and its existing rows are kept.
-Tests use synthetic wishes and terms only.
+If MbxRead is unreachable the import is skipped and existing terms are kept. Tests use synthetic
+rows only.

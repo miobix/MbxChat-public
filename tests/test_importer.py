@@ -1,9 +1,6 @@
-import sqlite3
-
 import psycopg
-import pytest
 
-from mbxchat import config, importer
+from mbxchat import importer
 
 
 def _counts(url):
@@ -51,20 +48,6 @@ def test_rows_gone_from_the_source_are_removed(db_url):
     assert _counts(db_url) == {"word": 1}
 
 
-@pytest.fixture
-def wish_db(tmp_path):
-    path = tmp_path / "write.db"
-    with sqlite3.connect(path) as conn:
-        conn.execute("CREATE TABLE wish (id INTEGER PRIMARY KEY, english TEXT, situation TEXT, archived_at TEXT)")
-        conn.executemany("INSERT INTO wish VALUES (?, ?, ?, ?)", [
-            (1, "Seeded wish one", "at a café", None),
-            (2, "Seeded wish two", "", None),
-            (3, "Archived wish", "", "2026-01-01"),
-        ])
-    conn.close()
-    return str(path)
-
-
 TERMS = [
     {"id": 7, "lemma": "흐르다", "translation": "flow", "sentence": "강이 흐른다.", "status": "learning"},
     {"id": 8, "lemma": "가끔", "translation": "sometimes", "sentence": "", "status": "known"},
@@ -72,14 +55,15 @@ TERMS = [
 ]
 
 
-def test_personal_import_skips_archived_wishes_and_ignored_terms(db_url, wish_db, monkeypatch):
-    monkeypatch.setattr(config, "MBXWRITE_DB", wish_db)
+def test_term_import_skips_ignored_and_leaves_other_kinds_alone(db_url, monkeypatch):
+    with psycopg.connect(db_url) as conn:
+        importer.replace(conn, "wish", [("wish", "1", None, None, "Seeded wish", {})])
     monkeypatch.setattr(importer, "fetch_terms", lambda url: TERMS)
-    assert importer.import_personal() == ["wish: 2 rows, 0 removed", "term: 2 rows, 0 removed"]
-    assert _counts(db_url) == {"wish": 2, "term": 2}
+    assert importer.import_personal() == ["term: 2 rows, 0 removed"]
+    assert _counts(db_url) == {"wish": 1, "term": 2}
 
 
-def test_unavailable_sources_are_skipped_and_existing_rows_kept(db_url, monkeypatch):
+def test_mbxread_down_is_skipped_and_existing_terms_kept(db_url, monkeypatch):
     monkeypatch.setattr(importer, "fetch_terms", lambda url: TERMS)
     importer.import_personal()
 
@@ -87,14 +71,14 @@ def test_unavailable_sources_are_skipped_and_existing_rows_kept(db_url, monkeypa
         raise OSError("connection refused")
 
     monkeypatch.setattr(importer, "fetch_terms", down)
-    monkeypatch.setattr(config, "MBXWRITE_DB", "C:/no/such/write.db")
-    report = importer.import_personal()
-    assert report[0].startswith("wish: skipped, MbxWrite database unreadable")
-    assert report[1] == "term: skipped, MbxRead unavailable (connection refused)"
+    assert importer.import_personal() == ["term: skipped, MbxRead unavailable (connection refused)"]
     assert _counts(db_url) == {"term": 2}
 
 
-def test_wishes_skipped_when_not_configured(db_url, monkeypatch):
-    monkeypatch.setattr(config, "MBXWRITE_DB", "")
-    monkeypatch.setattr(importer, "fetch_terms", lambda url: [])
-    assert importer.import_personal()[0] == "wish: skipped (MBXWRITE_DB is not set)"
+def test_basics_are_seeded_on_the_first_import_only(db_url):
+    importer.import_public()
+    with psycopg.connect(db_url) as conn:
+        conn.execute("DELETE FROM known_grammar")
+    importer.import_public()
+    with psycopg.connect(db_url) as conn:
+        assert conn.execute("SELECT count(*) FROM known_grammar").fetchone()[0] == 0

@@ -63,6 +63,11 @@ def mark_known(url: str, item_id: int) -> None:
         conn.execute("INSERT INTO known_grammar (item_id) VALUES (%s) ON CONFLICT DO NOTHING", (item_id,))
 
 
+def unmark_known(url: str, item_id: int) -> None:
+    with psycopg.connect(url) as conn:
+        conn.execute("DELETE FROM known_grammar WHERE item_id = %s", (item_id,))
+
+
 def explainer(p: Point) -> str:
     d = p.data
     lines = [f"📖 <b>{esc(p.title)}</b>  ·  level {p.level}  ·  {esc(d.get('register') or '?')}",

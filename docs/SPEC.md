@@ -106,14 +106,16 @@ Import everything that can be sourced; prune later. Each source gets a provenanc
 | MbxWrite `data/grammar.tsv` + refreshers | 336 NIKL grammar points, graded 1-6, with explanations and examples | KOGL Type 1 (attribution); refreshers are original writing |
 | MbxWrite `data/translations/` | graded sentence pairs | original writing |
 | MbxWrite / MbxRead `vocab_levels.tsv` | 5,543 NIKL learner vocabulary lemmas | per MbxRead's provenance entry |
-| MbxWrite wishes | phrases the user wanted to say | **personal: local DB only** |
+| MbxWrite wishes | phrases the user wanted to say | **personal: local DB only**; imported once (2026-11-22), no importer code remains |
 | MbxRead saved terms | words the user saved while reading | **personal: local DB only**, read through MbxRead's API |
 | krdict | definitions and example sentences | API terms; cached, paced |
 
 Public pools are committed under `data/` and upserted into one `item` table (kind, key, level,
 ko, en, data) at every bot start. Personal sources are imported by `python -m mbxchat.importer`,
 run on the host, which reads the user's own installs; nothing personal is committed. Each kind is
-replaced as a whole, so re-imports are idempotent and source deletions carry over.
+replaced as a whole, so re-imports are idempotent and source deletions carry over. **Nothing reads
+MbxWrite at run time** (it will not exist in production): its files were copied once and its
+wishes imported once; MbxChat owns both.
 
 ## 6. Models and the cost router
 
@@ -187,7 +189,8 @@ Built on the NIKL grammar pool and its refreshers (explanation, 2-3 examples, re
   it expands their explainers in place (collapsible quotes).
 - **Basics are skipped:** points marked basic are never offered for explanation. Seeded with a
   short hand-picked list of level-1 particles (이/가, 은/는, 을/를, 에, 에서, 도, 와/과, 의, …)
-  that the user reviews, and grown by a `[✓ I know this]` button on any explainer. A known point
+  on the first import, then grown by a `[✓ I know this]` button on any explainer. Asking for a
+  known point offers `[↩ Not known]`, which takes it off the known pile and explains it. A known point
   that the user keeps getting wrong comes back (learner memory, unit 8).
 - Optional later: an extra example from the user's MbxRead library, if its index can find
   sentences by grammar ending.
