@@ -13,8 +13,8 @@ session, if present.
 - `docs/DATA.md` (from unit 2): provenance and licence of every content source.
 
 ## Rules
-1. **One unit = one branch + one PR**, green CI, docs updated. Finish units as local commits;
-   push and open the PR only when the user asks.
+1. **One unit = one branch + one PR**, green CI, docs updated. When a unit is done, push it,
+   open the PR, watch CI and report. **The user merges on GitHub**; never merge yourself.
 2. **No personal data in the repo**: captured phrases, wishes, saved terms, learner memory,
    machine names, Telegram IDs and tokens stay in the local database or `.env`.
 3. **External APIs:** krdict one request per 3 s, cached, never retried in a burst; stop at the
