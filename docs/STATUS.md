@@ -1,12 +1,9 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 3 (capture as a fixed LangGraph workflow) built and tested; PR open. The user
-merges after a real capture on the phone ends in an approved chunk and shows in Phoenix.
-Next: unit 4 (Anki).
+**Phase:** unit 3 (capture as a fixed LangGraph workflow) done: a real capture on the phone ended
+in an approved chunk and its trace is in Phoenix. PR open, the user merges. Next: unit 4 (Anki).
 
 ## Next
-- **User:** send a "how do I say…" on the phone, ➕ Capture, approve one chunk; then open
-  http://127.0.0.1:6006 (project `mbxchat`) and find the trace.
 - **Unit 4:** chunk note type, AnkiConnect, outbox while Anki is closed, idempotent adds.
 - In BotFather, turn off "Allow Groups" (`/setjoingroups` → Disable) so the bot cannot be
   added to group chats.

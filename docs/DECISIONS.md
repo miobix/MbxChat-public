@@ -66,3 +66,4 @@
 - **Term import guard** (from a side review during this unit): an answer with under half the stored terms is refused, so a wrong or empty MbxRead cannot wipe the pool.
 - **Image 133 → 460 MB** (kiwipiepy model, numpy, gRPC for OTel). Accepted.
 - **Verified:** 65 tests (real graph and Postgres checkpointer; model and MbxRead faked). Live, outside Telegram: three captures ran end to end (~28-50 s), the approved chunk was saved, and a traced run showed 19 spans in Phoenix covering every node and model call.
+- **Phone check (user):** one real capture ended in an approved chunk; the trace shows all six nodes and three model calls. The wait is acceptable: the chat is asynchronous and chunks come one at a time, so the user does not sit and watch it.
