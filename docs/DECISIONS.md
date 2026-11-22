@@ -67,3 +67,13 @@
 - **Image 133 → 460 MB** (kiwipiepy model, numpy, gRPC for OTel). Accepted.
 - **Verified:** 65 tests (real graph and Postgres checkpointer; model and MbxRead faked). Live, outside Telegram: three captures ran end to end (~28-50 s), the approved chunk was saved, and a traced run showed 19 spans in Phoenix covering every node and model call.
 - **Phone check (user):** one real capture ended in an approved chunk; the trace shows all six nodes and three model calls. The wait is acceptable: the chat is asynchronous and chunks come one at a time, so the user does not sit and watch it.
+
+## 2026-11-22 Unit 4: Anki
+- **The `chunk` table is the outbox** (`anki_note_id`, `anki_error`), not a separate queue table: every approved chunk belongs in Anki, so "queued" is just "no note id yet".
+- **Idempotency by tag, not by AnkiConnect's duplicate check:** that check compares the first field only (the gloss), which can repeat across chunks and misses nothing about the chunk itself. Each note gets `mbxchat-<uid>` and a push runs `findNotes` before `addNote`, so a crash after the add finds the note instead of adding it again. One lock serialises the bot's push and the retry loop.
+- **Tag on a uuid, not the chunk id** (from a side review during this unit): ids restart if the database is recreated, and a new chunk would then match an old note's tag and silently never reach Anki.
+- **Plain HTTP to AnkiConnect for now:** the MCP server that will front Anki is unit 7; this module becomes its tool then.
+- **Retry loop: every 60 s, silent while Anki is closed**, one log line per new error, one chat message when queued cards land. A refused note is parked, not retried every minute.
+- **Own deck and note type** (`MbxChat`, `MbxChat Chunk`) rather than the user's existing `Korean` deck and `Korean Sentence` type: nothing the bot does touches cards it did not make. Both are config/constant; moving the cards later is an Anki browser job.
+- **Blank by morphemes** (kiwipiepy, already in the image): chunks are often in dictionary form (`일이 산더미처럼 쌓이다`) while the sentence is conjugated (`쌓였어요`), so a string search misses them.
+- **MbxRead example on the back deferred:** capture's usage hits are per lemma, not per chunk.

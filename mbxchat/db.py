@@ -32,6 +32,9 @@ CREATE TABLE IF NOT EXISTS chunk (
     created_at    timestamptz NOT NULL DEFAULT now(),
     UNIQUE (capture_id, ko)
 );
+ALTER TABLE chunk ADD COLUMN IF NOT EXISTS anki_note_id bigint;
+ALTER TABLE chunk ADD COLUMN IF NOT EXISTS anki_error text;
+ALTER TABLE chunk ADD COLUMN IF NOT EXISTS uid uuid NOT NULL DEFAULT gen_random_uuid();
 CREATE TABLE IF NOT EXISTS known_grammar (
     item_id bigint PRIMARY KEY REFERENCES item(id) ON DELETE CASCADE,
     since   timestamptz NOT NULL DEFAULT now()

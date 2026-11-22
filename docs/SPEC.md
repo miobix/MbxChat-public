@@ -143,10 +143,20 @@ Long sentences make poor Anki cards. Anki holds the **reusable chunk**; the bot 
 sentences.
 
 - One capture yields 0-3 chunk cards (a collocation, an expression, a grammar pattern in use).
-- **Front:** a short English gloss, plus the user's original sentence with the chunk blanked.
-- **Back:** the Korean chunk, the full Korean sentence, a register note, optionally one MbxRead
-  example.
+- **Front:** a short English gloss, plus the Korean sentence with the chunk blanked.
+- **Back:** the Korean chunk, the full Korean sentence, a register note. (An MbxRead example is
+  deferred: the usage hits are per word, not per chunk.)
 - Approve/Edit/Skip works per chunk. Shape is provisional: adjust after real use.
+
+**Delivery (unit 4).** Note type `MbxChat Chunk` (fields Gloss, Blanked, Chunk, Sentence,
+Register; created if missing, never modified after) in deck `ANKI_DECK` (default `MbxChat`),
+through AnkiConnect (`ANKI_URL`). The `chunk` table is the outbox: `anki_note_id` stays null
+until Anki has the note. A push runs after each approval, on `/queue`, and every 60 s; Anki
+closed → everything stays queued, quietly. Each note is tagged `mbxchat-<chunk uid>` and a push
+looks for that tag before adding, so a crash between add and commit never duplicates. A note
+Anki refuses is parked (`anki_error`) and listed by `/queue`, not retried. Blanking: kiwipiepy
+morphemes of the chunk (final 다 dropped), longest contiguous run found in the sentence's
+morphemes; no match → the front shows the gloss only.
 
 ## 7a. Commands and chat UI
 
