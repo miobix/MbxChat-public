@@ -1,10 +1,11 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 5 (practice loop, SPEC §7d) built on `unit-5-practice` and live in the bot.
-Awaiting the phone check: a ping arrives on time, an answer gets graded, a miss comes back.
+**Phase:** unit 5 (practice loop, SPEC §7d) merged and in daily use. Next: unit 6 (cost router +
+model eval).
 
 ## Next
-- **Unit 5 phone check**, then PR.
+- **Unit 6:** rules → GEC → LLM router, labeled error set, model comparison (SPEC §6, §9). Its
+  eval covers the grading problems seen live (DECISIONS, unit 5).
 - **Practice is shaped by use:** the user tweaks prompts, mix and grading as real use shows what
   to change; record each change in DECISIONS.
 - **Model quality pass:** remember to compare grading and capture quality across different

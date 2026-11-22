@@ -107,3 +107,4 @@ Checked, evidence first:
 - **Grading quality is for the unit 6 eval:** live, gemma leaves `issues` empty and explains in `note`, rewrites good answers toward the reference (so they count as minor), and graded 반말 to a boss as minor. Not tuned by feel.
 - **Reusable loop helper** `forever()` runs both background loops (Anki retry, pings): every call guarded, a repeated error logged once.
 - **Verified:** 88 tests (model faked; real Postgres). Live: grader on three real answers, 9-19 s each; pings run on the configured zone.
+- **Phone check (user):** the 21:00 KST ping opened a session on time; an answer was graded live (minor, next due in 3 days). The miss path (wrong → due tomorrow) is covered by tests, not yet seen live.
