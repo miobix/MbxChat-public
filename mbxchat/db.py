@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS chunk (
     created_at    timestamptz NOT NULL DEFAULT now(),
     UNIQUE (capture_id, ko)
 );
+ALTER TABLE capture ADD COLUMN IF NOT EXISTS situation text NOT NULL DEFAULT '';
 ALTER TABLE chunk ADD COLUMN IF NOT EXISTS anki_note_id bigint;
 ALTER TABLE chunk ADD COLUMN IF NOT EXISTS anki_error text;
 ALTER TABLE chunk ADD COLUMN IF NOT EXISTS uid uuid NOT NULL DEFAULT gen_random_uuid();

@@ -31,7 +31,8 @@ COMMANDS = [
 
 HELP = (
     "<b>MbxChat</b>: practise writing Korean.\n\n"
-    "Send me any text and I'll offer to capture it (\"how do I say…\").\n\n"
+    "Send me any text and I'll offer to capture it (\"how do I say…\"). Add the situation after "
+    "<code>//</code>: <i>can we push the meeting // to my boss</i>.\n\n"
     + "\n".join(f"/{name}  {desc}" for name, desc in COMMANDS)
     + "\n\nComing next: /practice, /stop, /pause, /stats."
 )
@@ -66,14 +67,15 @@ async def on_capture(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         await query.message.delete()
         return
     original = query.message.reply_to_message
-    text = original.text if original and original.text else ""
+    text, situation = capture.split_situation(original.text if original and original.text else "")
     await query.answer()
-    await query.edit_message_text(f"➕ <i>{esc(text)}</i>", parse_mode=ParseMode.HTML)
-    capture_id = await asyncio.to_thread(capture.new_capture, text)
+    shown = f"➕ <i>{esc(text)}</i>" + (f"\n📍 {esc(situation)}" if situation else "")
+    await query.edit_message_text(shown, parse_mode=ParseMode.HTML)
+    capture_id = await asyncio.to_thread(capture.new_capture, text, situation)
     progress = Progress(context.bot, query.message.chat_id)
     await progress.start("Drafting…")
     try:
-        await _run(context, query.message.chat_id, capture_id, {"text": text}, progress)
+        await _run(context, query.message.chat_id, capture_id, {"text": text, "situation": situation}, progress)
     except Exception as e:
         log.exception("capture %s failed", capture_id)
         await progress.done(f"⚠️ Capture failed: <code>{esc(type(e).__name__)}: {esc(str(e)[:200])}</code>")
