@@ -7,6 +7,9 @@
   allowlists, `.env.example`, CI (tests + image build), pins.
 - **Start of unit 1: design talk on the command map** (commands, free text, buttons, and what
   the agent routes itself after unit 7); result goes into SPEC as a "Commands" section.
+  The user wants a polished button UI, beyond a bot that takes numbers: cover inline keyboards
+  edited in place, callback data design, the `/` menu and its scopes, formatting, and whether a
+  Telegram Mini App earns a place.
 - Before unit 1, the user creates the bot with Telegram's BotFather and puts the token and
   their user ID in `.env`.
 - GitHub remote: private repo, created when the user says so.
