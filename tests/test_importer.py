@@ -81,6 +81,7 @@ def test_personal_import_skips_archived_wishes_and_ignored_terms(db_url, wish_db
 
 def test_unavailable_sources_are_skipped_and_existing_rows_kept(db_url, monkeypatch):
     monkeypatch.setattr(importer, "fetch_terms", lambda url: TERMS)
+    monkeypatch.setattr(config, "MBXWRITE_DB", "")
     importer.import_personal()
 
     def down(url):
@@ -98,3 +99,23 @@ def test_wishes_skipped_when_not_configured(db_url, monkeypatch):
     monkeypatch.setattr(config, "MBXWRITE_DB", "")
     monkeypatch.setattr(importer, "fetch_terms", lambda url: [])
     assert importer.import_personal()[0] == "wish: skipped (MBXWRITE_DB is not set)"
+
+
+def test_wishes_are_imported_once_only(db_url, wish_db, monkeypatch):
+    monkeypatch.setattr(config, "MBXWRITE_DB", wish_db)
+    monkeypatch.setattr(importer, "fetch_terms", lambda url: [])
+    importer.import_personal()
+    with sqlite3.connect(wish_db) as conn:
+        conn.execute("DELETE FROM wish")
+    conn.close()
+    assert importer.import_personal()[0] == "wish: skipped (imported once already; MbxChat owns them now)"
+    assert _counts(db_url) == {"wish": 2}
+
+
+def test_basics_are_seeded_on_the_first_import_only(db_url):
+    importer.import_public()
+    with psycopg.connect(db_url) as conn:
+        conn.execute("DELETE FROM known_grammar")
+    importer.import_public()
+    with psycopg.connect(db_url) as conn:
+        assert conn.execute("SELECT count(*) FROM known_grammar").fetchone()[0] == 0

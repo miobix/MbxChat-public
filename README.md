@@ -20,7 +20,8 @@ curl http://127.0.0.1:8005/health
 ## Content
 
 Public pools (NIKL grammar, refreshers, sentences, vocabulary) load at every bot start.
-Personal pools are imported on the host and stay in the local database:
+Personal pools are imported on the host and stay in the local database (MbxWrite wishes once only,
+MbxRead terms on every run):
 
 ```sh
 MBXWRITE_DB=/path/to/MbxWrite/write.db .venv/Scripts/python -m mbxchat.importer

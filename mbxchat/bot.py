@@ -83,7 +83,10 @@ async def grammar_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         await update.message.reply_html(f"No grammar point matches <b>{esc(text)}</b>.")
     elif not fresh:
         titles = ", ".join(esc(p.title) for p in hits)
-        await update.message.reply_html(f"{titles}: marked as known, so I skip it.")
+        await update.message.reply_html(
+            f"{titles}: marked as known, so I skip it.",
+            reply_markup=keyboard(*([(f"↩ Not known: {p.title}", f"unknown:{p.id}")] for p in hits[:MAX_CHOICES])),
+        )
     elif len(fresh) == 1:
         await update.message.reply_html(grammar.explainer(fresh[0]), reply_markup=_know_key(fresh[0]))
     else:
@@ -103,6 +106,8 @@ async def on_grammar(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     action, _, item_id = query.data.partition(":")
     if action == "known":
         await asyncio.to_thread(grammar.mark_known, config.DATABASE_URL, int(item_id))
+    elif action == "unknown":
+        await asyncio.to_thread(grammar.unmark_known, config.DATABASE_URL, int(item_id))
     point = await asyncio.to_thread(grammar.get, config.DATABASE_URL, int(item_id))
     if point is None:
         await query.answer("That point is gone; the pool was re-imported.")
@@ -114,7 +119,7 @@ async def on_grammar(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             parse_mode=ParseMode.HTML,
         )
     else:
-        await query.answer()
+        await query.answer("Back in play" if action == "unknown" else None)
         await query.edit_message_text(
             grammar.explainer(point), parse_mode=ParseMode.HTML, reply_markup=_know_key(point)
         )
@@ -205,6 +210,6 @@ def build_app(token: str) -> Application:
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & private, free_text))
     app.add_handler(CallbackQueryHandler(on_capture, pattern=r"^cap:"))
     app.add_handler(CallbackQueryHandler(on_demo, pattern=r"^demo:"))
-    app.add_handler(CallbackQueryHandler(on_grammar, pattern=r"^(gram|known):\d+$"))
+    app.add_handler(CallbackQueryHandler(on_grammar, pattern=r"^(gram|known|unknown):\d+$"))
     app.add_error_handler(report_error)
     return app

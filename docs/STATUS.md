@@ -4,8 +4,7 @@
 `/grammar 는데` works on the phone. Next: unit 3 (capture as a fixed LangGraph workflow).
 
 ## Next
-- **User:** review the 13 seeded basics (`BASICS` in `mbxchat/importer.py`); try `/grammar 는데`
-  on the phone.
+- **User:** try `/grammar 는데` and `/grammar 은/는` (→ `[↩ Not known]`) on the phone.
 - **Unit 3:** capture workflow (draft → krdict → MbxRead usage → critic → chunks → interrupt),
   Pydantic outputs, Phoenix tracing.
 - In BotFather, turn off "Allow Groups" (`/setjoingroups` → Disable) so the bot cannot be
@@ -25,7 +24,8 @@
   Tests need `docker compose up -d --wait db`. `.env` must exist (copy `.env.example`).
 - Tests: 52 passing (`.venv/Scripts/python -m pytest tests -q`), Telegram fully mocked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
-  pools via `MBXWRITE_DB=… .venv/Scripts/python -m mbxchat.importer` on the host. Provenance in
-  `docs/DATA.md`. Known grammar points live in `known_grammar` (survives re-imports).
+  pools via `MBXWRITE_DB=… .venv/Scripts/python -m mbxchat.importer` on the host. MbxWrite is a
+  one-time source (files copied once, wishes imported once). Provenance in `docs/DATA.md`.
+  Known grammar points live in `known_grammar`; basics seeded on the first import only.
 - Sibling project MbxRead is reached at `host.docker.internal:8002`; its `.env`
   `ALLOWED_HOSTS` already includes `host.docker.internal` (set 2026-11-22).

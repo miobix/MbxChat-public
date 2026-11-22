@@ -1,8 +1,8 @@
 """Load the content pools into `item` (SPEC §5; provenance in docs/DATA.md).
 
-Public pools ship in data/ and load at bot startup. Personal pools (MbxWrite wishes, MbxRead
-saved terms) are read from the user's own installs: `python -m mbxchat.importer` on the host.
-Each kind is replaced as a whole, so re-running is idempotent and source deletions carry over.
+Public pools ship in data/ and load at bot startup. Personal pools are read from the user's own
+installs by `python -m mbxchat.importer` on the host: MbxWrite wishes once only, MbxRead saved
+terms on every run. Each kind is replaced as a whole, so re-running is idempotent.
 """
 import csv
 import json
@@ -19,7 +19,7 @@ from mbxchat import config, db
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 Row = tuple[str, str, int | None, str | None, str | None, dict]
 
-# Level-1 points never offered for explanation (SPEC §7b); [✓ I know this] adds more.
+# Level-1 points marked known on the first import (SPEC §7b); buttons add and remove later.
 BASICS = ("g001", "g002", "g003", "g005", "g006", "g007", "g010", "g011", "g013", "g014", "g015",
           "g016", "g019")
 
@@ -114,20 +114,24 @@ def replace(conn: psycopg.Connection, kind: str, rows: list[Row]) -> tuple[int, 
 
 def import_public(url: str | None = None, data_dir: Path = DATA_DIR) -> list[str]:
     with psycopg.connect(url or config.DATABASE_URL) as conn:
+        first = not _has(conn, "grammar")
         report = [_line(kind, replace(conn, kind, load(data_dir)))
                   for kind, load in (("grammar", grammar_rows), ("sentence", sentence_rows),
                                      ("word", word_rows))]
-        conn.execute(
-            "INSERT INTO known_grammar (item_id) SELECT id FROM item "
-            "WHERE kind = 'grammar' AND key = ANY(%s) ON CONFLICT DO NOTHING", (list(BASICS),)
-        )
+        if first:  # later, known points are the user's call
+            conn.execute(
+                "INSERT INTO known_grammar (item_id) SELECT id FROM item "
+                "WHERE kind = 'grammar' AND key = ANY(%s)", (list(BASICS),)
+            )
     return report
 
 
 def import_personal(url: str | None = None) -> list[str]:
     report = []
     with psycopg.connect(url or config.DATABASE_URL) as conn:
-        if not config.MBXWRITE_DB:
+        if _has(conn, "wish"):
+            report.append("wish: skipped (imported once already; MbxChat owns them now)")
+        elif not config.MBXWRITE_DB:
             report.append("wish: skipped (MBXWRITE_DB is not set)")
         else:
             try:
@@ -141,6 +145,10 @@ def import_personal(url: str | None = None) -> list[str]:
         else:
             report.append(_line("term", replace(conn, "term", term_rows(terms))))
     return report
+
+
+def _has(conn: psycopg.Connection, kind: str) -> bool:
+    return conn.execute("SELECT EXISTS (SELECT 1 FROM item WHERE kind = %s)", (kind,)).fetchone()[0]
 
 
 def _line(kind: str, counts: tuple[int, int]) -> str:

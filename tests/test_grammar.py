@@ -72,10 +72,12 @@ def test_grammar_cmd_several_matches_offer_a_choice(points):
     assert [row[0].callback_data[:5] for row in markup.inline_keyboard] == ["gram:", "gram:"]
 
 
-def test_grammar_cmd_skips_basics(points):
+def test_grammar_cmd_skips_basics_but_offers_to_unmark(points):
     update, context = _cmd("을/를")
     asyncio.run(bot.grammar_cmd(update, context))
-    assert "marked as known" in _reply(update)[0]
+    text, markup = _reply(update)
+    assert "marked as known" in text
+    assert markup.inline_keyboard[0][0].callback_data.startswith("unknown:")
 
 
 def test_grammar_cmd_no_match_and_no_args(points):
@@ -111,3 +113,12 @@ def test_i_know_this_marks_known_and_removes_the_button(points, db_url):
     assert grammar.get(db_url, point.id).known
     call = update.callback_query.edit_message_text.await_args
     assert "✓ Marked as known" in call.args[0] and "reply_markup" not in call.kwargs
+
+
+def test_not_known_unmarks_and_explains(points, db_url):
+    point = next(p for p in grammar.match("을/를", points) if p.known)
+    update = _tap(f"unknown:{point.id}")
+    asyncio.run(bot.on_grammar(update, MagicMock()))
+    assert not grammar.get(db_url, point.id).known
+    call = update.callback_query.edit_message_text.await_args
+    assert call.kwargs["reply_markup"].inline_keyboard[0][0].callback_data == f"known:{point.id}"

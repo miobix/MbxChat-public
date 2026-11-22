@@ -47,3 +47,5 @@
 - **`/grammar` matching is deterministic:** hyphens, digits and spaces dropped, parenthesised parts optional, the NIKL `related` column supplies the allomorphs. Exact match first, then either side of a slash, then substring. Two senses of one form (`-는데1`, `-는데2`) give a choice of buttons that edit the message in place.
 - **DB calls from handlers are sync psycopg in `asyncio.to_thread`:** psycopg's async driver cannot run on Windows' default event loop, where the tests run, and one user does not need a pool.
 - **Verified:** 52 tests; live counts match the sources (grammar 336, sentence 20, word 5543; wishes and terms match their sources, numbers kept out of the repo); a second import changes nothing; personal rows survive a bot restart.
+- **MbxWrite is a one-time source (user):** its future is open, so the data files are a fork owned here (never re-synced) and wishes import once; later runs skip them. MbxRead terms still refresh on every run.
+- **Known is reversible:** asking `/grammar` for a known point offers `[↩ Not known]`. Basics are seeded on the first import only, so an un-known basic stays un-known across restarts.

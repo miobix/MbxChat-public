@@ -5,8 +5,8 @@ to rebuild it. Public pools are committed under `data/` and loaded at bot startu
 (`mbxchat/importer.py`). Personal pools are never committed.*
 
 The public files were copied on 2026-11-22 from MbxWrite `data/` at commit `5ae386f`
-(2026-10-19). They are now maintained here; to pick up later MbxWrite edits, copy the files
-again and run the tests (`tests/test_importer.py` checks counts and refresher completeness).
+(2026-10-19), once. MbxChat owns them from then on: they are edited here and never re-synced
+from MbxWrite. `tests/test_importer.py` checks counts and refresher completeness.
 
 ## Grammar pool: `data/grammar.tsv` → `item.kind = 'grammar'`
 
@@ -56,7 +56,7 @@ Imported by `python -m mbxchat.importer` on the host, which reads the user's own
 
 | Kind | Source | Rows taken |
 |---|---|---|
-| `wish` | MbxWrite `write.db`, table `wish` (path in `MBXWRITE_DB`, opened read-only) | not archived |
+| `wish` | MbxWrite `write.db`, table `wish` (path in `MBXWRITE_DB`, opened read-only), **once**: skipped when wishes already exist | not archived |
 | `term` | MbxRead `GET /api/terms` (`MBXREAD_URL`) | status `learning` or `known` |
 
 A source that is not configured or not reachable is skipped and its existing rows are kept.

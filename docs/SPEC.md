@@ -113,7 +113,8 @@ Import everything that can be sourced; prune later. Each source gets a provenanc
 Public pools are committed under `data/` and upserted into one `item` table (kind, key, level,
 ko, en, data) at every bot start. Personal sources are imported by `python -m mbxchat.importer`,
 run on the host, which reads the user's own installs; nothing personal is committed. Each kind is
-replaced as a whole, so re-imports are idempotent and source deletions carry over.
+replaced as a whole, so re-imports are idempotent and source deletions carry over. MbxWrite is a
+one-time source: its files were copied once and its wishes import once; MbxChat owns both after.
 
 ## 6. Models and the cost router
 
@@ -187,7 +188,8 @@ Built on the NIKL grammar pool and its refreshers (explanation, 2-3 examples, re
   it expands their explainers in place (collapsible quotes).
 - **Basics are skipped:** points marked basic are never offered for explanation. Seeded with a
   short hand-picked list of level-1 particles (이/가, 은/는, 을/를, 에, 에서, 도, 와/과, 의, …)
-  that the user reviews, and grown by a `[✓ I know this]` button on any explainer. A known point
+  on the first import, then grown by a `[✓ I know this]` button on any explainer. Asking for a
+  known point offers `[↩ Not known]`, which takes it off the known pile and explains it. A known point
   that the user keeps getting wrong comes back (learner memory, unit 8).
 - Optional later: an extra example from the user's MbxRead library, if its index can find
   sentences by grammar ending.
