@@ -140,6 +140,56 @@ sentences.
   example.
 - Approve/Edit/Skip works per chunk. Shape is provisional: adjust after real use.
 
+## 7a. Commands and chat UI
+
+**Language:** menus, buttons and explanations in English; Korean content stays Korean.
+**No persistent reply keyboard:** the `/` menu plus inline buttons keep the chat clean.
+
+| Input | Does |
+|---|---|
+| `/start`, `/help` | short welcome and what you can do |
+| `/practice` | start a practice session (pings start one too) |
+| `/stop` | end the session |
+| `/pause <duration>` | mute pings for a while (`/pause 3h`) |
+| `/grammar <form>` | explainer for one grammar point (`/grammar 는데`) |
+| `/queue` | cards waiting for Anki |
+| `/stats` | streaks and weak points |
+| free text, no session | assumed to be a capture; the bot asks **"Capture this?"** `[➕ Capture] [✖ No]` first |
+| free text, in a session | an answer to grade |
+
+Routing is deterministic until unit 7 (an open session decides what free text means); the agent
+then takes over ambiguous cases, and the two are compared.
+
+**UI building blocks** (unit 1 builds them, later units reuse them):
+- **Inline keyboards edited in place:** a tapped proposal becomes its outcome ("✅ Saved") in the
+  same message, buttons removed; a short toast confirms the tap. Callback data is a short key
+  (≤ 64 bytes, Telegram's limit) pointing at state in Postgres, never the payload itself.
+- **Live progress message:** one status message edited as work advances ("Checking spelling…
+  → Grammar model… → Writing feedback…") plus the typing indicator, so slow CPU steps are
+  visible and the router's tiers show.
+- **Teaching format (HTML):** corrections as strikethrough → bold, model answers under a spoiler
+  (tap to reveal), long explanations in a collapsible quote, a 👍 reaction on correct answers.
+- **Edit flow:** ✏️ returns the draft with a copy button; the user pastes, edits, sends.
+- **`/` menu set by the bot at startup, scoped to the allowed chat**: strangers see no commands.
+- A Telegram Mini App is out of scope; reconsider for `/stats` charts.
+
+## 7b. Grammar explainer
+
+Built on the NIKL grammar pool and its refreshers (explanation, 2-3 examples, register,
+"vs X" contrast), so it needs no model call.
+
+- **`/grammar <form>`** matches the form loosely (with or without the leading `-`, either
+  allomorph: `은`, `는`, `은/는`). Several matches (the same form at two levels with different
+  senses) → inline buttons to pick one.
+- **In practice:** a prompt that targets grammar points carries a `[📖 Grammar]` button; tapping
+  it expands their explainers in place (collapsible quotes).
+- **Basics are skipped:** points marked basic are never offered for explanation. Seeded with a
+  short hand-picked list of level-1 particles (이/가, 은/는, 을/를, 에, 에서, 도, 와/과, 의, …)
+  that the user reviews, and grown by a `[✓ I know this]` button on any explainer. A known point
+  that the user keeps getting wrong comes back (learner memory, unit 8).
+- Optional later: an extra example from the user's MbxRead library, if its index can find
+  sentences by grammar ending.
+
 ## 8. Units
 
 Each unit is a branch and a PR, ends green in CI, and updates the docs.
@@ -147,11 +197,11 @@ Each unit is a branch and a PR, ends green in CI, and updates the docs.
 | # | Unit | Done when |
 |---|---|---|
 | 0 | **Scaffold:** repo, docs, CLAUDE.md, ignore allowlists, locked deps, compose with Postgres, CI (tests + image build), pins | CI green on an empty-but-real app; `docker compose up` healthy |
-| 1 | **Bot skeleton:** long polling, allowlist, `/start` `/help`, errors reported in chat, health endpoint | the bot answers the user only, survives a restart, reports a forced error |
-| 2 | **Content import:** item schema, NIKL grammar + refreshers, translations, vocab, wishes and MbxRead terms (local only), `docs/DATA.md` | counts match sources; personal rows never in the repo; re-import is idempotent |
+| 1 | **Bot skeleton + UI kit:** long polling, allowlist, `/start` `/help`, per-chat `/` menu, errors reported in chat, health endpoint, the §7a building blocks with a small demo each | the bot answers the user only, survives a restart, reports a forced error; buttons edit in place on the phone |
+| 2 | **Content import + `/grammar`:** item schema, NIKL grammar + refreshers, translations, vocab, wishes and MbxRead terms (local only), `docs/DATA.md`; the grammar explainer with basics skipped (§7b) | counts match sources; personal rows never in the repo; re-import is idempotent; `/grammar 는데` answers on the phone |
 | 3 | **Capture as a fixed workflow:** LangGraph graph draft → krdict → MbxRead usage → critic → chunks → interrupt; Pydantic outputs; Phoenix tracing on | a real capture ends in an approved chunk; every step visible in Phoenix |
 | 4 | **Anki:** chunk note type, AnkiConnect, outbox while Anki is closed, idempotent adds | approve with Anki closed, open Anki, card appears once |
-| 5 | **Practice loop:** `/practice`, pings at 10:00 13:00 17:00 21:00 (configurable), grader, resurfacing ladder (3/10/30/90 days) | a ping arrives on time, an answer gets graded, a miss comes back sooner |
+| 5 | **Practice loop:** `/practice`, `/stop`, `/pause`, pings at 10:00 13:00 17:00 21:00 (configurable), grader, resurfacing ladder (3/10/30/90 days), `[📖 Grammar]` on prompts | a ping arrives on time, an answer gets graded, a miss comes back sooner |
 | 6 | **Cost router + model eval:** rules → GEC → LLM, labeled error set, model comparison, GPU attempt (timeboxed) | eval shows quality held on the cheap path and the tier mix; model choice recorded |
 | 7 | **The agent:** tutor agent chooses tools and next drill; tools served by the MCP server; eval agent vs unit 3 workflow | agent beats or matches the workflow on the eval, with numbers on latency and calls |
 | 8 | **Learner memory:** weak points across sessions steer drills (Postgres first; Graphiti/Zep evaluated) | a repeated mistake visibly changes what practice serves |

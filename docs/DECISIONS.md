@@ -18,3 +18,11 @@
 - **Postgres image reuses MbxRead's pinned pgvector image** (Postgres 18): already vetted and pulled, and the vector extension is there if learner memory ever wants it. Actions reuse MbxRead's SHA pins (vetted 2026-11-18).
 - **Ports:** health `127.0.0.1:8005`, db `127.0.0.1:5434`.
 - **Verified:** 5 tests; image 133 MB, runs as uid 10001; compose healthy; health goes 503 when db stops and back to 200 when it returns, no traceback.
+
+## 2026-11-22 Unit 1 design: commands and chat UI
+- **English UI, Korean content; no persistent reply keyboard** (user): the `/` menu plus inline buttons keep the chat clean.
+- **Free text outside a session is assumed to be a capture, confirmed with one tap** (user): fewer accidental captures for the cost of one button.
+- **Buttons edit their own message in place** and callback data carries only a short key into Postgres: the chat reads as a record of outcomes, and Telegram's 64-byte callback limit never constrains a payload.
+- **A live progress message** covers CPU latency and makes the router's tiers visible.
+- **The `/` menu is scoped to the allowed chat**, so strangers see no commands; set from code so it cannot drift from the handlers.
+- **Grammar explainer added (user):** `/grammar <form>` and a `[📖 Grammar]` button on practice prompts, served from the NIKL pool's refreshers with no model call. Basic points (level-1 particles to start, grown by `[✓ I know this]`) are never offered. Lands with content import (unit 2) and the practice loop (unit 5).
