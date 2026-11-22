@@ -94,3 +94,16 @@ Checked, evidence first:
 - **`finish-unit` (`.claude/skills/`):** the close-a-unit sequence (tests, docs, commit, PR, CI watch, post-merge branch) ran five times in cycle 1 and slipped twice: a follow-up pushed toward an already-merged PR, and "no checks reported" read right after `gh pr create`.
 - **`hardening-pass` (user-level, `~/.claude/skills/`):** the cycle 1 pass took real re-derivation (log normalization, restore check) and returns after units 8 and 11 and in other repos. Indexed in this repo's CLAUDE.md and the user's global one.
 - **`capture-smoke` not written:** unit 4 did not need it; the user reconsiders if the pattern repeats.
+
+## 2026-11-22 Unit 5: practice loop
+- **Capture situation after `//`** (user), stored on `capture` and passed to draft, critic and chunks.
+- **Translation and grammar prompts, new items alternating; grammar rotates widely** across the pool (user). Captures feed practice directly: they are the first translation source.
+- **Wishes are not drilled** (user): the two imported wishes go through capture at the end of cycle 2, then the `wish` kind leaves the plans.
+- **Sessions close after 30 min idle** (user). A late answer to a prompt from the last 12 h is still accepted through a button on "Capture this?".
+- **Pings from a 30 s loop in the bot, not PTB's JobQueue:** JobQueue needs APScheduler (a new dependency), and the loop stores the last ping in Postgres, so a restart neither repeats nor drops one. Pings more than 30 min late are skipped. SPEC §4 updated.
+- **`PRACTICE_TZ` lives in `.env`**, not the repo; the container runs on UTC. `tzdata` was already a locked dependency.
+- **No LangGraph for practice:** grading is one call with no pause inside it.
+- **Grader field order is generation order:** with `verdict` first, gemma said "correct" while fixing the sentence; listing issues and the corrected sentence first, plus a code check (a fix forces "minor"), closes that. `natural` was renamed `model_answer` because gemma answered "very natural" instead of a sentence.
+- **Grading quality is for the unit 6 eval:** live, gemma leaves `issues` empty and explains in `note`, rewrites good answers toward the reference (so they count as minor), and graded 반말 to a boss as minor. Not tuned by feel.
+- **Reusable loop helper** `forever()` runs both background loops (Anki retry, pings): every call guarded, a repeated error logged once.
+- **Verified:** 88 tests (model faked; real Postgres). Live: grader on three real answers, 9-19 s each; pings run on the configured zone.

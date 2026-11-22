@@ -86,7 +86,7 @@ flowchart LR
 
 | Concern | Choice | Notes |
 |---|---|---|
-| Bot | `python-telegram-bot` | long polling; its JobQueue runs the scheduled pings |
+| Bot | `python-telegram-bot` | long polling; a 30 s loop in the bot runs the scheduled pings |
 | Orchestration | **LangGraph** | `interrupt()` for Approve/Edit/Skip; Postgres checkpointer, one thread per capture |
 | Structured output | Pydantic models | every model step returns a schema-validated object; invalid output is retried once, then reported |
 | Models | open models on CPU | configured in one place; see §6 |
@@ -232,6 +232,35 @@ it streams node updates into the progress message, and sends one card per interr
 `ch:<capture>:<chunk>:<action>`). ✏️ answers with a copy button; the next text the user sends
 is the edited chunk. Tracing: OpenInference's LangChain instrumentation to Phoenix
 (`127.0.0.1:6006`) when `PHOENIX_COLLECTOR_ENDPOINT` is set.
+
+**Situation:** text after `//` in a capture is the situation (`capture.situation`), shown to
+draft, critic and chunks. The reviewed polite/casual pair is stored on `capture` by `save`, as
+the practice reference.
+
+## 7d. Practice loop (unit 5)
+
+Plain code, no graph (one model call, no pause inside it).
+
+- **Session:** `/practice` or a ping opens one (Postgres `session`); it closes on `/stop`, ⏹, or
+  after 30 min without activity. While open, free text is the answer to the waiting prompt; the
+  graded reply is followed by the next prompt. Outside a session, a prompt from the last 12 h
+  can still be answered: "Capture this?" then offers `[✍️ It's my answer to the last prompt]`.
+- **Prompts** (`prompt` table, buttons `[📖 Grammar] [⏭ Skip] [⏹ Stop]`, Grammar only when the
+  prompt has a grammar point): **translate** (captures first, then the graded sentences, with
+  the reference answer when there is one) and **grammar** (a NIKL point not marked known,
+  levels 1-4 before 5-6, random among the undrilled, plus a random MbxRead term in `learning`).
+  New items alternate between the two kinds. Nothing is prompted twice within a day.
+- **Ladder** (`drill`, one row per item): due items first, oldest due first. correct → next
+  step, due in 3/10/30/90 days (90 repeats); minor → same step, same interval; wrong → step 0,
+  due tomorrow. Skip pushes a drilled item to tomorrow at the earliest.
+- **Grader:** one `gemma4:e4b` call, `Grade {issues, corrected, model_answer, note, verdict}`
+  (verdict last, so it follows the listed errors). A "correct" whose corrected sentence differs
+  (ignoring spaces and punctuation) becomes "minor". Shown as verdict, corrected sentence,
+  issues, model answer under a spoiler, the note (folded when long), 👍 on correct.
+- **Pings:** `PRACTICE_PINGS` (default 10:00, 13:00, 17:00, 21:00) in `PRACTICE_TZ`. A ping fires
+  once (the last one sent is stored in `setting`), never more than 30 min late (after
+  downtime it is skipped), and not while a session is open or `/pause` is active.
+  `/pause 3h|30m|2d`, `/pause off`, `/pause` alone shows the state.
 
 ## 8. Units
 

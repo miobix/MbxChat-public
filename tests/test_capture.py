@@ -165,6 +165,21 @@ def test_capture_button_runs_the_graph_and_sends_the_first_card(offline, graph):
     assert card.kwargs["reply_markup"].inline_keyboard[0][0].callback_data.endswith(":0:ok")
 
 
+def test_situation_after_slashes_is_stored_and_reaches_every_model_step(offline, graph, db_url, monkeypatch):
+    prompts = []
+    answers = {capture.Draft: DRAFT, capture.Review: REVIEW, capture.Chunks: CHUNKS}
+    monkeypatch.setattr(capture, "ask", lambda schema, system, user: prompts.append(user) or answers[schema])
+    context = _context(graph)
+    update, q = _tap("cap:yes")
+    q.message.reply_to_message.text = "can we push the meeting //  to my boss "
+    asyncio.run(bot.on_capture(update, context))
+    assert "📍 to my boss" in q.edit_message_text.await_args.args[0]
+    assert len(prompts) == 3 and all("Situation: to my boss" in p for p in prompts)
+    with psycopg.connect(db_url) as conn:
+        assert conn.execute("SELECT text, situation FROM capture").fetchone() == ("can we push the meeting", "to my boss")
+    assert capture.split_situation("no context") == ("no context", "")
+
+
 def test_capture_failure_is_reported_in_the_progress_message(offline, graph, monkeypatch):
     def broken(schema, system, user):
         raise capture.CaptureError("the model returned an invalid Draft twice")

@@ -63,6 +63,7 @@ class Chunks(BaseModel):
 
 class State(TypedDict, total=False):
     text: str
+    situation: str
     draft: dict
     findings: dict
     review: dict
@@ -151,8 +152,8 @@ def usage(lemma: str, sentence: str) -> list[str]:
 
 DRAFT_SYSTEM = (
     "You help an intermediate learner say things in natural, everyday Korean. The user writes what "
-    "they want to say, in English, maybe with context. Give one casual and one polite sentence that "
-    "a Korean speaker would actually say in that situation."
+    "they want to say, in English, maybe with a situation (who to, where, mood). Give one casual and "
+    "one polite sentence that a Korean speaker would actually say in that situation."
 )
 CRITIC_SYSTEM = (
     "You are a strict Korean editor. Check two learner-facing sentences for grammar, word choice, "
@@ -166,8 +167,19 @@ CHUNKS_SYSTEM = (
 )
 
 
+def split_situation(message: str) -> tuple[str, str]:
+    """'what to say // situation' → (what to say, situation)."""
+    text, _, situation = message.partition("//")
+    return text.strip(), situation.strip()
+
+
+def _meaning(state: State) -> str:
+    situation = state.get("situation")
+    return state["text"] + (f"\nSituation: {situation}" if situation else "")
+
+
 def draft(state: State) -> State:
-    return {"draft": ask(Draft, DRAFT_SYSTEM, state["text"]).model_dump()}
+    return {"draft": ask(Draft, DRAFT_SYSTEM, _meaning(state)).model_dump()}
 
 
 def lookup(state: State) -> State:
@@ -197,7 +209,7 @@ def critic(state: State) -> State:
     evidence = [f"{k}: {v}" if v else f"{k}: NOT IN THE DICTIONARY" for k, v in f["krdict"].items()]
     examples = [f"{k}: {s}" for k, hits in f["usage"].items() for s in hits]
     prompt = (
-        f"What the learner wants to say: {state['text']}\n\nCasual: {d['casual']}\nPolite: {d['polite']}"
+        f"What the learner wants to say: {_meaning(state)}\n\nCasual: {d['casual']}\nPolite: {d['polite']}"
         f"\n\nDictionary: {'; '.join(evidence) or 'all words are common'}"
         f"\nLibrary sentences using these words: {' | '.join(examples) or 'none'}"
     )
@@ -208,7 +220,7 @@ def critic(state: State) -> State:
 
 def chunks(state: State) -> State:
     r = state["review"]
-    prompt = f"Meaning: {state['text']}\n\nCasual: {r['casual']}\nPolite: {r['polite']}"
+    prompt = f"Meaning: {_meaning(state)}\n\nCasual: {r['casual']}\nPolite: {r['polite']}"
     found = [c.model_dump() for c in ask(Chunks, CHUNKS_SYSTEM, prompt).items[:3]]
     for c in found:
         c["sentence"] = full_sentence(c["sentence"], [r["polite"], r["casual"]])
@@ -233,6 +245,8 @@ def save(state: State) -> State:
         for c, d in zip(state["chunks"], state["decisions"]) if d["action"] != "skip"
     ]
     with psycopg.connect(config.DATABASE_URL) as conn:
+        r = state["review"]
+        conn.execute("UPDATE capture SET polite = %s, casual = %s WHERE id = %s", (r["polite"], r["casual"], capture_id))
         conn.cursor().executemany(
             "INSERT INTO chunk (capture_id, ko, gloss, kind, register_note, sentence) "
             "VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING", rows
@@ -253,9 +267,11 @@ def build(checkpointer):
     return g.compile(checkpointer=checkpointer)
 
 
-def new_capture(text: str) -> int:
+def new_capture(text: str, situation: str = "") -> int:
     with psycopg.connect(config.DATABASE_URL) as conn:
-        return conn.execute("INSERT INTO capture (text) VALUES (%s) RETURNING id", (text,)).fetchone()[0]
+        return conn.execute(
+            "INSERT INTO capture (text, situation) VALUES (%s, %s) RETURNING id", (text, situation)
+        ).fetchone()[0]
 
 
 def model_problem() -> str | None:
