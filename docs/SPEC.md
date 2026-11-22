@@ -3,10 +3,9 @@
 *Keep accurate. When the build deviates, change this file in the same commit and log why in
 `DECISIONS.md`.*
 
-**Built in public.** MbxChat is built in public to demonstrate agent orchestration end to end:
-a LangGraph agent with tools, human-in-the-loop interrupts, an MCP tool server, a cost router
-over local models, tracing and evals, and monitoring. It is also used daily by its author, which
-keeps the design honest.
+MbxChat is built in public as an end-to-end agent system: a LangGraph agent with tools,
+human-in-the-loop interrupts, an MCP tool server, a cost router over local models, tracing and
+evals, and monitoring. It is also used daily by its author, which keeps the design honest.
 
 ## 1. What it is
 

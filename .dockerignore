@@ -1,0 +1,6 @@
+# Allowlist: only what the image needs. Keeps .env, personal_notes and anything new out.
+*
+!requirements.txt
+!mbxchat/
+**/__pycache__/
+**/*.pyc

@@ -1,7 +1,6 @@
 # MbxChat
 
-Telegram bot for practising written Korean, built as a LangGraph agent. Built in public,
-built in public.
+Telegram bot for practising written Korean, built as a LangGraph agent. Built in public.
 
 Read `docs/STATUS.md` first every session. Also read `personal_notes/` (untracked) every
 session, if present.
