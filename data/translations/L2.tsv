@@ -1,0 +1,11 @@
+id	grammar_id	register	ko	en	glosses	added
+t057-01	g057	friend	지금 마트 가는데 뭐 필요한 거 있어?	I'm heading to the store now. Need anything?	마트=supermarket; 필요하다=to need	2026-10-19
+t057-02	g057	coworker_chat	회의가 길어졌는데 점심은 드셨어요?	The meeting ran long. Did you get to eat lunch?	회의=meeting; 길어지다=to run long; 점심=lunch	2026-10-19
+t057-03	g057	office_speech	자료는 다 준비했는데 아직 발표 연습을 못 했어요.	I've got all the materials ready, but I haven't practiced the presentation yet.	자료=materials; 준비하다=to prepare; 발표=presentation; 연습=practice	2026-10-19
+t057-04	g057	email	다음 주 회의 일정을 정하려고 하는데 가능한 시간을 알려 주시기 바랍니다.	We're setting the schedule for next week's meeting, so please let us know when you're available.	일정=schedule; 정하다=to decide, set; 가능하다=to be possible	2026-10-19
+t057-05	g057	friend	어제 그 영화 봤는데 생각보다 재밌더라.	I saw that movie yesterday, and it was better than I expected.	영화=movie; 생각보다=than expected; 재밌다=to be fun	2026-10-19
+t048-01	g048	friend	지갑에 오천 원밖에 없어.	I've only got five thousand won in my wallet.	지갑=wallet; 원=won (currency)	2026-10-19
+t048-02	g048	coworker_chat	어제 세 시간밖에 못 잤어요.	I only got three hours of sleep last night.	시간=hour; 자다=to sleep	2026-10-19
+t048-03	g048	office_speech	마감까지 이틀밖에 안 남았습니다.	There are only two days left until the deadline.	마감=deadline; 이틀=two days; 남다=to be left	2026-10-19
+t048-04	g048	email	현재 비어 있는 회의실이 한 곳밖에 없습니다.	At the moment, there's only one meeting room available.	현재=at present; 비다=to be empty; 회의실=meeting room	2026-10-19
+t048-05	g048	friend	이 노래 가사는 첫 줄밖에 몰라.	I only know the first line of this song.	가사=lyrics; 줄=line; 모르다=to not know	2026-10-19

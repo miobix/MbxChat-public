@@ -17,6 +17,17 @@ docker compose up -d --build  # bot (health on 127.0.0.1:8005) + Postgres (127.0
 curl http://127.0.0.1:8005/health
 ```
 
+## Content
+
+Public pools (NIKL grammar, refreshers, sentences, vocabulary) load at every bot start.
+Personal pools are imported on the host and stay in the local database:
+
+```sh
+MBXWRITE_DB=/path/to/MbxWrite/write.db .venv/Scripts/python -m mbxchat.importer
+```
+
+Sources and licences: [docs/DATA.md](docs/DATA.md).
+
 ## Develop
 
 Python 3.14. Dependencies are locked with hashes (`requirements*.txt`, compiled from

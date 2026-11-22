@@ -3,6 +3,10 @@ import os
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://mbxchat:mbxchat@127.0.0.1:5434/mbxchat")
 HEALTH_PORT = int(os.getenv("HEALTH_PORT", "8005"))
 
+# Personal content sources, read by `python -m mbxchat.importer` on the host.
+MBXWRITE_DB = os.getenv("MBXWRITE_DB", "").strip()
+MBXREAD_URL = os.getenv("MBXREAD_URL", "http://127.0.0.1:8002").strip()
+
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
 _user = os.getenv("TELEGRAM_ALLOWED_USER_ID", "").strip()
 TELEGRAM_ALLOWED_USER_ID = int(_user) if _user.isdigit() else None

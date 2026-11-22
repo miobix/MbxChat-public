@@ -15,7 +15,7 @@ from telegram.ext import (
     filters,
 )
 
-from mbxchat import config
+from mbxchat import config, grammar
 from mbxchat.ui import Progress, copy_button, correction, esc, fold, keyboard, spoiler
 
 log = logging.getLogger(__name__)
@@ -23,6 +23,7 @@ log = logging.getLogger(__name__)
 # The / menu is built from this list, so it can't drift from the handlers registered below.
 COMMANDS = [
     ("help", "What I can do"),
+    ("grammar", "Explain a grammar point: /grammar 는데"),
     ("demo", "Preview of the chat UI"),
 ]
 
@@ -30,7 +31,7 @@ HELP = (
     "<b>MbxChat</b>: practise writing Korean.\n\n"
     "Send me any text and I'll offer to capture it (\"how do I say…\").\n\n"
     + "\n".join(f"/{name}  {desc}" for name, desc in COMMANDS)
-    + "\n\nComing next: /grammar, /practice, /stop, /pause, /queue, /stats."
+    + "\n\nComing next: /practice, /stop, /pause, /queue, /stats."
 )
 
 
@@ -66,6 +67,57 @@ async def on_capture(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         f"➕ <i>{esc(text)}</i>\nCapturing isn't built yet; nothing was saved.",
         parse_mode=ParseMode.HTML,
     )
+
+
+MAX_CHOICES = 10
+
+
+async def grammar_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    text = " ".join(context.args or [])
+    if not text:
+        await update.message.reply_html("Which form? For example <code>/grammar 는데</code>")
+        return
+    hits = grammar.match(text, await asyncio.to_thread(grammar.load, config.DATABASE_URL))
+    fresh = [p for p in hits if not p.known]
+    if not hits:
+        await update.message.reply_html(f"No grammar point matches <b>{esc(text)}</b>.")
+    elif not fresh:
+        titles = ", ".join(esc(p.title) for p in hits)
+        await update.message.reply_html(f"{titles}: marked as known, so I skip it.")
+    elif len(fresh) == 1:
+        await update.message.reply_html(grammar.explainer(fresh[0]), reply_markup=_know_key(fresh[0]))
+    else:
+        more = f" (first {MAX_CHOICES} of {len(fresh)})" if len(fresh) > MAX_CHOICES else ""
+        await update.message.reply_html(
+            f"<b>{esc(text)}</b> matches several points{more}. Which one?",
+            reply_markup=keyboard(*([(f"{p.title} · L{p.level}", f"gram:{p.id}")] for p in fresh[:MAX_CHOICES])),
+        )
+
+
+def _know_key(p: grammar.Point):
+    return keyboard([("✓ I know this", f"known:{p.id}")])
+
+
+async def on_grammar(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    action, _, item_id = query.data.partition(":")
+    if action == "known":
+        await asyncio.to_thread(grammar.mark_known, config.DATABASE_URL, int(item_id))
+    point = await asyncio.to_thread(grammar.get, config.DATABASE_URL, int(item_id))
+    if point is None:
+        await query.answer("That point is gone; the pool was re-imported.")
+        return
+    if action == "known":
+        await query.answer("Marked as known")
+        await query.edit_message_text(
+            grammar.explainer(point) + "\n\n✓ Marked as known; I won't explain it again.",
+            parse_mode=ParseMode.HTML,
+        )
+    else:
+        await query.answer()
+        await query.edit_message_text(
+            grammar.explainer(point), parse_mode=ParseMode.HTML, reply_markup=_know_key(point)
+        )
 
 
 DEMO_DRAFT = "이번 주에 일이 산더미처럼 쌓였어요."
@@ -149,8 +201,10 @@ def build_app(token: str) -> Application:
     private = filters.ChatType.PRIVATE
     app.add_handler(CommandHandler(["start", "help"], help_cmd, filters=private))
     app.add_handler(CommandHandler("demo", demo_cmd, filters=private))
+    app.add_handler(CommandHandler("grammar", grammar_cmd, filters=private))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & private, free_text))
     app.add_handler(CallbackQueryHandler(on_capture, pattern=r"^cap:"))
     app.add_handler(CallbackQueryHandler(on_demo, pattern=r"^demo:"))
+    app.add_handler(CallbackQueryHandler(on_grammar, pattern=r"^(gram|known):\d+$"))
     app.add_error_handler(report_error)
     return app
