@@ -1,10 +1,14 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
 **Phase:** unit 3 (capture as a fixed LangGraph workflow) done: a real capture on the phone ended
-in an approved chunk and its trace is in Phoenix. PR open, the user merges. Next: unit 4 (Anki).
+in an approved chunk and its trace is in Phoenix. PR #5 open, the user merges. Next: unit 4 (Anki).
 
 ## Next
-- **Unit 4:** chunk note type, AnkiConnect, outbox while Anki is closed, idempotent adds.
+- **Unit 4:** chunk note type, AnkiConnect, outbox while Anki is closed, idempotent adds. Start
+  by checking PR #5 is merged, then branch from a freshly pulled `main`.
+- **Skill proposal, awaiting the user's call:** `capture-smoke` (`.claude/skills/`). Run after
+  any change to the capture graph or prompts: scratch DB, one real traced capture, approve the
+  first chunk, print each node's output and timing, drop the DB.
 - In BotFather, turn off "Allow Groups" (`/setjoingroups` → Disable) so the bot cannot be
   added to group chats.
 - Capture quality (critic wording, chunk choice, register slips like a polite draft without 요) is
