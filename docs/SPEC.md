@@ -106,15 +106,16 @@ Import everything that can be sourced; prune later. Each source gets a provenanc
 | MbxWrite `data/grammar.tsv` + refreshers | 336 NIKL grammar points, graded 1-6, with explanations and examples | KOGL Type 1 (attribution); refreshers are original writing |
 | MbxWrite `data/translations/` | graded sentence pairs | original writing |
 | MbxWrite / MbxRead `vocab_levels.tsv` | 5,543 NIKL learner vocabulary lemmas | per MbxRead's provenance entry |
-| MbxWrite wishes | phrases the user wanted to say | **personal: local DB only** |
+| MbxWrite wishes | phrases the user wanted to say | **personal: local DB only**; imported once (2026-11-22), no importer code remains |
 | MbxRead saved terms | words the user saved while reading | **personal: local DB only**, read through MbxRead's API |
 | krdict | definitions and example sentences | API terms; cached, paced |
 
 Public pools are committed under `data/` and upserted into one `item` table (kind, key, level,
 ko, en, data) at every bot start. Personal sources are imported by `python -m mbxchat.importer`,
 run on the host, which reads the user's own installs; nothing personal is committed. Each kind is
-replaced as a whole, so re-imports are idempotent and source deletions carry over. MbxWrite is a
-one-time source: its files were copied once and its wishes import once; MbxChat owns both after.
+replaced as a whole, so re-imports are idempotent and source deletions carry over. **Nothing reads
+MbxWrite at run time** (it will not exist in production): its files were copied once and its
+wishes imported once; MbxChat owns both.
 
 ## 6. Models and the cost router
 

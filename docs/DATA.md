@@ -52,12 +52,12 @@ homograph merge are recorded in MbxRead `docs/DECISIONS.md` (2026-07-22, Epic 13
 
 ## Personal pools (local database only, never committed)
 
-Imported by `python -m mbxchat.importer` on the host, which reads the user's own installs:
+Never committed. MbxRead terms reload with `python -m mbxchat.importer` on the host:
 
 | Kind | Source | Rows taken |
 |---|---|---|
-| `wish` | MbxWrite `write.db`, table `wish` (path in `MBXWRITE_DB`, opened read-only), **once**: skipped when wishes already exist | not archived |
+| `wish` | MbxWrite `write.db`, table `wish`, non-archived rows, imported once on 2026-11-22. The importer code was then removed: the local database is now the only copy. | - |
 | `term` | MbxRead `GET /api/terms` (`MBXREAD_URL`) | status `learning` or `known` |
 
-A source that is not configured or not reachable is skipped and its existing rows are kept.
-Tests use synthetic wishes and terms only.
+If MbxRead is unreachable the import is skipped and existing terms are kept. Tests use synthetic
+rows only.

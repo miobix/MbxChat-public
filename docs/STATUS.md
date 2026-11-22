@@ -24,8 +24,9 @@
   Tests need `docker compose up -d --wait db`. `.env` must exist (copy `.env.example`).
 - Tests: 52 passing (`.venv/Scripts/python -m pytest tests -q`), Telegram fully mocked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
-  pools via `MBXWRITE_DB=… .venv/Scripts/python -m mbxchat.importer` on the host. MbxWrite is a
-  one-time source (files copied once, wishes imported once). Provenance in `docs/DATA.md`.
+  MbxRead terms via `.venv/Scripts/python -m mbxchat.importer` on the host. Nothing reads
+  MbxWrite (gone in production): files copied once, wishes imported once, and the Postgres
+  volume is now their only copy. Provenance in `docs/DATA.md`.
   Known grammar points live in `known_grammar`; basics seeded on the first import only.
 - Sibling project MbxRead is reached at `host.docker.internal:8002`; its `.env`
   `ALLOWED_HOSTS` already includes `host.docker.internal` (set 2026-11-22).

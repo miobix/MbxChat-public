@@ -1,13 +1,12 @@
 """Load the content pools into `item` (SPEC §5; provenance in docs/DATA.md).
 
-Public pools ship in data/ and load at bot startup. Personal pools are read from the user's own
-installs by `python -m mbxchat.importer` on the host: MbxWrite wishes once only, MbxRead saved
-terms on every run. Each kind is replaced as a whole, so re-running is idempotent.
+Public pools ship in data/ and load at bot startup. MbxRead saved terms are personal and load
+with `python -m mbxchat.importer` on the host. Each kind is replaced as a whole, so re-running
+is idempotent.
 """
 import csv
 import json
 import re
-import sqlite3
 import urllib.request
 from pathlib import Path
 
@@ -78,13 +77,6 @@ def word_rows(data_dir: Path = DATA_DIR) -> list[Row]:
             for r in _tsv(data_dir / "vocab_levels.tsv")]
 
 
-def wish_rows(path: str) -> list[Row]:
-    with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as conn:
-        found = conn.execute("SELECT id, english, situation FROM wish WHERE archived_at IS NULL")
-        return [("wish", str(i), None, None, english, {"situation": situation})
-                for i, english, situation in found]
-
-
 def fetch_terms(base_url: str) -> list[dict]:
     with urllib.request.urlopen(f"{base_url.rstrip('/')}/api/terms", timeout=10) as resp:
         return json.load(resp)
@@ -127,24 +119,12 @@ def import_public(url: str | None = None, data_dir: Path = DATA_DIR) -> list[str
 
 
 def import_personal(url: str | None = None) -> list[str]:
-    report = []
+    try:
+        terms = fetch_terms(config.MBXREAD_URL)
+    except (OSError, ValueError) as e:
+        return [f"term: skipped, MbxRead unavailable ({e})"]
     with psycopg.connect(url or config.DATABASE_URL) as conn:
-        if _has(conn, "wish"):
-            report.append("wish: skipped (imported once already; MbxChat owns them now)")
-        elif not config.MBXWRITE_DB:
-            report.append("wish: skipped (MBXWRITE_DB is not set)")
-        else:
-            try:
-                report.append(_line("wish", replace(conn, "wish", wish_rows(config.MBXWRITE_DB))))
-            except sqlite3.Error as e:
-                report.append(f"wish: skipped, MbxWrite database unreadable ({e})")
-        try:
-            terms = fetch_terms(config.MBXREAD_URL)
-        except (OSError, ValueError) as e:
-            report.append(f"term: skipped, MbxRead unavailable ({e})")
-        else:
-            report.append(_line("term", replace(conn, "term", term_rows(terms))))
-    return report
+        return [_line("term", replace(conn, "term", term_rows(terms)))]
 
 
 def _has(conn: psycopg.Connection, kind: str) -> bool:

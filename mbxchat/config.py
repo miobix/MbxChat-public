@@ -3,8 +3,7 @@ import os
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://mbxchat:mbxchat@127.0.0.1:5434/mbxchat")
 HEALTH_PORT = int(os.getenv("HEALTH_PORT", "8005"))
 
-# Personal content sources, read by `python -m mbxchat.importer` on the host.
-MBXWRITE_DB = os.getenv("MBXWRITE_DB", "").strip()
+# MbxRead saved terms, read by `python -m mbxchat.importer` on the host.
 MBXREAD_URL = os.getenv("MBXREAD_URL", "http://127.0.0.1:8002").strip()
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
