@@ -77,3 +77,15 @@
 - **Own deck and note type** (`MbxChat`, `MbxChat Chunk`) rather than the user's existing `Korean` deck and `Korean Sentence` type: nothing the bot does touches cards it did not make. Both are config/constant; moving the cards later is an Anki browser job.
 - **Blank by morphemes** (kiwipiepy, already in the image): chunks are often in dictionary form (`일이 산더미처럼 쌓이다`) while the sentence is conjugated (`쌓였어요`), so a string search misses them.
 - **MbxRead example on the back deferred:** capture's usage hits are per lemma, not per chunk.
+- **Phone check (user):** approved with Anki closed, the bot said it was queued; opening Anki, the retry loop delivered it and the card appeared once.
+- **Capture context goes into unit 5 (user):** text after `//` becomes the situation, stored on `capture` and passed to draft, critic and chunks. Today context typed in the message reaches the draft step only, which is enough for a translation; unit 5 drills need the situation for register.
+
+## 2026-11-22 Cycle 1 hardening pass (units 0-4)
+Checked, evidence first:
+- **Logs:** bot clean (one start since the unit 4 deploy, no warnings); phoenix only trace POSTs; db 1186 lines, 549 of them `checkpoint starting: immediate force wait`, which is the tests' `CREATE DATABASE ... TEMPLATE` (one per test), harmless, and every service's logs rotate at 10 MB × 3. No stray test databases left behind.
+- **Long-lived state after errors:** checkpointer on a pool that replaces dead connections (unit 3); every other DB call opens its own connection; the Anki retry loop catches everything, logs a repeated error once, and stays silent while Anki is closed.
+- **Unbounded growth:** LangGraph checkpoint tables (~200 KB after a few captures) and Phoenix traces (2.7 MB) have no retention. Tiny at one user; proposed for unit 9, not done.
+- **Config drift:** schema changes are `ADD COLUMN IF NOT EXISTS` at startup, so an existing install picks them up (the unit 4 columns reached the live DB that way). The Anki note type is created once and never updated, so a template change in code does not reach it; noted in STATUS, edit it in Anki if ever needed.
+- **Pins:** images by digest, actions by SHA, Python deps with hashes, Ollama model by digest check. Nothing floating.
+- **Silent overwrite:** the term import refuses a short answer; Anki notes are only added, never updated; nothing else computes names.
+- **Found and fixed: no backups.** The Postgres volume was the only copy of the imported MbxWrite wishes and of every capture. Added MbxRead's `backup` service (nightly `pg_dump -Fc`, newest 14, same pinned image) and a README restore section. Verified: first dump written; restored into a scratch database, row counts of item, chunk, checkpoints and known_grammar match the live DB. The dumps sit on the same disk; copying them off the machine is left to the user.
