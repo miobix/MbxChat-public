@@ -85,7 +85,7 @@ def _fresh(src: str, ref: str) -> str:
 def _new_translation(conn) -> tuple[str, int] | None:
     """Captures first, then the graded sentences."""
     row = conn.execute(
-        f"SELECT 'capture' AS source, id FROM capture c WHERE {_fresh(_CAPTURE, 'c.id')} "
+        f"SELECT 'capture' AS source, id FROM capture c WHERE kind = 'sentence' AND {_fresh(_CAPTURE, 'c.id')} "
         "ORDER BY id LIMIT 1"
     ).fetchone()
     row = row or conn.execute(

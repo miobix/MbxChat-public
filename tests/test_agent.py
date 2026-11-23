@@ -1,7 +1,9 @@
 """Capture agent (SPEC §7e): a scripted model and in-process tools; graph, Postgres and krdict cache real."""
+import psycopg
 import pytest
 from langchain_core.messages import AIMessage
 from langchain_core.tools import tool
+from langgraph.types import Command
 
 from mbxchat import agent, bot, capture, config, db, krdict
 
@@ -52,13 +54,15 @@ def run(db_url, monkeypatch):
     saver = db.checkpointer(db_url)
     graph = capture.build(saver, mode="agent")
 
-    def go(replies, text="x"):
+    def go(replies, text="x", resume=None):
         llm = ScriptedLLM(replies)
         monkeypatch.setattr(agent, "_llm", lambda: llm)
         cid = capture.new_capture(text)
         cfg = {"configurable": {"thread_id": str(cid)}}
         graph.invoke({"text": text}, cfg)
-        return graph.get_state(cfg).values, llm
+        if resume:
+            graph.invoke(Command(resume={"action": resume}), cfg)
+        return graph.get_state(cfg).values | {"capture_id": cid}, llm
     yield go
     saver.conn.close()
 
@@ -75,7 +79,7 @@ def test_a_sentence_goes_through_the_unit_3_chain(run):
 def test_a_word_is_grounded_with_the_root_fallback_and_krdict_examples(run):
     state, _ = run([_call("submit_word", korean="최적화", english="optimization", examples=["최적화가 필요해요."])])
     w = state["word"]
-    assert state["kind"] == "word" and "review" not in state
+    assert state["kind"] == "word" and "review" not in state and "saved" not in state  # waits for the card tap
     assert (w["root"], w["entries"][0]["glosses"], w["examples"], w["source"]) == (
         "최적", ["optimum"], ["최적의 조건이에요."], "krdict")
     assert "not in the learners' dictionary; root <b>최적</b>: optimum" in bot._summary(state)
@@ -115,3 +119,33 @@ def test_without_the_tool_server_the_agent_still_drafts(run, monkeypatch):
                                         ("자연스럽다", "자연"), ("화", None), ("미루다", None)])
 def test_root_of(word, root):
     assert agent.root_of(word) == root
+
+
+def _word_cards(db_url):
+    with psycopg.connect(db_url) as conn:
+        return conn.execute("SELECT korean, english, dictionary, examples FROM word_card").fetchall()
+
+
+def test_an_approved_word_lands_in_the_outbox_and_stays_out_of_practice(run, db_url):
+    from mbxchat import practice
+    state, _ = run([_call("submit_word", korean="최적화", english="optimization", examples=[])], resume="ok")
+    assert state["saved"] == 1
+    assert _word_cards(db_url) == [("최적화", "optimization", "root 최적: optimum", ["최적의 조건이에요."])]
+    with psycopg.connect(db_url) as conn:
+        assert conn.execute("SELECT kind FROM capture WHERE id = %s", (state["capture_id"],)).fetchone()[0] == "word"
+        assert practice._new_translation(conn) is None or practice._new_translation(conn)[0] == "item"
+
+
+def test_a_skipped_word_saves_nothing(run, db_url):
+    state, _ = run([_call("submit_word", korean="최적화", english="optimization", examples=[])], resume="sk")
+    assert state["saved"] == 0 and _word_cards(db_url) == []
+
+
+def test_library_fragments_are_dropped_for_full_sentences(run, monkeypatch):
+    monkeypatch.setattr(config, "MBXREAD_URL", "http://mbxread")
+    monkeypatch.setattr(capture, "usage", lambda lemma, s: ["해서 어떻게 최적화를 좀 달할 수", "성능을 최적화했어요."])
+    state, _ = run([_call("submit_word", korean="최적화", english="optimization", examples=[])])
+    assert (state["word"]["examples"], state["word"]["source"]) == (["성능을 최적화했어요."], "library")
+    monkeypatch.setattr(capture, "usage", lambda lemma, s: ["어렵다 보니까 이게 최적화가 제일"])
+    state, _ = run([_call("submit_word", korean="최적화", english="optimization", examples=[])])
+    assert state["word"]["source"] == "krdict"

@@ -255,10 +255,14 @@ def build(checkpointer, mode: str | None = None):
 
         names = names[1:]
         g.add_node("agent", agent.agent)
-        g.add_node("word_lookup", agent.word_lookup)
+        for name, node in (("word_lookup", agent.word_lookup), ("word_review", agent.word_review),
+                           ("word_save", agent.word_save)):
+            g.add_node(name, node)
         g.add_edge(START, "agent")
         g.add_conditional_edges("agent", lambda s: "word_lookup" if s["kind"] == "word" else "lookup")
-        g.add_edge("word_lookup", END)
+        g.add_edge("word_lookup", "word_review")
+        g.add_edge("word_review", "word_save")
+        g.add_edge("word_save", END)
     else:
         g.add_edge(START, names[0])
     for name in names:

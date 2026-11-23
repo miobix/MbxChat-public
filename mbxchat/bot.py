@@ -109,14 +109,33 @@ async def _run(context, chat_id: int, capture_id: int, graph_input, progress: Pr
     state = await asyncio.to_thread(graph.get_state, cfg)
     if progress:
         await progress.done(_summary(state.values))
-    if state.interrupts:
+    if state.interrupts and "word" in state.interrupts[0].value:
+        await _send_word_card(context.bot, chat_id, capture_id, state.interrupts[0].value["word"])
+    elif state.interrupts:
         await _send_card(context.bot, chat_id, capture_id, state.interrupts[0].value, len(state.values["chunks"]))
+    elif progress is None and state.values.get("kind") == "word":
+        if state.values.get("saved"):
+            await context.bot.send_message(chat_id, await _word_to_anki(capture_id))
     elif progress is None:
         n = state.values.get("saved", 0)
         text = f"Done: {n} chunk{'' if n == 1 else 's'} saved."
         if n:
             text += " " + await _to_anki()
         await context.bot.send_message(chat_id, text)
+
+
+async def _word_to_anki(capture_id: int) -> str:
+    try:
+        await asyncio.to_thread(anki.push)
+    except anki.Closed:
+        pass
+    deck = config.ANKI_WORD_DECK
+    return {
+        "in": f"In Anki, deck {deck}.",
+        "duplicate": f"Already in {deck}: nothing added.",
+        "queued": "Anki is closed: the card is queued, sent once it opens.",
+        "refused": "Anki refused the card: see /queue.",
+    }[await asyncio.to_thread(anki.word_outcome, capture_id)]
 
 
 async def _to_anki() -> str:
@@ -344,11 +363,34 @@ async def _send_card(bot, chat_id: int, capture_id: int, value: dict, total: int
     )
 
 
+async def _send_word_card(bot, chat_id: int, capture_id: int, w: dict) -> None:
+    await bot.send_message(
+        chat_id, f"Save <b>{esc(w['korean'])}</b> · {esc(w['english'])} as a card?", parse_mode=ParseMode.HTML,
+        reply_markup=keyboard([("✅ Approve", f"wd:{capture_id}:ok"), ("⏭ Skip", f"wd:{capture_id}:sk")]),
+    )
+
+
+async def on_word(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    _, capture_id, action = query.data.split(":")
+    graph = context.application.bot_data["graph"]
+    state = await asyncio.to_thread(graph.get_state, {"configurable": {"thread_id": capture_id}})
+    if not (state.interrupts and "word" in state.interrupts[0].value):
+        await query.answer("Already handled")
+        await query.edit_message_reply_markup(None)
+        return
+    w = state.interrupts[0].value["word"]
+    await query.answer("Saved" if action == "ok" else None)
+    outcome = f"✅ <b>{esc(w['korean'])}</b>  {esc(w['english'])}" if action == "ok" else f"⏭ <s>{esc(w['korean'])}</s>"
+    await query.edit_message_text(outcome, parse_mode=ParseMode.HTML)
+    await _run(context, query.message.chat_id, int(capture_id), Command(resume={"action": action}))
+
+
 async def _pending(context, capture_id: int, i: int) -> dict | None:
     """The chunk awaiting a decision, if it is still chunk i of this capture."""
     graph = context.application.bot_data["graph"]
     state = await asyncio.to_thread(graph.get_state, {"configurable": {"thread_id": str(capture_id)}})
-    if state.interrupts and state.interrupts[0].value["i"] == i:
+    if state.interrupts and state.interrupts[0].value.get("i") == i:
         return state.interrupts[0].value["chunk"]
     return None
 
@@ -542,6 +584,7 @@ def build_app(token: str, graph=None) -> Application:
     app.add_handler(CallbackQueryHandler(on_late, pattern=r"^late:\d+$", block=False))
     app.add_handler(CallbackQueryHandler(on_capture, pattern=r"^cap:", block=False))  # long on CPU
     app.add_handler(CallbackQueryHandler(on_chunk, pattern=r"^ch:\d+:\d+:(ok|ed|sk)$"))
+    app.add_handler(CallbackQueryHandler(on_word, pattern=r"^wd:\d+:(ok|sk)$"))
     app.add_handler(CallbackQueryHandler(on_demo, pattern=r"^demo:"))
     app.add_handler(CallbackQueryHandler(on_grammar, pattern=r"^(gram|known|unknown):\d+$"))
     app.add_error_handler(report_error)

@@ -23,8 +23,12 @@ DECISIONS "2026-11-23 Unit 7 plan".
      directly (no capture rows): word 16 s, 1 tool call, root found, 1 krdict request; sentence
      6 s, 0 tool calls. **Library examples for 최적화 were transcript fragments** ("해서 어떻게
      최적화를 좀 달할 수"): decide in step 5 whether cards prefer krdict/model examples.
-  5. Word path: `MbxChat Word` note type, `ANKI_WORD_DECK` (default `MbxChat::Words`), outbox
-     rows on the chunk push loop, `findNotes` dedupe, `[✅ Approve] [⏭ Skip]` card.
+  5. Done: word cards. `word_lookup` → card `[✅ Approve] [⏭ Skip]` (interrupt) → `word_save`
+     into `word_card` (outbox) → Anki `MbxChat Word` in `ANKI_WORD_DECK` (default
+     `MbxChat::Words`); a word already in that deck under any note type with a Korean field is
+     marked duplicate, not added. Examples: full-sentence library hits, else krdict, else model
+     (marked). `capture.kind = 'word'` keeps word captures out of practice. Not seen live yet:
+     the phone check (step 8) is the first real card.
   6. Session routing: one structured call (answer / capture / question) before grading.
   7. Eval: agent vs workflow on the 10 side-by-side prompts + word prompts (user judges), calls
      and latency; rerun `evals/tool_calling.py` with real tools. Pick `CAPTURE_MODE` default.
@@ -54,7 +58,8 @@ DECISIONS "2026-11-23 Unit 7 plan".
 - Compose runs everything (`docker compose up -d --build`, `restart: unless-stopped`): `bot`
   (health `127.0.0.1:8005`), `db` (`127.0.0.1:5434`; 5432/5433 are taken), `phoenix`
   (`127.0.0.1:6006`, auth off, localhost only), `backup` (nightly `pg_dump` to `./backups`,
-  newest 14; restore in README). Token and allowed user ID in `.env`; missing either → exit
+  newest 14; restore in README), `mcp` (tool server on the bot's image: rebuild with plain
+  `docker compose up -d --build`, never `... bot` alone, or `mcp` keeps old code). Token and allowed user ID in `.env`; missing either → exit
   with what's missing.
 - Practice (SPEC §7d): `/practice`, `/stop`, `/pause`; pings in `PRACTICE_TZ` (set in `.env`).
   Tables `session`, `prompt`, `drill`, `setting`.
@@ -76,7 +81,7 @@ DECISIONS "2026-11-23 Unit 7 plan".
 - Evals (host only, `requirements-eval.txt`): `python -m evals.grader_eval MODEL...` (also
   `dadeum`, `<model>+dadeum`) and `python -m evals.capture_side_by_side MODEL...` (set
   `MBXREAD_URL=http://127.0.0.1:8002` in the shell for lookups). Results in `evals/results/`. Set `PYTHONUTF8=1` when output goes to a file.
-- Tests: 119 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 124 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
   MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002 .venv/Scripts/python -m mbxchat.importer`

@@ -76,6 +76,20 @@ CREATE TABLE IF NOT EXISTS setting (
 ALTER TABLE chunk ADD COLUMN IF NOT EXISTS anki_note_id bigint;
 ALTER TABLE chunk ADD COLUMN IF NOT EXISTS anki_error text;
 ALTER TABLE chunk ADD COLUMN IF NOT EXISTS uid uuid NOT NULL DEFAULT gen_random_uuid();
+ALTER TABLE capture ADD COLUMN IF NOT EXISTS kind text NOT NULL DEFAULT 'sentence';
+CREATE TABLE IF NOT EXISTS word_card (
+    id           bigserial PRIMARY KEY,
+    capture_id   bigint NOT NULL UNIQUE REFERENCES capture(id),
+    uid          uuid NOT NULL DEFAULT gen_random_uuid(),
+    korean       text NOT NULL,
+    english      text NOT NULL,
+    dictionary   text NOT NULL,
+    examples     jsonb NOT NULL,
+    anki_note_id bigint,
+    anki_error   text,
+    duplicate    boolean NOT NULL DEFAULT false,
+    created_at   timestamptz NOT NULL DEFAULT now()
+);
 CREATE TABLE IF NOT EXISTS krdict_cache (
     key     text PRIMARY KEY,
     body    text NOT NULL,

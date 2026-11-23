@@ -8,10 +8,13 @@ import json
 import logging
 import re
 
+import psycopg
 from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_ollama import ChatOllama
+from langgraph.config import get_config
+from langgraph.types import interrupt
 
 from mbxchat import capture, config, krdict
 
@@ -99,6 +102,12 @@ def agent(state: capture.State) -> capture.State:
 
 
 ROOT_SUFFIXES = ("스럽다", "하다", "되다", "화", "적")
+SENTENCE_END = re.compile(r"(다|요|까|죠|[.?!…])[\"'”’)\]]*$")
+
+
+def is_sentence(text: str) -> bool:
+    """A full sentence (it ends like one), not a transcript fragment."""
+    return len(text.strip()) >= 6 and bool(SENTENCE_END.search(text.strip()))
 
 
 def root_of(word: str) -> str | None:
@@ -110,8 +119,11 @@ def root_of(word: str) -> str | None:
 
 
 def word_lookup(state: capture.State) -> capture.State:
-    """Enforced grounding for a word: krdict (one root fallback), then examples from the library,
-    else krdict's (one more request), else the model's, marked by `source`."""
+    """Enforced grounding for a word: krdict (one root fallback), then examples: full sentences from
+    the library, else krdict's (one more request), else the model's, marked by `source`."""
+    capture_id = int(get_config()["configurable"]["thread_id"])
+    with psycopg.connect(config.DATABASE_URL) as conn:  # idempotent: keeps word captures out of practice
+        conn.execute("UPDATE capture SET kind = 'word' WHERE id = %s", (capture_id,))
     w = dict(state["word"]) | {"entries": [], "root": None, "examples": [], "source": "model"}
     notes = list(state.get("agent_notes", []))
     if krdict.enabled():
@@ -123,7 +135,7 @@ def word_lookup(state: capture.State) -> capture.State:
             notes.append(f"krdict unavailable: {e}")
     if config.MBXREAD_URL:
         try:
-            if hits := capture.usage(w["korean"], w["korean"]):
+            if hits := [h for h in capture.usage(w["korean"], w["korean"]) if is_sentence(h)]:
                 w["examples"], w["source"] = hits, "library"
         except capture.Unavailable as e:
             notes.append(f"MbxRead usage unavailable: {e}")
@@ -138,3 +150,29 @@ def word_lookup(state: capture.State) -> capture.State:
         w["examples"] = w["model_examples"]
     w["examples"] = [re.sub(r"\s+", " ", e) for e in w["examples"]][:3]
     return {"word": w, "findings": {"krdict": {}, "usage": {}, "notes": notes}}
+
+
+def word_review(state: capture.State) -> capture.State:
+    # Re-runs from the top on resume: no side effects here.
+    return {"decisions": [interrupt({"word": state["word"]})]}
+
+
+def dictionary_line(w: dict) -> str:
+    gloss = " | ".join(g for e in w["entries"] for g in e["glosses"][:1])
+    if not w["entries"]:
+        return "not in the learners' dictionary"
+    return f"root {w['root']}: {gloss}" if w["root"] else gloss
+
+
+def word_save(state: capture.State) -> capture.State:
+    if state["decisions"][0]["action"] != "ok":
+        return {"saved": 0}
+    w = state["word"]
+    capture_id = int(get_config()["configurable"]["thread_id"])
+    with psycopg.connect(config.DATABASE_URL) as conn:
+        conn.execute(
+            "INSERT INTO word_card (capture_id, korean, english, dictionary, examples) VALUES (%s, %s, %s, %s, %s) "
+            "ON CONFLICT (capture_id) DO NOTHING",
+            (capture_id, w["korean"], w["english"], dictionary_line(w), json.dumps(w["examples"], ensure_ascii=False)),
+        )
+    return {"saved": 1}

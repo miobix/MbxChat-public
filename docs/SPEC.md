@@ -293,12 +293,16 @@ tool-calling check, 20 of 20 runs valid, right path every time, 0.65 s median; n
   dictionary on 19 of 20 sentence captures and wrote its own examples for 9 of 10 words. So code
   always runs the dictionary check on the chosen word (or the drafts' rare lemmas) and fetches
   library examples when MbxRead is configured, and the agent sees the results before it submits.
-- **Word path:** `submit_word {korean, english, examples}` with 2-4 examples, library sentences
-  first, then dictionary examples, model-written ones marked as such. One card proposal,
-  `[✅ Approve] [⏭ Skip]`. Note type `MbxChat Word` (English, Korean, Examples), deck
-  `ANKI_WORD_DECK` (default `MbxChat::Words`), the same outbox and push loop as chunks. Before
-  adding, `findNotes` looks for the Korean word in that deck: found → "already in your deck",
-  nothing added. Word cards are Anki-only; practice does not use them.
+- **Word path:** `submit_word {korean, english, examples}`, then `word_lookup` (fixed), then one
+  card proposal `[✅ Approve] [⏭ Skip]` (an interrupt), then `word_save` into the `word_card`
+  outbox. Up to 3 examples, in this order (user, 2026-11-23): library hits that are **full
+  sentences** (transcript fragments are dropped), else krdict's examples of the entry (one more
+  request), else the model's, labelled "model-written, unchecked". Note type `MbxChat Word`
+  (English front; Korean, Dictionary, Examples back), deck `ANKI_WORD_DECK` (default
+  `MbxChat::Words`), pushed by the same loop as chunks, tagged `mbxchat-<uid>`. Before adding,
+  `findNotes` looks for the Korean word in that deck under any note type with a Korean field
+  (MbxRead's included): found → "Already in <deck>: nothing added". The capture is marked
+  `kind = 'word'`, so practice never prompts it; word cards are Anki-only.
 - **Sentence path:** `submit_sentence {casual, polite}` then the unit 3 nodes unchanged
   (critic → chunks → review → save), so the comparison isolates the agent's part.
 - **Session routing:** inside an open session, free text is classified first (one structured
