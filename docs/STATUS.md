@@ -56,9 +56,8 @@ bot / mcp / db / Ollama / krdict, and what each piece is for), before any new wo
 - **Hardening proposals, not done:** retention for LangGraph checkpoint tables, Phoenix traces
   and `krdict_cache` (all small; revisit at unit 9). Backups sit on the same disk as the
   database; copying them off the machine is the user's call.
-- **Skill proposals, on hold:** `capture-smoke` (scratch-DB traced capture); `eval-in-container`
-  (one-off container on the compose network with `evals/` mounted, see Facts). Skills in use:
-  CLAUDE.md, "Skills".
+- **Skill proposal, on hold:** `capture-smoke` (scratch-DB traced capture). Skills in use:
+  CLAUDE.md, "Skills" (`eval-in-container` added 2026-11-23).
 
 ## Facts
 - Remote: `miobix/MbxChat`, private. Rulesets are not enforced on private repos on GitHub Free,
