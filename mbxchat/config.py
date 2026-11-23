@@ -4,8 +4,10 @@ from datetime import time
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://mbxchat:mbxchat@127.0.0.1:5434/mbxchat")
 HEALTH_PORT = int(os.getenv("HEALTH_PORT", "8005"))
 
-# Optional MbxRead (library examples, krdict relay until unit 7, saved terms). Empty = off.
+# Optional MbxRead (library examples, saved terms). Empty = off.
 MBXREAD_URL = os.getenv("MBXREAD_URL", "").strip()
+# krdict Open API key (free, krdict.korean.go.kr). Empty = no dictionary checks.
+KRDICT_API_KEY = os.getenv("KRDICT_API_KEY", "").strip()
 
 # Capture model (SPEC §6, §7c). The ID is Ollama's digest prefix, checked at startup.
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434").strip()

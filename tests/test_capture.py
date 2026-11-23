@@ -6,7 +6,10 @@ import pytest
 from langchain_core.exceptions import OutputParserException
 from langgraph.types import Command
 
-from mbxchat import bot, capture, db, importer
+from mbxchat import bot, capture, db, importer, krdict
+
+KRDICT_GLOSS = ("<channel><item><word>w</word><target_code>1</target_code>"
+                "<sense><translation><trans_word>gloss</trans_word></translation></sense></item></channel>")
 
 DRAFT = capture.Draft(casual="회의가 다음 주로 미뤄졌어.", polite="회의가 다음 주로 미뤄졌어요.", note="미뤄지다 = be pushed back")
 REVIEW = capture.Review(casual=DRAFT.casual, polite=DRAFT.polite, issues=[])
@@ -24,14 +27,20 @@ def offline(db_url, monkeypatch):
     importer.import_public()
     answers = {capture.Draft: DRAFT, capture.Review: REVIEW, capture.Chunks: CHUNKS}
     monkeypatch.setattr(capture, "ask", lambda schema, system, user: answers[schema])
-    monkeypatch.setattr(capture, "KRDICT_GAP", 0)
     monkeypatch.setattr(capture.config, "MBXREAD_URL", "http://mbxread")
+    monkeypatch.setattr(capture.config, "KRDICT_API_KEY", "test-key")
+    monkeypatch.setattr(krdict, "GAP", 0)
     calls = []
+
+    def fetch(url):
+        calls.append(url)
+        return KRDICT_GLOSS
 
     def mbxread(path, body=None, timeout=20):
         calls.append(path)
-        return {"hits": [{"text": "예문입니다."}]} if body else [{"definitions": [{"en_word": "gloss"}]}]
+        return {"hits": [{"text": "예문입니다."}]}
 
+    monkeypatch.setattr(krdict, "_fetch", fetch)
     monkeypatch.setattr(capture, "_mbxread", mbxread)
     return calls
 
@@ -94,16 +103,20 @@ def test_lookup_checks_krdict_only_beyond_the_nikl_pool(offline, db_url):
 def test_lookup_stops_at_the_first_krdict_failure_and_carries_on(offline, monkeypatch):
     calls = []
 
-    def down(path, body=None, timeout=20):
-        calls.append(path)
-        raise capture.Unavailable("HTTP 503: krdict paused")
+    def down(url):
+        calls.append(url)
+        raise OSError("HTTP 503")
 
-    monkeypatch.setattr(capture, "_mbxread", down)
+    def mbxread_down(path, body=None, timeout=20):
+        raise capture.Unavailable("HTTP 502")
+
+    monkeypatch.setattr(krdict, "_fetch", down)
+    monkeypatch.setattr(capture, "_mbxread", mbxread_down)
     monkeypatch.setattr(capture, "content_lemmas", lambda text: ["뷁뷁", "꿹꿹", "쀍쀍"])
     findings = capture.lookup({"draft": {"casual": "", "polite": ""}})["findings"]
-    assert sum(c.startswith("/api/dict") for c in calls) == 1
-    assert findings["notes"] == ["krdict unavailable: HTTP 503: krdict paused",
-                                 "MbxRead usage unavailable: HTTP 503: krdict paused"]
+    assert len(calls) == 1
+    assert findings["notes"] == ["krdict unavailable: krdict request failed (HTTP 503); paused for 30 min",
+                                 "MbxRead usage unavailable: HTTP 502"]
 
 
 class _FlakyLLM:
@@ -221,19 +234,19 @@ def test_a_stale_button_is_already_handled(offline, graph):
     q.answer.assert_awaited_with("Already handled")
 
 
-def test_lookup_without_mbxread_calls_nothing_and_notes_nothing(offline, monkeypatch):
+def test_lookup_without_mbxread_or_krdict_key_calls_nothing_and_notes_nothing(offline, monkeypatch):
     monkeypatch.setattr(capture.config, "MBXREAD_URL", "")
+    monkeypatch.setattr(capture.config, "KRDICT_API_KEY", "")
     monkeypatch.setattr(capture, "content_lemmas", lambda text: ["뷁뷁"])
     findings = capture.lookup({"draft": {"casual": "", "polite": ""}})["findings"]
     assert offline == [] and findings == {"krdict": {}, "usage": {}, "notes": []}
 
 
 def test_krdict_glosses_cover_homographs(monkeypatch):
-    monkeypatch.setattr(capture, "KRDICT_GAP", 0)
-    entries = [{"definitions": [{"en_word": "boost"}]}, {"definitions": [{"en_word": "earlier"}]}]
-    monkeypatch.setattr(capture, "_mbxread", lambda path: entries)
-    assert capture.krdict_gloss("진작") == "boost | earlier"
-    monkeypatch.setattr(capture, "_mbxread", lambda path: [])
+    entries = [{"glosses": ["boost"]}, {"glosses": []}, {"glosses": ["earlier", "sooner"]}]
+    monkeypatch.setattr(krdict, "search", lambda word: entries)
+    assert capture.krdict_gloss("진작") == "boost | ? | earlier"
+    monkeypatch.setattr(krdict, "search", lambda word: [])
     assert capture.krdict_gloss("뷁") is None
 
 

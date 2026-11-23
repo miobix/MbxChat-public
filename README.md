@@ -18,8 +18,9 @@ curl http://127.0.0.1:8005/health
 ```
 
 Captures need an Ollama on :11434 with `gemma4:e4b`. MbxRead (a sibling project) is optional:
-set `MBXREAD_URL` in `.env` and captures use its library examples (and, until unit 7, its
-krdict relay); leave it unset and those features are off. Traces: Phoenix at http://127.0.0.1:6006.
+set `MBXREAD_URL` in `.env` and captures use its library examples; leave it unset and they are
+off. Dictionary checks need a free krdict key (`KRDICT_API_KEY`). Traces: Phoenix at
+http://127.0.0.1:6006.
 
 ## Backups and moving machines
 

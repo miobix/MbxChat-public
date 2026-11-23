@@ -76,6 +76,11 @@ CREATE TABLE IF NOT EXISTS setting (
 ALTER TABLE chunk ADD COLUMN IF NOT EXISTS anki_note_id bigint;
 ALTER TABLE chunk ADD COLUMN IF NOT EXISTS anki_error text;
 ALTER TABLE chunk ADD COLUMN IF NOT EXISTS uid uuid NOT NULL DEFAULT gen_random_uuid();
+CREATE TABLE IF NOT EXISTS krdict_cache (
+    key     text PRIMARY KEY,
+    body    text NOT NULL,
+    created timestamptz NOT NULL DEFAULT now()
+);
 CREATE TABLE IF NOT EXISTS known_grammar (
     item_id bigint PRIMARY KEY REFERENCES item(id) ON DELETE CASCADE,
     since   timestamptz NOT NULL DEFAULT now()

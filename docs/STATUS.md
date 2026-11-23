@@ -7,8 +7,10 @@ DECISIONS "2026-11-23 Unit 7 plan".
 - **Unit 7 build order** (each step tested before the next):
   1. Done: `MBXREAD_URL` opt-in (empty default = no MbxRead calls, no notes; importer says
      "skipped, MBXREAD_URL not set"). The author's `.env` sets it; live bot reaches MbxRead.
-  2. Own krdict client: paced 1 request / 3 s, cached in Postgres, stop at the first failure.
-     Needs a krdict Open API key from the user (`KRDICT_API_KEY` in `.env`).
+  2. Own krdict client `mbxchat/krdict.py`: built and tested offline (cache table
+     `krdict_cache`, 3 s gap, 30 min pause after a failure stored in `setting`, survives
+     restarts). `search` = 1 request, `examples` = 1 more, only when needed. **Waiting on the
+     user's `KRDICT_API_KEY` in `.env`** (MbxRead's key can be reused); then one live request.
   3. `mcp` service: read-only tools `krdict_lookup`, `library_examples` (only with
      `MBXREAD_URL`), `known_items`; the bot loads them through LangChain's MCP adapters. Pin it.
   4. Capture agent behind `CAPTURE_MODE` (default `workflow`): kind + Korean by the agent,
@@ -54,8 +56,8 @@ DECISIONS "2026-11-23 Unit 7 plan".
   disabled in BotFather. `/demo` is a UI preview; remove it once real flows replace it.
 - Capture (SPEC §7c): ➕ runs draft → lookup → critic → chunks (~10 s on GPU), then one card
   per chunk; approved and edited chunks land in `chunk`. A pending ✏️ edit lives in memory (a
-  restart forgets it). Uses MbxRead when `MBXREAD_URL` is set (krdict via `/api/dict` until
-  unit 7, `/api/usage`); MbxRead's Ollama :11434 (`gemma4:e4b`, ID `dc35e8d9c606`, checked at
+  restart forgets it). Uses MbxRead when `MBXREAD_URL` is set (`/api/usage`); krdict through
+  MbxChat's own client when `KRDICT_API_KEY` is set; MbxRead's Ollama :11434 (`gemma4:e4b`, ID `dc35e8d9c606`, checked at
   startup with a warning; on GPU since the Docker Desktop update; the only model kept after 6b).
 - Anki (SPEC §7): deck `MbxChat`, note type `MbxChat Chunk` (created once; template changes in
   code do not reach an existing note type), AnkiConnect at `host.docker.internal:8765`. `chunk`
@@ -65,7 +67,7 @@ DECISIONS "2026-11-23 Unit 7 plan".
 - Evals (host only, `requirements-eval.txt`): `python -m evals.grader_eval MODEL...` (also
   `dadeum`, `<model>+dadeum`) and `python -m evals.capture_side_by_side MODEL...` (set
   `MBXREAD_URL=http://127.0.0.1:8002` in the shell for lookups). Results in `evals/results/`. Set `PYTHONUTF8=1` when output goes to a file.
-- Tests: 95 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 101 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
   MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002 .venv/Scripts/python -m mbxchat.importer`
