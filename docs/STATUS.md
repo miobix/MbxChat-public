@@ -28,11 +28,11 @@
   4. Router: reference match → correct with no call (done, tested). Live: 0 of 5 answers with a
      reference matched exactly; the set has 0 hits.
   5. Capture side-by-side: `evals/capture_side_by_side.py` ready, not run (needs MbxRead :8002).
-  6. GPU (timeboxed): MbxRead-public's Ollama container has the NVIDIA reservation and CUDA
-     libs, host driver 610.88, yet discovery reports CPU only. **User approved:** once Qwen is
-     done, restart it with `OLLAMA_DEBUG=1` via a scratch compose override (`docker compose -f
-     compose.yaml -f <override> up -d ollama` in the MbxRead checkout, never edit its
-     compose), read why the GPU is missed, report, then restart it plain. Latency reruns after.
+  6. GPU: done. Ollama hit `cuInit failed: 500` ("named symbol not found"): Docker Desktop's
+     packaged `libcuda.so.1` was older than the Windows driver (610.88). Updating Docker Desktop
+     (4.99.0) fixed it; no compose change. gemma warm: 159-192 tok/s (CPU ~9). Latency rerun of
+     all five models on GPU started 2026-11-23 (summaries append to `grader_summary.jsonl`).
+     Record in DECISIONS with 6b.
   7. Pick grader + capture models, record in DECISIONS, `ollama rm` losers and Olala.
 - **Later, not now (user):** move the benchmark core (grader set + harness + results log) into
   a standalone project, run once a month against new model versions. Spec it as its own project.
