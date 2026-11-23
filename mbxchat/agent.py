@@ -3,6 +3,7 @@
 Grounding is not the agent's choice: after it submits, capture's `lookup` (sentence) or
 `word_lookup` (word) always runs. Here the model may use the tools to choose its Korean.
 """
+import ast
 import asyncio
 import json
 import logging
@@ -54,6 +55,19 @@ async def _mcp_tools() -> list:
     return await MultiServerMCPClient({"mbxchat": {"transport": "streamable_http", "url": config.MCP_URL}}).get_tools()
 
 
+def text_call(content: str, names) -> dict | None:
+    """A tool call the model wrote as text, `submit_sentence(casual="…", polite="…")`, if it parses
+    cleanly with literal arguments; small models do this instead of a structured call."""
+    try:
+        node = ast.parse(content.strip().strip("`").strip(), mode="eval").body
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in names and not node.args:
+            return {"name": node.func.id, "args": {k.arg: ast.literal_eval(k.value) for k in node.keywords},
+                    "id": "text-call"}
+    except (SyntaxError, ValueError):
+        pass
+    return None
+
+
 async def _run(meaning: str) -> dict:
     notes: list[str] = []
     try:
@@ -68,10 +82,12 @@ async def _run(meaning: str) -> dict:
     for _ in range(MAX_STEPS):
         reply = await llm.ainvoke(msgs)
         msgs.append(reply)
-        if not reply.tool_calls:
-            msgs.append(HumanMessage("Finish now with submit_word or submit_sentence."))
+        wanted = reply.tool_calls or [c for c in [text_call(reply.content, by_name)] if c]
+        if not wanted:
+            msgs.append(HumanMessage(f"Call submit_word or submit_sentence now, as a tool call, with your "
+                                     f"Korean for: {meaning}"))
             continue
-        for c in reply.tool_calls:
+        for c in wanted:
             if c["name"] in ("submit_word", "submit_sentence"):
                 try:
                     by_name[c["name"]].args_schema.model_validate(c["args"])
@@ -105,6 +121,11 @@ ROOT_SUFFIXES = ("스럽다", "하다", "되다", "화", "적")
 SENTENCE_END = re.compile(r"(다|요|까|죠|[.?!…])[\"'”’)\]]*$")
 
 
+def stem(word: str) -> str:
+    """The part every form keeps: 미루다 → 미루, 최적화 → 최적화."""
+    return word[:-1] if word.endswith("다") and len(word) > 2 else word
+
+
 def is_sentence(text: str) -> bool:
     """A full sentence (it ends like one), not a transcript fragment."""
     return len(text.strip()) >= 6 and bool(SENTENCE_END.search(text.strip()))
@@ -135,19 +156,20 @@ def word_lookup(state: capture.State) -> capture.State:
             notes.append(f"krdict unavailable: {e}")
     if config.MBXREAD_URL:
         try:
-            if hits := [h for h in capture.usage(w["korean"], w["korean"]) if is_sentence(h)]:
+            if hits := [h for h in capture.usage(w["korean"], w["korean"]) if is_sentence(h) and stem(w["korean"]) in h]:
                 w["examples"], w["source"] = hits, "library"
         except capture.Unavailable as e:
             notes.append(f"MbxRead usage unavailable: {e}")
     exact = [e for e in w["entries"] if e["word"] == (w["root"] or w["korean"])]
     if not w["examples"] and exact:
         try:
-            if found := krdict.examples(exact[0]["target_code"], 3):
+            # the entry page also carries examples of related entries: keep the ones using the word
+            if found := [e for e in krdict.examples(exact[0]["target_code"], 8) if stem(w["root"] or w["korean"]) in e]:
                 w["examples"], w["source"] = found, "krdict"
         except krdict.Unavailable as e:
             notes.append(f"krdict unavailable: {e}")
-    if not w["examples"]:
-        w["examples"] = w["model_examples"]
+    if not w["examples"]:  # model examples that use another word (데드라인 card, 마감일 examples) are dropped
+        w["examples"] = [e for e in w["model_examples"] if stem(w["korean"]) in e]
     w["examples"] = [re.sub(r"\s+", " ", e) for e in w["examples"]][:3]
     return {"word": w, "findings": {"krdict": {}, "usage": {}, "notes": notes}}
 

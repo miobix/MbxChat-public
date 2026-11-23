@@ -94,7 +94,7 @@ def test_a_word_nowhere_keeps_the_model_examples_marked(run, monkeypatch):
 
 def test_an_answer_in_text_is_nudged_then_an_unfinished_agent_fails(run):
     state, llm = run([AIMessage("최적화"), _call("submit_word", korean="최적화", english="opt", examples=[])])
-    assert state["kind"] == "word" and "Finish now" in llm.seen[1][-1].content
+    assert state["kind"] == "word" and "Call submit_word or submit_sentence now" in llm.seen[1][-1].content
     with pytest.raises(capture.CaptureError, match="did not finish"):
         run([])
 
@@ -149,3 +149,22 @@ def test_library_fragments_are_dropped_for_full_sentences(run, monkeypatch):
     monkeypatch.setattr(capture, "usage", lambda lemma, s: ["어렵다 보니까 이게 최적화가 제일"])
     state, _ = run([_call("submit_word", korean="최적화", english="optimization", examples=[])])
     assert state["word"]["source"] == "krdict"
+
+
+def test_a_tool_call_written_as_text_is_accepted(run):
+    state, llm = run([AIMessage('submit_sentence(casual="나 너무 매워", note="", polite="저 너무 매워요")')])
+    assert state["draft"] == {"casual": "나 너무 매워", "polite": "저 너무 매워요", "note": ""} and len(llm.seen) == 1
+
+
+@pytest.mark.parametrize("content", ["submit_sentence(casual=x)", "print('hi')", "submit_word('최적화')", "just text"])
+def test_text_that_is_not_a_clean_call_is_not_one(content):
+    assert agent.text_call(content, {"submit_word": 1, "submit_sentence": 1}) is None
+
+
+def test_examples_must_use_the_word(run, monkeypatch):
+    monkeypatch.setattr(krdict, "examples", lambda code, k=4: ["이번 발표를 누구에게 맡겨야 할지 모르겠습니다.", "최적의 조건이에요."])
+    state, _ = run([_call("submit_word", korean="최적화", english="optimization", examples=[])])
+    assert state["word"]["examples"] == ["최적의 조건이에요."]
+    monkeypatch.setattr(krdict, "search", lambda word: [])
+    state, _ = run([_call("submit_word", korean="데드라인", english="deadline", examples=["마감일이 언제야?"])])
+    assert state["word"]["examples"] == []
