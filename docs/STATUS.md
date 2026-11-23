@@ -1,6 +1,6 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 6a (eval groundwork) merged. Unit 6b on `unit-6b-eval`: LLM and dadeum runs done, hints test next.
+**Phase:** unit 6a (eval groundwork) merged. Unit 6b on `unit-6b-eval`: grader runs done, capture side-by-side next.
 
 ## Next
 - **Shortlisted models pulled into MbxRead's Ollama** (2026-11-22; Q4_K_M where offered, else the
@@ -22,8 +22,10 @@
      corrections / 1.4 s median; Nemotron 43/0/48/7.0 s; Mi:dm 37/1/38/0.8 s; Qwen 38/8/32/2.1 s
      (1 failure); A.X 35/9/36/1.6 s. Leading grader candidate: gemma.
   3. dadeum done: 0 false alarms, but it edits only 6 of the 48 answers with errors (missed 42);
-     24 corrections right (18 of them unchanged correct answers); ~0.05 s per answer. Next: gemma
-     with dadeum hints vs without. Run the harness with `PYTHONUTF8=1` when output goes to a file
+     24 corrections right (18 of them unchanged correct answers); ~0.05 s per answer. Hints test
+     done (`gemma4:e4b+dadeum`, dadeum's edit as a hint line in `grade()`): 40 verdicts / 2 false
+     alarms / 8 missed / 53 corrections vs gemma alone 43/2/9/52. No gain (within run-to-run
+     noise); dadeum not adopted. Run the harness with `PYTHONUTF8=1` when output goes to a file
      (Phoenix prints emoji; cp949 crashes).
   4. Router: reference match → correct with no call (done, tested). Live: 0 of 5 answers with a
      reference matched exactly; the set has 0 hits.
@@ -73,7 +75,7 @@
   is the outbox; retried every 60 s.
 - Errors: reported in the chat, except Telegram network errors (logged; polling retries alone).
   `httpx` logging is held at WARNING because request URLs contain the token.
-- Tests: 90 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 93 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
   MbxRead terms via `.venv/Scripts/python -m mbxchat.importer` on the host (refuses an answer

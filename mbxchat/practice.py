@@ -183,6 +183,8 @@ def grade(p: dict, answer: str, model: str | None = None) -> Grade:
     lines += [f"Register: {p['register']}"] * bool(p["register"])
     lines += [f"Reference answer: {p['reference']}"] * bool(p["reference"])
     lines.append(f"Learner's answer: {answer}")
+    if p.get("hint"):
+        lines.append(f"A spelling checker suggests: {p['hint']} (it can be wrong, and misses many errors)")
     g = ask(Grade, GRADER_SYSTEM, "\n".join(lines), model or config.GRADER_MODEL)
     g.issues = [i for i in g.issues if "→" in i]
     if g.verdict == "correct" and (g.issues or bare(g.corrected) != bare(answer)):

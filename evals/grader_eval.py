@@ -1,6 +1,7 @@
 """Grader eval (SPEC §9): the proofread set against Ollama models, each run a Phoenix experiment.
 
 Host only, eval deps installed: .venv/Scripts/python -m evals.grader_eval MODEL [MODEL ...]
+MODEL is an Ollama model, `dadeum`, or `<ollama model>+dadeum` (dadeum's edit as a hint).
 """
 import hashlib
 import json
@@ -94,7 +95,17 @@ def run(model: str, items: list[dict], client, dataset) -> dict:
 
     by_id = {i["id"]: i for i in items}
     outs = {}
-    fn = dadeum() if model == "dadeum" else lambda i: grade(prompt(i), i["answer"], model).model_dump()
+    if model == "dadeum":
+        fn = dadeum()
+    elif model.endswith("+dadeum"):  # dadeum's edit, when it makes one, goes in as a hint
+        fix = dadeum()
+
+        def fn(i):
+            hint = fix(i)["corrected"]
+            p = prompt(i) | {"hint": hint if hint != i["answer"] else None}
+            return grade(p, i["answer"], model.removesuffix("+dadeum")).model_dump()
+    else:
+        fn = lambda i: grade(prompt(i), i["answer"], model).model_dump()
     fn(items[0])  # load the model outside the timings
 
     def task(input):
