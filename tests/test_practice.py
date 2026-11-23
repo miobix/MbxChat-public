@@ -204,6 +204,7 @@ def test_korean_is_an_answer_without_a_model_call(monkeypatch):
     p = {"kind": "sentence", "en": "I'm late"}
     assert practice.route(p, "저 늦었어요.") == "answer"
     assert practice.route(p, "제가 late 했어요") == "answer"  # mostly Hangul
+    assert practice.route(p, "최적화") == "capture"  # a single Korean word: heard somewhere, to capture
 
 
 def test_other_text_is_classified_by_the_model(monkeypatch):

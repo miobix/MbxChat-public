@@ -32,7 +32,9 @@ DECISIONS "2026-11-23 Unit 7 plan".
   6. Done: session routing (`practice.route`, all capture modes). Mostly-Hangul = answer, no
      call; else one call. Non-answers get `[➕ Capture] [💬 Answer it]` + `[✍️ Grade it as my
      answer]`, ordered by the guess. Live: 5 messages, 1 miss (a capture guessed as question),
-     0.2-0.3 s per call warm; "Answer it" 0.5 s.
+     0.2-0.3 s per call warm; "Answer it" 0.5 s. Convention (user): in a session, Korean
+     phrases are answers, captures and questions are English; a single Korean word (no space)
+     is offered for capture, no call. A Korean question would be graded (by design).
   7. Eval: agent vs workflow on the 10 side-by-side prompts + word prompts (user judges), calls
      and latency; rerun `evals/tool_calling.py` with real tools. Pick `CAPTURE_MODE` default.
   8. Phone check, docs, PR.
@@ -84,7 +86,7 @@ DECISIONS "2026-11-23 Unit 7 plan".
 - Evals (host only, `requirements-eval.txt`): `python -m evals.grader_eval MODEL...` (also
   `dadeum`, `<model>+dadeum`) and `python -m evals.capture_side_by_side MODEL...` (set
   `MBXREAD_URL=http://127.0.0.1:8002` in the shell for lookups). Results in `evals/results/`. Set `PYTHONUTF8=1` when output goes to a file.
-- Tests: 129 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 130 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
   MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002 .venv/Scripts/python -m mbxchat.importer`

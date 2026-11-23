@@ -306,7 +306,9 @@ tool-calling check, 20 of 20 runs valid, right path every time, 0.65 s median; n
 - **Sentence path:** `submit_sentence {casual, polite}` then the unit 3 nodes unchanged
   (critic → chunks → review → save), so the comparison isolates the agent's part.
 - **Session routing** (all modes, `practice.route`): inside an open session, mostly-Hangul text
-  is an answer and is graded with no extra call (answers are Korean). Anything else gets one
+  is an answer and is graded with no extra call (answers are Korean; phrases to capture are
+  English, and questions are asked in English, user 2026-11-23). A single Korean word (no
+  space) is a word heard somewhere: offered with `[➕ Capture]` first, no call. Anything else gets one
   structured call (answer / capture / question). Anything not an answer is offered, never run:
   `[➕ Capture] [💬 Answer it]` (the guess only orders them and picks the wording) and
   `[✍️ Grade it as my answer]`. "Answer it" is one model call (`practice.explain`), told not to

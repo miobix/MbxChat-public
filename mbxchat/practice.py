@@ -217,10 +217,11 @@ EXPLAIN_SYSTEM = (
 
 
 def route(p: dict, text: str) -> str:
-    """'answer' / 'capture' / 'question'. Mostly-Hangul text is an answer with no model call."""
+    """'answer' / 'capture' / 'question'. Mostly-Hangul text is an answer with no model call (captures
+    are English phrases), except a single Korean word: a word heard somewhere, to capture."""
     letters = [c for c in text if c.isalpha()]
     if letters and sum("가" <= c <= "힣" for c in letters) / len(letters) >= 0.5:
-        return "answer"
+        return "capture" if len(text.split()) == 1 else "answer"
     return ask(Route, ROUTE_SYSTEM, f"Current task: {task(p)}\nMessage: {text}").kind
 
 
