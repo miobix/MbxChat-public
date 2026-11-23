@@ -59,7 +59,7 @@ async def free_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
     session = await asyncio.to_thread(practice.current_session)
     if session and (p := await asyncio.to_thread(practice.waiting, session)):
-        await _answer(context, update.message, p)
+        await _route(context, update.message, p)
         return
     rows = [[("➕ Capture", "cap:yes"), ("✖ No", "cap:no")]]
     if not session and (late := await asyncio.to_thread(practice.waiting, None)):
@@ -252,6 +252,45 @@ async def _answer(context, message, p: dict, late: bool = False) -> None:
     session = await asyncio.to_thread(practice.open_session if late else practice.current_session)
     if session:
         await _send_prompt(context.bot, message.chat_id, session)
+
+
+ROUTE_TEXT = {"capture": "Looks like something to capture.", "question": "Looks like a question."}
+
+
+async def _route(context, message, p: dict) -> None:
+    """Grade an answer; offer capture or an explanation for anything else, never run unasked."""
+    try:
+        kind = await asyncio.to_thread(practice.route, p, message.text)
+    except Exception:
+        log.exception("routing failed; grading as an answer")
+        kind = "answer"
+    if kind == "answer":
+        await _answer(context, message, p)
+        return
+    # The guess only orders the buttons: a wrong one costs a tap, never a wrong action.
+    capture_, ask = ("➕ Capture", "cap:yes"), ("💬 Answer it", f"ask:{p['id']}")
+    first = [capture_, ask] if kind == "capture" else [ask, capture_]
+    rows = [first, [("✍️ Grade it as my answer", f"late:{p['id']}")]]
+    await message.reply_html(ROUTE_TEXT[kind], reply_markup=keyboard(*rows), do_quote=True)
+
+
+async def on_ask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    p = await asyncio.to_thread(practice.get_prompt, int(query.data.removeprefix("ask:")))
+    original = query.message.reply_to_message
+    if p is None or original is None:
+        await query.answer("Already handled")
+        await query.message.delete()
+        return
+    await query.answer()
+    await query.edit_message_text("💬 Thinking…")
+    try:
+        text = await asyncio.to_thread(practice.explain, p, original.text)
+    except Exception as e:
+        log.exception("explaining failed")
+        text = f"⚠️ Could not answer: {type(e).__name__}: {str(e)[:200]}"
+    waiting = "" if p["answered_at"] or p["skipped"] else "\n\n<i>The prompt above is still waiting for your answer.</i>"
+    await query.edit_message_text(esc(text) + waiting, parse_mode=ParseMode.HTML)
 
 
 async def practice_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -582,6 +621,7 @@ def build_app(token: str, graph=None) -> Application:
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & private, free_text, block=False))  # grading
     app.add_handler(CallbackQueryHandler(on_prompt, pattern=r"^pr:\d+:(sk|st|gr)$"))
     app.add_handler(CallbackQueryHandler(on_late, pattern=r"^late:\d+$", block=False))
+    app.add_handler(CallbackQueryHandler(on_ask, pattern=r"^ask:\d+$", block=False))
     app.add_handler(CallbackQueryHandler(on_capture, pattern=r"^cap:", block=False))  # long on CPU
     app.add_handler(CallbackQueryHandler(on_chunk, pattern=r"^ch:\d+:\d+:(ok|ed|sk)$"))
     app.add_handler(CallbackQueryHandler(on_word, pattern=r"^wd:\d+:(ok|sk)$"))

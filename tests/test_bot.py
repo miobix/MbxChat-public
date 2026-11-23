@@ -122,7 +122,7 @@ def test_menu_is_cleared_globally_and_set_for_the_allowed_chat_only():
 def test_build_app_registers_handlers_without_network():
     app = bot.build_app("123:fake")
     assert [type(h).__name__ for h in app.handlers[-1]] == ["TypeHandler"]  # gate runs first
-    assert len(app.handlers[0]) == 15
+    assert len(app.handlers[0]) == 16
     assert app.error_handlers
 
 

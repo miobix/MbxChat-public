@@ -196,6 +196,38 @@ def bare(s: str) -> str:
     return re.sub(r"[\s.?!,]", "", s)
 
 
+# --- routing free text in a session (SPEC §7e) --------------------------------------------------
+
+class Route(BaseModel):
+    kind: Literal["answer", "capture", "question"] = Field(
+        description="answer: an attempt at the task. capture: they want to know how to say something "
+        "else (how do I say…, the word for…). question: they ask about Korean, a word, a grammar point or the task"
+    )
+
+
+class Explanation(BaseModel):
+    text: str = Field(description="The answer in English, with short Korean examples where useful; at most 120 words")
+
+
+ROUTE_SYSTEM = "A learner is doing a Korean writing drill. Classify their message against the current task."
+EXPLAIN_SYSTEM = (
+    "You are a concise Korean tutor. Answer the learner's question directly, at their level, in English, "
+    "with one or two short Korean examples when they help. Do not give away the answer to the current task."
+)
+
+
+def route(p: dict, text: str) -> str:
+    """'answer' / 'capture' / 'question'. Mostly-Hangul text is an answer with no model call."""
+    letters = [c for c in text if c.isalpha()]
+    if letters and sum("가" <= c <= "힣" for c in letters) / len(letters) >= 0.5:
+        return "answer"
+    return ask(Route, ROUTE_SYSTEM, f"Current task: {task(p)}\nMessage: {text}").kind
+
+
+def explain(p: dict, question: str) -> str:
+    return ask(Explanation, EXPLAIN_SYSTEM, f"Current task: {task(p)}\nQuestion: {question}").text
+
+
 def schedule(step: int, verdict: str, today: date) -> tuple[int, date]:
     """(new step, due date): correct climbs the ladder, minor holds, wrong restarts tomorrow."""
     if verdict == "wrong":

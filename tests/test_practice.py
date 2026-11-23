@@ -191,3 +191,68 @@ def test_pause_mutes_pings(pool, monkeypatch):
     app.bot.send_message = AsyncMock()
     asyncio.run(bot.ping_step(app))
     app.bot.send_message.assert_not_awaited()
+
+
+# --- routing free text in a session ----------------------------------------------------------------
+
+def _no_model(*a, **k):
+    raise AssertionError("no model call expected")
+
+
+def test_korean_is_an_answer_without_a_model_call(monkeypatch):
+    monkeypatch.setattr(practice, "ask", _no_model)
+    p = {"kind": "sentence", "en": "I'm late"}
+    assert practice.route(p, "저 늦었어요.") == "answer"
+    assert practice.route(p, "제가 late 했어요") == "answer"  # mostly Hangul
+
+
+def test_other_text_is_classified_by_the_model(monkeypatch):
+    seen = []
+    monkeypatch.setattr(practice, "ask", lambda schema, system, user: seen.append(user) or practice.Route(kind="question"))
+    assert practice.route({"kind": "sentence", "en": "I'm late"}, "what's the difference between 늦다 and 지각하다?") == "question"
+    assert "Say this in Korean: I'm late" in seen[0]
+
+
+def _session_prompt(context):
+    asyncio.run(bot.practice_cmd(MagicMock(message=_message("/practice")), context))
+    return practice.waiting(practice.current_session())
+
+
+def test_a_question_in_a_session_is_offered_not_graded(pool, monkeypatch):
+    context = _context()
+    p = _session_prompt(context)
+    monkeypatch.setattr(practice, "route", lambda p, text: "question")
+    monkeypatch.setattr(practice, "grade", _no_model)
+    msg = _message("what does 는데 mean?")
+    asyncio.run(bot.free_text(MagicMock(message=msg), context))
+    rows = msg.reply_html.await_args.kwargs["reply_markup"].inline_keyboard
+    assert [b.callback_data for r in rows for b in r] == [f"ask:{p['id']}", "cap:yes", f"late:{p['id']}"]
+    assert practice.waiting(practice.current_session())["id"] == p["id"]  # still waiting
+
+    update = MagicMock()
+    q = update.callback_query
+    q.answer, q.edit_message_text = AsyncMock(), AsyncMock()
+    q.data, q.message.reply_to_message = f"ask:{p['id']}", msg
+    monkeypatch.setattr(practice, "explain", lambda p, question: "는데 sets up background.")
+    asyncio.run(bot.on_ask(update, context))
+    assert q.edit_message_text.await_args.args[0].startswith("는데 sets up background.")
+    assert "still waiting" in q.edit_message_text.await_args.args[0]
+
+
+def test_a_capture_in_a_session_offers_capture_or_grading(pool, monkeypatch):
+    context = _context()
+    p = _session_prompt(context)
+    monkeypatch.setattr(practice, "route", lambda p, text: "capture")
+    msg = _message("how do I say I'm stuck in traffic")
+    asyncio.run(bot.free_text(MagicMock(message=msg), context))
+    rows = msg.reply_html.await_args.kwargs["reply_markup"].inline_keyboard
+    assert [b.callback_data for r in rows for b in r] == ["cap:yes", f"ask:{p['id']}", f"late:{p['id']}"]
+
+
+def test_a_routing_failure_falls_back_to_grading(pool, monkeypatch):
+    context = _context()
+    _session_prompt(context)
+    monkeypatch.setattr(practice, "route", lambda p, text: 1 / 0)
+    msg = _message("hmm")
+    asyncio.run(bot.free_text(MagicMock(message=msg), context))
+    assert context.bot.send_message.return_value.edit_text.await_args.args[0].startswith("<b>")  # graded

@@ -29,7 +29,10 @@ DECISIONS "2026-11-23 Unit 7 plan".
      marked duplicate, not added. Examples: full-sentence library hits, else krdict, else model
      (marked). `capture.kind = 'word'` keeps word captures out of practice. Not seen live yet:
      the phone check (step 8) is the first real card.
-  6. Session routing: one structured call (answer / capture / question) before grading.
+  6. Done: session routing (`practice.route`, all capture modes). Mostly-Hangul = answer, no
+     call; else one call. Non-answers get `[➕ Capture] [💬 Answer it]` + `[✍️ Grade it as my
+     answer]`, ordered by the guess. Live: 5 messages, 1 miss (a capture guessed as question),
+     0.2-0.3 s per call warm; "Answer it" 0.5 s.
   7. Eval: agent vs workflow on the 10 side-by-side prompts + word prompts (user judges), calls
      and latency; rerun `evals/tool_calling.py` with real tools. Pick `CAPTURE_MODE` default.
   8. Phone check, docs, PR.
@@ -81,7 +84,7 @@ DECISIONS "2026-11-23 Unit 7 plan".
 - Evals (host only, `requirements-eval.txt`): `python -m evals.grader_eval MODEL...` (also
   `dadeum`, `<model>+dadeum`) and `python -m evals.capture_side_by_side MODEL...` (set
   `MBXREAD_URL=http://127.0.0.1:8002` in the shell for lookups). Results in `evals/results/`. Set `PYTHONUTF8=1` when output goes to a file.
-- Tests: 124 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 129 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
   MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002 .venv/Scripts/python -m mbxchat.importer`

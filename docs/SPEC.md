@@ -305,9 +305,14 @@ tool-calling check, 20 of 20 runs valid, right path every time, 0.65 s median; n
   `kind = 'word'`, so practice never prompts it; word cards are Anki-only.
 - **Sentence path:** `submit_sentence {casual, polite}` then the unit 3 nodes unchanged
   (critic → chunks → review → save), so the comparison isolates the agent's part.
-- **Session routing:** inside an open session, free text is classified first (one structured
-  call: answer / capture / question). An answer is graded as today; capture and question are
-  offered with a button, never run unasked.
+- **Session routing** (all modes, `practice.route`): inside an open session, mostly-Hangul text
+  is an answer and is graded with no extra call (answers are Korean). Anything else gets one
+  structured call (answer / capture / question). Anything not an answer is offered, never run:
+  `[➕ Capture] [💬 Answer it]` (the guess only orders them and picks the wording) and
+  `[✍️ Grade it as my answer]`. "Answer it" is one model call (`practice.explain`), told not to
+  give away the task; the prompt stays waiting. A routing failure falls back to grading. Live
+  check: "how do I say I am stuck in traffic" was guessed as a question, which is why all
+  options are always shown.
 
 ## 8. Units
 
