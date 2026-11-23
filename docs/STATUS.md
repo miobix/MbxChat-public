@@ -1,9 +1,8 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 6a (eval groundwork) merged. Unit 6b on `unit-6b-eval`, proofread done.
+**Phase:** unit 6a (eval groundwork) merged. Unit 6b on `unit-6b-eval`: LLM and dadeum runs done, hints test next.
 
 ## Next
-- **Grader set proofread** (2026-11-23): all 66 items `check: ok`; g51 verdict raised to wrong.
 - **Shortlisted models pulled into MbxRead's Ollama** (2026-11-22; Q4_K_M where offered, else the
   smallest quant each repo has). Ollama digests (prefix): `hf.co/mykor/A.X-4.0-Light-gguf:Q4_K_M`
   `9f0107f24601` (4.4 GB), `hf.co/mykor/Midm-2.0-Mini-Instruct-gguf:Q4_K_M` `68bc4560da12`
@@ -18,21 +17,21 @@
 - **Unit 6b plan** (SPEC §8):
   1. Done: grader harness `evals/grader_eval.py` (one Phoenix experiment per model; per-item
      JSON in `evals/results/`; eval-only deps in `requirements-eval.txt`). `GRADER_MODEL` config.
-  2. LLMs on the set: 4 summaries in `evals/results/grader_summary.jsonl` (gemma leads: 43/66
-     verdicts, 2 false alarms, 8 missed; Nemotron writes ~600 tokens/answer, 60 s median).
-     **Qwen was still running at handoff (2026-11-23).** When `evals/results/grader-hf.co_unsloth_
-     Qwen3.5-4B-GGUF_Q4_K_M.json` exists, append its line: `summary()` over that file and the
-     parsed set, with `"date"` and `"set": "grader_set-499d7ab3"` in front; then commit.
-  3. dadeum: in the harness as model `dadeum` (`python -m evals.grader_eval dadeum`), not run
-     yet. Smoke: fixes spacing, misses 잣어/찿고. Then the best LLM with hints vs without.
+  2. Done: all 5 LLMs on the set, CPU then GPU (`evals/results/grader_summary.jsonl`; the GPU
+     lines carry `reference_hits`). GPU, of 66: gemma 43 verdicts / 2 false alarms / 52
+     corrections / 1.4 s median; Nemotron 43/0/48/7.0 s; Mi:dm 37/1/38/0.8 s; Qwen 38/8/32/2.1 s
+     (1 failure); A.X 35/9/36/1.6 s. Leading grader candidate: gemma.
+  3. dadeum done: 0 false alarms, but it edits only 6 of the 48 answers with errors (missed 42);
+     24 corrections right (18 of them unchanged correct answers); ~0.05 s per answer. Next: gemma
+     with dadeum hints vs without. Run the harness with `PYTHONUTF8=1` when output goes to a file
+     (Phoenix prints emoji; cp949 crashes).
   4. Router: reference match → correct with no call (done, tested). Live: 0 of 5 answers with a
      reference matched exactly; the set has 0 hits.
   5. Capture side-by-side: `evals/capture_side_by_side.py` ready, not run (needs MbxRead :8002).
   6. GPU: done. Ollama hit `cuInit failed: 500` ("named symbol not found"): Docker Desktop's
      packaged `libcuda.so.1` was older than the Windows driver (610.88). Updating Docker Desktop
-     (4.99.0) fixed it; no compose change. gemma warm: 159-192 tok/s (CPU ~9). Latency rerun of
-     all five models on GPU started 2026-11-23 (summaries append to `grader_summary.jsonl`).
-     Record in DECISIONS with 6b.
+     (4.99.0) fixed it; no compose change. gemma warm: 159-192 tok/s (CPU ~9). GPU rerun of all
+     five models done (step 2). Record in DECISIONS with 6b.
   7. Pick grader + capture models, record in DECISIONS, `ollama rm` losers and Olala.
 - **Later, not now (user):** move the benchmark core (grader set + harness + results log) into
   a standalone project, run once a month against new model versions. Spec it as its own project.
