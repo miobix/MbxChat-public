@@ -4,45 +4,45 @@
   "issues": [],
   "corrected": "지금 마트 가는 길인데 필요한 거 있어?",
   "model_answer": "지금 마트 가는데 뭐 필요한 거 있어?",
-  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 아주 좋습니다. '가는 길인데'도 '가는데'와 의미가 같고 매우 자연스러운 표현입니다. 훌륭해요!",
+  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(레지스터) 모두 아주 좋습니다. '가는 길인데'도 '가는데'와 의미가 같고 친구에게 말하기에 아주 자연스러운 표현입니다. 훌륭해요!",
   "verdict": "correct",
-  "seconds": 57.3
+  "seconds": 6.6
  },
  {
   "id": "g02",
   "issues": [],
   "corrected": "회의가 길어졌는데 점심 드셨어요?",
   "model_answer": "회의가 길어졌는데 점심은 드셨어요?",
-  "note": "아주 자연스럽고 정확합니다. '점심은'의 '은'을 빼도 대화에서는 전혀 어색하지 않고 더 구어체적입니다. 완벽해요!",
+  "note": "문법적으로 완벽하고 아주 자연스러운 표현입니다. 참고 답변에서 '점심**은**'이라고 했지만, 일상 대화에서는 조사('은')를 생략해도 의미 전달에 전혀 문제가 없으며 더 간결하고 자연스럽습니다. 코워커에게 사용하기에 적절한 높임말(드셨어요?)을 잘 사용하셨습니다.",
   "verdict": "correct",
-  "seconds": 60.1
+  "seconds": 8.3
  },
  {
   "id": "g03",
   "issues": [],
   "corrected": "파일 다시 보내 주실 수 있어요?",
   "model_answer": "파일 다시 보내 주실 수 있어요?",
-  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(존댓말) 모두 아주 좋습니다. 동료에게 정중하면서도 자연스럽게 요청하는 표현입니다.",
+  "note": "문법, 단어 선택, 자연스러움, 격식 모두 아주 좋습니다. 동료에게 사용하기에 적절하고 정중한 표현입니다.",
   "verdict": "correct",
-  "seconds": 50.9
+  "seconds": 6.4
  },
  {
   "id": "g04",
   "issues": [],
   "corrected": "우산을 깜빡해서 비를 쫄딱 맞았어.",
   "model_answer": "우산을 깜빡해서 비를 쫄딱 맞았어.",
-  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 완벽합니다. 친구에게 말하기에 아주 자연스러운 표현입니다.",
+  "note": "문법, 단어 선택, 자연스러움, 상황(친구에게 말하기)의 격식 모두 완벽합니다. '깜빡하다'와 '쫄딱 맞다'는 친구에게 말할 때 아주 자연스러운 표현입니다.",
   "verdict": "correct",
-  "seconds": 47.8
+  "seconds": 6.1
  },
  {
   "id": "g05",
   "issues": [],
   "corrected": "오랜만이야! 잘 지냈어?",
   "model_answer": "오랜만이야! 잘 지냈어?",
-  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 완벽합니다. 친구에게 쓰는 아주 자연스러운 표현입니다. 아주 잘했어요!",
+  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 완벽합니다. 친구에게 사용하기에 아주 자연스러운 표현입니다.",
   "verdict": "correct",
-  "seconds": 51.7
+  "seconds": 5.8
  },
  {
   "id": "g06",
@@ -51,520 +51,520 @@
   "model_answer": "10분 정도 늦을 것 같습니다.",
   "note": "문법, 어휘 선택, 자연스러움, 격식 모두 완벽합니다. 상사에게 사용하기에 매우 적절하고 정중한 표현입니다.",
   "verdict": "correct",
-  "seconds": 46.8
+  "seconds": 5.3
  },
  {
   "id": "g07",
   "issues": [],
   "corrected": "피곤한데 오늘은 일찍 잘게요.",
   "model_answer": "피곤한데 오늘은 일찍 잘게요.",
-  "note": "문법(-는데)과 단어(피곤하다)를 정확하게 사용했습니다. 아주 자연스러운 문장입니다. 잘했어요!",
+  "note": "문법(-는데)과 단어(피곤하다)를 아주 자연스럽게 잘 사용했어요. 완벽합니다!",
   "verdict": "correct",
-  "seconds": 53.4
+  "seconds": 5.7
  },
  {
   "id": "g08",
   "issues": [],
   "corrected": "요즘 너무 바빠서 운동을 못 했어요.",
   "model_answer": "요즘 너무 바빠서 운동을 못 했어요.",
-  "note": "문법(-아/어서)과 단어(바쁘다)를 모두 정확하게 사용했습니다. 문장도 아주 자연스럽고 좋습니다.",
+  "note": "문법(-아/어서)과 단어(바쁘다)를 정확하게 사용했습니다. 아주 자연스럽고 좋은 문장입니다.",
   "verdict": "correct",
-  "seconds": 56.2
+  "seconds": 7.2
  },
  {
   "id": "g09",
   "issues": [],
   "corrected": "음악을 들으면서 공부해요.",
   "model_answer": "음악을 들으면서 공부해요.",
-  "note": "문법(-으면서)과 단어(듣다)를 정확하게 사용했습니다. 아주 자연스럽고 올바른 문장입니다.",
+  "note": "문법(-면서)과 단어(듣다)를 정확하게 사용했습니다. 아주 자연스럽고 완벽한 문장입니다.",
   "verdict": "correct",
-  "seconds": 49.4
+  "seconds": 6.3
  },
  {
   "id": "g10",
   "issues": [],
   "corrected": "너무 비싸기 때문에 안 샀어요.",
   "model_answer": "너무 비싸기 때문에 안 샀어요.",
-  "note": "문법, 단어 선택, 자연스러움 모두 아주 좋습니다. 완벽한 문장입니다.",
+  "note": "문법(-기 때문에)과 단어(비싸다)를 정확하게 사용했습니다. 자연스럽고 완벽한 문장입니다.",
   "verdict": "correct",
-  "seconds": 49.6
+  "seconds": 5.7
  },
  {
   "id": "g11",
   "issues": [],
   "corrected": "저는 운전할 수 있어요.",
   "model_answer": "저는 운전할 수 있어요.",
-  "note": "문법, 단어 선택, 자연스러움 모두 완벽합니다. 아주 잘하셨어요!",
+  "note": "문법과 단어 선택이 모두 정확하고 자연스럽습니다. 아주 잘하셨어요!",
   "verdict": "correct",
-  "seconds": 42.6
+  "seconds": 5.5
  },
  {
   "id": "g12",
   "issues": [],
   "corrected": "다음 달에 부산으로 이사하게 됐어요.",
   "model_answer": "다음 달에 부산으로 이사하게 됐어요.",
-  "note": "문법(-게 되다)과 단어(이사하다)를 정확하게 사용했고, 자연스러운 한국어 문장입니다. 아주 잘했어요!",
+  "note": "문법(-게 되다)과 단어(이사하다)를 정확하게 사용했고, 문장도 아주 자연스럽습니다. 훌륭해요!",
   "verdict": "correct",
-  "seconds": 50.6
+  "seconds": 5.8
  },
  {
   "id": "g13",
   "issues": [],
   "corrected": "늦잠을 자는 바람에 버스를 놓쳤어요.",
   "model_answer": "늦잠을 자는 바람에 버스를 놓쳤어요.",
-  "note": "문법, 단어 선택, 자연스러움 모두 아주 좋습니다. 완벽한 문장이에요.",
+  "note": "문법(-는 바람에)과 단어(늦잠)를 정확하게 사용했습니다. 아주 자연스럽고 올바른 문장입니다.",
   "verdict": "correct",
-  "seconds": 47.2
+  "seconds": 5.2
  },
  {
   "id": "g14",
   "issues": [],
   "corrected": "퇴근하고 커피 한잔하자.",
   "model_answer": "퇴근하고 커피 한잔하자.",
-  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 완벽합니다. 친구에게 말하기에 아주 자연스러운 표현입니다.",
+  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 완벽합니다. 친구에게 제안하기에 가장 자연스러운 표현입니다.",
   "verdict": "correct",
-  "seconds": 52.1
+  "seconds": 6.1
  },
  {
   "id": "g15",
   "issues": [],
   "corrected": "어제 도와주셔서 감사합니다.",
   "model_answer": "어제 도와주셔서 감사합니다.",
-  "note": "Grammar, word choice, naturalness, and register are all perfect for speaking to a senior colleague. This is a very polite and natural way to express thanks.",
+  "note": "문법, 어휘 선택, 자연스러움, 격식 모두 완벽합니다. 선배에게 사용하기에 매우 적절하고 공손한 표현입니다.",
   "verdict": "correct",
-  "seconds": 45.2
+  "seconds": 5.2
  },
  {
   "id": "g16",
   "issues": [],
   "corrected": "그 식당 생각보다 맛있더라고요.",
   "model_answer": "그 식당 생각보다 맛있더라고요.",
-  "note": "문법(-더라고요)과 단어(맛있다)를 정확하게 사용했습니다. 경험을 바탕으로 느낀 점을 자연스럽게 전달하는 아주 좋은 문장입니다. 훌륭해요!",
+  "note": "문법(-더라고요)과 단어(맛있다)를 정확하게 사용했고, 문장도 아주 자연스럽습니다. 훌륭해요!",
   "verdict": "correct",
-  "seconds": 59.6
+  "seconds": 5.4
  },
  {
   "id": "g17",
   "issues": [],
   "corrected": "저는 수영할 수 없어요.",
-  "model_answer": "저는 수영할 수 없어요.",
-  "note": "문법(-ㄹ 수 없다)과 단어(수영하다)를 정확하게 사용했습니다. 아주 잘했어요!",
+  "model_answer": "저는 수영할 수 있어요.",
+  "note": "문법, 단어 선택, 자연스러움 모두 완벽합니다. '수영할 수 없어요'도 문법적으로 완전히 올바른 문장입니다. (부정문 사용)",
   "verdict": "correct",
-  "seconds": 51.3
+  "seconds": 5.2
  },
  {
   "id": "g18",
   "issues": [],
   "corrected": "내일은 못 가요. 일이 좀 바쁘거든요.",
   "model_answer": "내일은 못 가요. 일이 좀 바쁘거든요.",
-  "note": "문법(-거든요)과 단어(바쁘다)를 정확하고 자연스럽게 사용했습니다. 아주 잘했어요!",
+  "note": "문법, 단어 선택, 자연스러움, 격식 모두 아주 좋습니다. '-거든요'를 이유를 설명할 때 아주 자연스럽게 사용했어요. 훌륭해요!",
   "verdict": "correct",
-  "seconds": 45.3
+  "seconds": 7.1
  },
  {
   "id": "g19",
   "issues": [],
   "corrected": "집에 가서 쉴 거야.",
   "model_answer": "집에 가서 쉴 거야.",
-  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 아주 좋습니다. '집에가서'는 붙여 쓰는 것보다 띄어 쓰는 것이 더 자연스럽습니다. (집에 가서)",
+  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 아주 좋습니다. '집에가서'는 붙여 쓰는 것이 자연스럽지만, 띄어 쓰는 것이 더 정확합니다. (집에 가서). 친구에게 말하는 상황에 딱 맞는 자연스러운 표현입니다.",
   "verdict": "correct",
-  "seconds": 48.7
+  "seconds": 6.0
  },
  {
   "id": "g20",
   "issues": [],
   "corrected": "그거 몰랐어.",
   "model_answer": "그거 몰랐어.",
-  "note": "친구에게 말하는 상황이므로 '몰랐어'처럼 반말(비격식체)을 쓰는 것이 아주 자연스럽습니다. '몰랏어'도 구어체에서 자주 쓰이지만, 표준적인 표현은 '몰랐어'입니다. 의미와 상황 모두 완벽합니다!",
+  "note": "친구에게 말하는 상황이므로 '몰랐어'처럼 반말(비격식체)을 사용하는 것이 아주 자연스럽습니다. 아주 잘 하셨어요!",
   "verdict": "minor",
-  "seconds": 60.5
+  "seconds": 6.5
  },
  {
   "id": "g21",
   "issues": [],
   "corrected": "잠시만 기다려 주세요.",
   "model_answer": "잠시만 기다려 주세요.",
-  "note": "고객에게 말할 때는 '주세요'가 자연스럽고 정중합니다. 더 격식 있게 말하고 싶다면 '잠시만 기다려 주십시오'를 사용할 수 있습니다.",
+  "note": "The register (~주세요) is appropriate for a customer. Just check the spelling of the verb '기다리다'.",
   "verdict": "minor",
-  "seconds": 70.8
+  "seconds": 8.0
  },
  {
   "id": "g22",
   "issues": [],
   "corrected": "밖에 비가 오는데 우산 있어요?",
   "model_answer": "밖에 비가 오는데 우산 있어요?",
-  "note": "문법 '-는데'를 정확하게 사용했습니다. 자연스럽고 올바른 문장입니다.",
+  "note": "'-는데'는 앞 문장을 배경 설명하거나 대조할 때 사용합니다. '오는대'가 아니라 '오는 데'가 맞습니다.",
   "verdict": "minor",
-  "seconds": 64.9
+  "seconds": 6.6
  },
  {
   "id": "g23",
   "issues": [],
   "corrected": "괜찮아요, 걱정하지 마세요.",
   "model_answer": "괜찮아요, 걱정하지 마세요.",
-  "note": "상황(직장 동료)에 맞는 공손한 표현을 잘 사용했습니다. 스펠링만 수정하면 완벽합니다.",
+  "note": "The register (polite form) is perfect for a coworker. Only the spelling needs correction.",
   "verdict": "minor",
-  "seconds": 53.3
+  "seconds": 6.5
  },
  {
   "id": "g24",
   "issues": [],
   "corrected": "내일 봬요.",
   "model_answer": "내일 봬요.",
-  "note": "This is polite and appropriate for a coworker. If the relationship is more casual, '내일 봐요' is also fine.",
+  "note": "This is the most natural and polite way to say 'See you tomorrow' to a coworker.",
   "verdict": "minor",
-  "seconds": 76.0
+  "seconds": 8.7
  },
  {
   "id": "g25",
   "issues": [],
   "corrected": "오늘 좀 늦을 것 같아요.",
   "model_answer": "오늘 좀 늦을 것 같아요.",
-  "note": "문법과 단어 선택이 모두 정확하고 아주 자연스러운 문장입니다. 훌륭해요!",
+  "note": "The grammar (-(으)ㄹ 것 같다) and the word 늦다 are used perfectly. The sentence is very natural and polite.",
   "verdict": "correct",
-  "seconds": 50.3
+  "seconds": 6.6
  },
  {
   "id": "g26",
   "issues": [],
   "corrected": "언젠가 거기 가고 싶어요.",
   "model_answer": "언젠가 거기 가고 싶어요.",
-  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말 모두 완벽합니다. 아주 잘하셨어요!",
+  "note": "Grammar, word choice, naturalness, and register are all perfect for speaking to a coworker. Very good!",
   "verdict": "correct",
-  "seconds": 46.2
+  "seconds": 5.1
  },
  {
   "id": "g27",
   "issues": [],
   "corrected": "저는 매운 음식을 좋아해요.",
   "model_answer": "저는 매운 음식을 좋아해요.",
-  "note": "단어 선택과 높임말(해요체)은 아주 잘했어요! 조사만 정확히 사용하면 완벽해요.",
+  "note": "좋아하다는 '~을/를'을 목적어로 취하기 때문에 '음식이'가 아니라 '음식을'이 맞습니다. 나머지 단어와 높임말은 아주 잘 사용했어요!",
   "verdict": "minor",
-  "seconds": 70.8
+  "seconds": 8.4
  },
  {
   "id": "g28",
   "issues": [],
-  "corrected": "카페에 친구를 만났어요.",
-  "model_answer": "카페에 친구를 만났어요.",
-  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(해요체) 모두 완벽합니다. 동료에게 말하기에 아주 자연스럽고 적절한 표현입니다.",
-  "verdict": "correct",
-  "seconds": 51.8
+  "corrected": "카페에서 친구를 만났어요.",
+  "model_answer": "카페에서 친구를 만났어요.",
+  "note": "문법적으로 틀린 것은 아니지만, '만나다'라는 행위가 일어난 장소이므로 '에'보다는 '에서'를 쓰는 것이 훨씬 자연스럽습니다.",
+  "verdict": "minor",
+  "seconds": 8.3
  },
  {
   "id": "g29",
   "issues": [],
   "corrected": "지하철로 회사에 가요.",
   "model_answer": "지하철로 회사에 가요.",
-  "note": "Your register (가요) is perfect for a coworker. Just change '을' to '로'!",
+  "note": "문법적으로 정확하고, 동료에게 말하기에 적절한 공손한 표현입니다. (주어 '저는'은 문맥상 생략하는 것이 더 자연스럽습니다.)",
   "verdict": "minor",
-  "seconds": 63.6
+  "seconds": 8.8
  },
  {
   "id": "g30",
   "issues": [],
   "corrected": "남동생이 나보다 키가 커.",
   "model_answer": "남동생이 나보다 키가 커.",
-  "note": "친구에게 말하는 상황이므로 '커'처럼 반말을 사용한 것은 아주 자연스럽습니다. 단어 선택과 높임말 사용은 정확해요!",
+  "note": "친한 친구에게 말하는 상황이므로 반말(해요체/해체)이 자연스럽습니다. 문법적으로 정확하고 자연스러운 표현입니다.",
   "verdict": "minor",
-  "seconds": 65.7
+  "seconds": 8.0
  },
  {
   "id": "g31",
   "issues": [],
-  "corrected": "엄마한테 선물을 줬어.",
-  "model_answer": "엄마한테 선물을 줬어.",
-  "note": "선물을 준 대상(엄마)에게는 목적격 조사(를) 대신 간접 목적어 조사(한테/에게)를 써야 자연스럽습니다. 친구에게 말하는 상황이므로 '한테'가 가장 자연스럽습니다.",
+  "corrected": "엄마에게 선물을 줬어.",
+  "model_answer": "엄마에게 선물을 줬어.",
+  "note": "친구에게 말하는 상황이므로 '줬어'는 적절한 비격식체입니다. '엄마한테'도 자연스럽습니다.",
   "verdict": "minor",
-  "seconds": 70.8
+  "seconds": 9.6
  },
  {
   "id": "g32",
   "issues": [],
-  "corrected": "한국 역사에 관심이 있어요.",
-  "model_answer": "한국 역사에 관심이 있어요.",
-  "note": "동료에게 말하기에 적절한 공손한 표현입니다.",
+  "corrected": "한국 역사에 관심 있어요.",
+  "model_answer": "한국 역사에 관심 있어요.",
+  "note": "This is polite and natural for a coworker.",
   "verdict": "minor",
-  "seconds": 55.8
+  "seconds": 8.5
  },
  {
   "id": "g33",
   "issues": [],
   "corrected": "우리 토요일에 만나기로 했어요.",
   "model_answer": "우리 토요일에 만나기로 했어요.",
-  "note": "'-기로 하다'는 '결정하다'라는 의미로, 동사 원형에 '-기로 하다'를 붙여 사용합니다. (만나다 -> 만나기로 하다)",
+  "note": "'-기로 하다'는 '결정하다'라는 뜻입니다. (We decided to meet on Saturday.)",
   "verdict": "minor",
-  "seconds": 54.8
+  "seconds": 6.5
  },
  {
   "id": "g34",
   "issues": [],
   "corrected": "나만 알아.",
   "model_answer": "나만 알아.",
-  "note": "The learner's answer, '나도 알아,' means 'I also know.' The correct phrase for 'Only I know' is '나만 알아.'",
+  "note": "The learner's answer, '나도 알아,' means 'I also know.' To say 'Only I know,' you must use '만' (man).",
   "verdict": "minor",
-  "seconds": 66.0
+  "seconds": 7.8
  },
  {
   "id": "g35",
   "issues": [],
   "corrected": "회의가 연기했는데 몰랐어요.",
   "model_answer": "회의가 연기했는데 몰랐어요.",
-  "note": "문법(-는데)과 단어(연기하다)를 정확하게 사용했습니다. 아주 자연스러운 문장입니다.",
+  "note": "문법(-는데)과 단어(연기하다)를 정확하게 사용했습니다. 자연스럽고 올바른 문장입니다.",
   "verdict": "correct",
-  "seconds": 52.7
+  "seconds": 5.5
  },
  {
   "id": "g36",
   "issues": [],
   "corrected": "문이 저절로 열었어.",
   "model_answer": "문이 저절로 열었어.",
-  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 완벽합니다. 아주 잘하셨어요!",
+  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 완벽합니다. 아주 자연스러운 표현입니다.",
   "verdict": "correct",
-  "seconds": 49.1
+  "seconds": 5.6
  },
  {
   "id": "g37",
   "issues": [],
   "corrected": "핸드폰 화면이 깨졌어.",
   "model_answer": "핸드폰 화면이 깨졌어.",
-  "note": "The register (casual, for a friend) is perfect.",
+  "note": "친구에게 말하는 상황이므로 '깨졌어'처럼 반말을 사용한 것은 아주 자연스럽습니다. '깨다' 대신 '깨지다'를 사용하면 훨씬 원어민처럼 들립니다.",
   "verdict": "minor",
-  "seconds": 79.7
+  "seconds": 9.3
  },
  {
   "id": "g38",
   "issues": [],
   "corrected": "모기가 물렸어.",
   "model_answer": "모기가 물렸어.",
-  "note": "문법, 어휘, 자연스러움, 격식 모두 아주 좋습니다. 친구에게 말하는 상황에 딱 맞는 자연스러운 표현입니다.",
+  "note": "Very good! This is exactly how a native speaker would say this to a friend. The grammar, word choice, and informal register (-었어) are all perfect for the situation.",
   "verdict": "correct",
-  "seconds": 69.2
+  "seconds": 6.9
  },
  {
   "id": "g39",
   "issues": [],
   "corrected": "다음 주에 부산에 갈 거예요.",
   "model_answer": "다음 주에 부산에 갈 거예요.",
-  "note": "For future plans, use the future tense ending '-ㄹ 거예요' (갈 거예요).",
+  "note": "The '갈 거예요' form clearly indicates a future plan, which is appropriate for telling a coworker about next week's trip. Your use of the polite '-요' ending is perfect for a coworker.",
   "verdict": "minor",
-  "seconds": 67.3
+  "seconds": 7.6
  },
  {
   "id": "g40",
   "issues": [],
   "corrected": "날씨가 춥는데 어디 가요?",
-  "model_answer": "날씨가 춥는데 어디 가요?",
-  "note": "문법(-는데)과 단어(춥다)를 정확하게 사용했습니다. 아주 자연스러운 문장입니다.",
+  "model_answer": "날씨가 춥는데, 따뜻한 곳에 가고 싶어요.",
+  "note": "문법(-는데)과 단어(춥다)를 정확하게 사용했습니다. 아주 자연스러운 문장입니다. 훌륭해요!",
   "verdict": "correct",
-  "seconds": 43.6
+  "seconds": 5.7
  },
  {
   "id": "g41",
   "issues": [],
-  "corrected": "친구 이사를 도왔어요.",
-  "model_answer": "친구 이사를 도왔어요.",
-  "note": "전반적으로 아주 잘했어요! 의미 전달도 완벽하고, 직장 동료에게 말하기에 적절한 공손한 표현(해요체)을 사용했어요. 목적어 뒤에 조사 '를'을 붙여주면 문법적으로 더 완벽해져요.",
-  "verdict": "minor",
-  "seconds": 69.2
+  "corrected": "친구 이사를 돕았어요.",
+  "model_answer": "친구 이사를 돕았어요.",
+  "note": "문법, 단어 선택, 자연스러움, 격식 모두 아주 좋습니다. 직장 동료에게 말하기에 적절한 공손한 표현(해요체)을 사용했습니다.",
+  "verdict": "correct",
+  "seconds": 6.9
  },
  {
   "id": "g42",
   "issues": [],
-  "corrected": "식사하셨어요?",
-  "model_answer": "식사하셨어요?",
-  "note": "사장님(boss)께는 아주 공손한 말(존댓말)을 써야 해요. '밥 먹었어?'는 친구에게 쓰는 아주 편한 말이에요. '식사하셨어요?' 또는 '밥 드셨어요?'가 아주 좋아요.",
+  "corrected": "밥 드셨어요?",
+  "model_answer": "밥 드셨어요?",
+  "note": "상사에게는 존댓말을 사용해야 합니다. '먹었어?'는 반말(비격식체)이므로 부적절합니다. '드시다'는 '먹다'의 높임말입니다.",
   "verdict": "wrong",
-  "seconds": 65.8
+  "seconds": 7.5
  },
  {
   "id": "g43",
   "issues": [],
   "corrected": "회의가 다음 주로 미뤄졌어요.",
   "model_answer": "회의가 다음 주로 미뤄졌어요.",
-  "note": "상사에게 말할 때는 '미뤄졌어' 대신 공손한 표현인 '미뤄졌어요'를 사용해야 합니다.",
+  "note": "상사에게 말할 때는 '~~어' 대신 공손한 표현인 '~~어요'를 사용해야 합니다. 문법적으로는 맞지만, 상황(상사에게)에 맞지 않습니다.",
   "verdict": "minor",
-  "seconds": 60.7
+  "seconds": 7.5
  },
  {
   "id": "g44",
   "issues": [],
-  "corrected": "할머니가 자고 있어요.",
-  "model_answer": "할머니가 주무시고 계세요.",
-  "note": "Your answer is correct. However, when speaking to a coworker about a grandmother (an elder), using honorific verbs is more natural and respectful. '자고 있어요' is fine, but '주무시고 계세요' is more polite and appropriate for this situation.",
-  "verdict": "correct",
-  "seconds": 79.5
+  "corrected": "제 할머니가 자고 있어요.",
+  "model_answer": "제 할머니가 자고 있어요.",
+  "note": "Your answer, '할머니가 자고 있어요,' is very natural and completely understandable when speaking to a coworker. Adding '제' makes it more precise to the English 'My grandmother.'",
+  "verdict": "minor",
+  "seconds": 7.9
  },
  {
   "id": "g45",
   "issues": [],
   "corrected": "성함이 어떻게 되세요?",
   "model_answer": "성함이 어떻게 되세요?",
-  "note": "‘이름이 뭐야?’는 아주 친한 친구 사이에서 쓰는 반말(비격식체)입니다. 고객에게는 반드시 존댓말을 사용해야 합니다. '성함'은 '이름'의 높임말이며, '어떻게 되세요?'는 공손하게 묻는 표현입니다. (다른 정중한 표현: '성함이 어떻게 되십니까?' 또는 '이름이 어떻게 되세요?') ",
+  "note": "고객에게는 아주 공손한 표현을 사용해야 합니다. '뭐야?'는 친구에게 쓰는 아주 편한 말이라서, 직장에서 고객에게 쓰면 실례가 됩니다. '성함이 어떻게 되세요?'가 가장 자연스럽고 정중합니다.",
   "verdict": "wrong",
-  "seconds": 68.7
+  "seconds": 6.8
  },
  {
   "id": "g46",
   "issues": [],
   "corrected": "오늘 밤에 와?",
   "model_answer": "오늘 밤에 와?",
-  "note": "친한 친구에게는 아주 격식 있는 '오십니까?' 대신 편하고 친근한 반말(해체)을 사용해야 자연스럽습니다.",
+  "note": "친한 친구에게는 아주 격식 있는 '오십니까?' 대신 편하고 자연스러운 반말(해요체보다 더 낮춤)을 사용해야 해요. '와?' 또는 '올 거야?'가 가장 자연스러워요.",
   "verdict": "wrong",
-  "seconds": 59.5
+  "seconds": 7.3
  },
  {
   "id": "g47",
   "issues": [],
   "corrected": "선생님이 그렇게 말했어요.",
   "model_answer": "선생님이 그렇게 말했어요.",
-  "note": "Grammar, word choice, naturalness, and register are all perfect. Using the polite '-요' ending is appropriate when speaking to a coworker. Very good!",
+  "note": "Very good! The grammar, word choice, and register (해요체) are perfect for speaking to a coworker. Natural and exact.",
   "verdict": "correct",
-  "seconds": 53.6
+  "seconds": 5.2
  },
  {
   "id": "g48",
   "issues": [],
   "corrected": "나중에 전화드리겠습니다.",
   "model_answer": "나중에 전화드리겠습니다.",
-  "note": "When speaking to a boss, using the humble verb '드리다' (to give/do for someone superior) is the most natural and respectful choice. Omitting '제가' is also very natural in this context.",
+  "note": "Using '드리겠습니다' (humble form of 'to give/do for someone') is the most polite and natural way to say 'I will call you' to a superior.",
   "verdict": "minor",
-  "seconds": 86.4
+  "seconds": 9.0
  },
  {
   "id": "g49",
   "issues": [],
   "corrected": "많이 드세요.",
   "model_answer": "많이 드세요.",
-  "note": "Older guests require honorifics. '먹어요' is polite but not respectful enough for elders. The honorific form of 'to eat' is '드시다'.",
+  "note": "Older guests require honorific language. '먹다' (to eat) becomes '드시다' (honorific form). The polite suggestion form is '드세요'.",
   "verdict": "minor",
-  "seconds": 59.7
+  "seconds": 7.9
  },
  {
   "id": "g50",
   "issues": [],
   "corrected": "비가 와서 우산을 가져가세요.",
   "model_answer": "비가 와서 우산을 가져가세요.",
-  "note": "문법(-아/어서)과 단어(비가 오다)를 정확하게 사용했습니다. 문장도 자연스럽고 상황에 맞는 표현입니다. 아주 잘했어요!",
+  "note": "문법(-아/어서)과 단어(비가 오다)를 정확하게 사용했습니다. 매우 자연스러운 문장입니다.",
   "verdict": "correct",
-  "seconds": 56.7
+  "seconds": 5.3
  },
  {
   "id": "g51",
   "issues": [],
   "corrected": "밥을 먹으면서 친구가 TV를 봐요.",
   "model_answer": "밥을 먹으면서 친구가 TV를 봐요.",
-  "note": "문법, 단어 선택, 자연스러움 모두 완벽합니다. 아주 잘하셨어요.",
+  "note": "문법, 단어 선택, 자연스러움 모두 완벽합니다. 아주 잘하셨어요!",
   "verdict": "correct",
-  "seconds": 88.5
+  "seconds": 6.3
  },
  {
   "id": "g52",
   "issues": [],
   "corrected": "비가 오는 바람에 소풍을 못 갔어요.",
   "model_answer": "비가 오는 바람에 소풍을 못 갔어요.",
-  "note": "The structure is correct, but the consequence should usually be negative or unintended. If it rains, the picnic is usually canceled or not enjoyable.",
+  "note": "비가 와서 소풍을 못 갔다는 것이 자연스러워요.",
   "verdict": "minor",
-  "seconds": 110.6
+  "seconds": 7.4
  },
  {
   "id": "g53",
   "issues": [],
-  "corrected": "작년에 그 사람을 알게 됐어요.",
-  "model_answer": "작년에 그 사람을 알게 됐어요.",
-  "note": "알다 + -게 되다는 '어떤 사실을 알게 되다'라는 의미로, '알게 되다' 형태로 사용해야 합니다. '알았어요'는 단순 과거 시제입니다.",
+  "corrected": "그 사람을 알게 되었어요.",
+  "model_answer": "그 사람을 알게 되었어요.",
+  "note": "알다와 -게 되다를 합치면 '알게 되다'가 됩니다. 이는 '알게 되었다'는 뜻으로, 예전에는 몰랐는데 나중에 알게 된 상황을 말할 때 자연스럽습니다.",
   "verdict": "wrong",
-  "seconds": 72.7
+  "seconds": 6.9
  },
  {
   "id": "g54",
   "issues": [],
   "corrected": "아프기 때문에 학교에 안 갔어요.",
   "model_answer": "아프기 때문에 학교에 안 갔어요.",
-  "note": "문법은 맞지만, 요청하신 '-기 때문에'를 사용해야 해요. '-아서/어서'도 이유를 말할 때 쓰지만, '-기 때문에'는 조금 더 이유를 설명할 때 사용해요. 문장 자체는 아주 자연스러워요.",
+  "note": "The learner's sentence (아파서 학교에 안 갔어요) is very natural and correct in everyday speech, but the task specifically asked for '-기 때문에'. Both show cause, but the structure is different.",
   "verdict": "minor",
-  "seconds": 74.5
+  "seconds": 7.0
  },
  {
   "id": "g55",
   "issues": [],
   "corrected": "샤워할게.",
   "model_answer": "샤워할게.",
-  "note": "샤워를 받을게도 의미는 통하지만, 일상 대화에서는 '샤워할게'가 가장 자연스러워요.",
+  "note": "When talking about taking a shower, using the verb 하다 (to do) is the most natural choice in Korean. You can also drop the object marker '를' in casual speech.",
   "verdict": "minor",
-  "seconds": 66.7
+  "seconds": 7.3
  },
  {
   "id": "g56",
   "issues": [],
   "corrected": "감기에 걸렸어요.",
   "model_answer": "감기에 걸렸어요.",
-  "note": "직장 동료에게 말하기에 적절한 공손한 표현입니다.",
+  "note": "감기에 걸리다 (to catch a cold)가 가장 자연스러운 표현입니다. '잡다'는 물리적으로 잡는다는 의미가 강해서 아플 때 사용하지 않습니다. 동료에게 말할 때는 '걸렸어요'처럼 해요체를 사용하는 것이 적절합니다.",
   "verdict": "minor",
-  "seconds": 64.7
+  "seconds": 7.0
  },
  {
   "id": "g57",
   "issues": [],
-  "corrected": "두 명으로 예약해 주세요.",
-  "model_answer": "두 명으로 예약해 주세요.",
-  "note": "두 명으로 (for two people) + 예약해 주세요 (please reserve).",
+  "corrected": "두 명 예약 부탁드려요.",
+  "model_answer": "두 명 예약 부탁드려요.",
+  "note": "This phrasing is very natural and polite for restaurant staff. You could also say, '두 명으로 예약할 수 있을까요?' (Can I reserve for two?)",
   "verdict": "minor",
-  "seconds": 62.2
+  "seconds": 8.2
  },
  {
   "id": "g58",
   "issues": [],
   "corrected": "자료를 다 준비했습니다.",
   "model_answer": "자료를 다 준비했습니다.",
-  "note": "문법과 높임말(존댓말)은 완벽합니다. 상황에 따라 '재료' 대신 '자료'를 사용하시면 더 자연스럽습니다.",
+  "note": "문법과 높임말(존댓말)은 완벽합니다. 상황에 맞는 단어 선택만 조금 더 자연스럽게 바꾸면 좋습니다.",
   "verdict": "minor",
-  "seconds": 68.7
+  "seconds": 7.9
  },
  {
   "id": "g59",
   "issues": [],
   "corrected": "살 빠졌어.",
   "model_answer": "살 빠졌어.",
-  "note": "몸무게를 잃었어.는 문법적으로는 맞지만, 친구에게 '살이 빠졌다'고 말할 때 '잃다'보다는 '살 빠지다'라는 표현이 훨씬 자연스럽습니다.",
+  "note": "친구에게는 '살 빠졌어'가 가장 자연스럽고 일상적인 표현이에요.",
   "verdict": "minor",
-  "seconds": 70.2
+  "seconds": 7.9
  },
  {
   "id": "g60",
   "issues": [],
   "corrected": "불 켜 줘.",
   "model_answer": "불 켜 줘.",
-  "note": "친구에게 말하는 상황이므로 '켜 줘'처럼 반말(비격식체)을 사용하는 것이 가장 자연스럽습니다.",
+  "note": "친구에게 말하는 상황이므로 '켜 줘'가 가장 자연스럽고 적절한 표현입니다.",
   "verdict": "minor",
-  "seconds": 70.0
+  "seconds": 8.5
  },
  {
   "id": "g61",
   "issues": [],
   "corrected": "햇빛이 강하니까 모자 입어.",
-  "model_answer": "햇빛이 강하니까 모자 써.",
-  "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 아주 좋습니다. '입어'도 맞지만, 모자를 쓸 때는 '써'를 더 자주 사용합니다. 하지만 '입어'도 전혀 틀리지 않습니다.",
+  "model_answer": "해가 쨍쨍하니까 모자 써.",
+  "note": "문법, 어휘 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 아주 좋습니다. 친구에게 말하는 상황에 딱 맞는 자연스러운 표현입니다. 다만, 모자를 쓸 때는 '입다'보다는 '쓰다'를 더 자주 사용합니다. (예: 모자 써). 하지만 '입어'도 틀린 표현은 아닙니다.",
   "verdict": "correct",
-  "seconds": 56.0
+  "seconds": 7.9
  },
  {
   "id": "g62",
   "issues": [],
   "corrected": "제가 실수했어요.",
   "model_answer": "제가 실수했어요.",
-  "note": "동료에게 말할 때는 '실수했어요'가 가장 자연스럽고 정중합니다.",
+  "note": "직장 동료에게 말하기에 적절한 공손한 표현입니다. '만들다' 대신 '하다'를 사용하면 훨씬 자연스럽습니다.",
   "verdict": "minor",
-  "seconds": 73.3
+  "seconds": 8.4
  },
  {
   "id": "g63",
   "issues": [],
   "corrected": "어제 너무 피곤했어서 일찍 잤어.",
   "model_answer": "어제 너무 피곤했어서 일찍 잤어.",
-  "note": "문법과 표현은 아주 자연스럽고 친구에게 말하기에 적절한 반말(비격식체)입니다. 다만, '잣어'는 '잤어'의 잘못된 표기입니다. 과거형은 '잤어'가 맞습니다.",
+  "note": "문법과 의미는 완벽합니다. 다만, '자다'의 과거형은 '잣어'가 아니라 '잤어'가 정확합니다. 친구에게 말하는 상황에 아주 자연스러운 표현입니다.",
   "verdict": "minor",
-  "seconds": 67.0
+  "seconds": 7.1
  },
  {
   "id": "g64",
@@ -573,24 +573,24 @@
   "model_answer": "날씨가 좋아서 산책하러 가자.",
   "note": "문법, 단어 선택, 자연스러움, 상황에 맞는 높임말(반말) 모두 완벽합니다. 친구에게 말하기에 아주 자연스러운 표현입니다.",
   "verdict": "correct",
-  "seconds": 52.5
+  "seconds": 6.1
  },
  {
   "id": "g65",
   "issues": [],
   "corrected": "아파서 보고서를 끝내지 못했습니다.",
   "model_answer": "아파서 보고서를 끝내지 못했습니다.",
-  "note": "If you want to sound even more professional, you can say '몸이 좋지 않아서 보고서를 마무리하지 못했습니다.'",
-  "verdict": "minor",
-  "seconds": 65.7
+  "note": "The word '끝내다' (to finish/complete) is slightly more natural here than just '끝나다' (to become finished) when talking about completing a task.",
+  "verdict": "wrong",
+  "seconds": 7.9
  },
  {
   "id": "g66",
   "issues": [],
-  "corrected": "어머니 선물을 찾고 있어요.",
-  "model_answer": "어머니 선물을 찾고 있어요.",
-  "note": "상황(가게 점원)에 맞게 '엄마' 대신 '어머니'를 사용하고, 동사 '찾다'의 올바른 표기인 '찾고'를 사용하면 가장 자연스럽고 공손합니다.",
+  "corrected": "엄마 선물 찾고 있어요.",
+  "model_answer": "어머니 선물 찾고 있어요.",
+  "note": "상점 직원에게 말할 때는 '엄마'보다 '어머니'가 더 공손하고 자연스럽습니다. 하지만 '엄마'를 사용해도 의사소통에는 전혀 문제가 없습니다.",
   "verdict": "minor",
-  "seconds": 88.6
+  "seconds": 9.3
  }
 ]

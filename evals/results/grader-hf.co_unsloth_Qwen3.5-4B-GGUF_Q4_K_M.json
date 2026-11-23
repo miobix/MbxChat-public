@@ -2,587 +2,591 @@
  {
   "id": "g01",
   "issues": [],
-  "corrected": "지금 마트 가는 길인데 필요한 거 있어?",
-  "model_answer": "지금 마트 가는데 뭐 필요한 거 있어?",
-  "note": "Your answer is very close and understandable! The main improvement is adding '뭐' (what) to make the question 'Do you need anything?' sound more natural. Also, '마트 가는데' flows slightly better than '마트 가는 길인데' in this specific context.",
-  "verdict": "correct",
-  "seconds": 24.2
+  "corrected": "지금 마트 가는 길이에요. 뭐 필요한 거 있어요?",
+  "model_answer": "지금 마트 가는 길이에요. 뭐 필요한 거 있어?",
+  "note": "친구에게 말하므로 존칭은 생략해도 되지만, 문장 구조를 완결하게 하고 '뭐'를 넣어 자연스러운 회화체로 다듬었습니다.",
+  "verdict": "minor",
+  "seconds": 2.6
  },
  {
   "id": "g02",
   "issues": [],
   "corrected": "회의가 길어졌는데 점심은 드셨어요?",
   "model_answer": "회의가 길어졌는데 점심은 드셨어요?",
-  "note": "참고 답변이 완벽하지는 않지만, '점심은'이라는 강조가 있어 자연스럽습니다. 학습자의 답변은 문법적으로 틀린 것이 없으나, '점심 드셨어요?'보다는 '점심은 드셨어요?'가 훨씬 더 원어민처럼 들립니다.",
+  "note": "의문문에서 주어를 묻거나 대상을 명시할 때는 조사 '은/는'을 사용하는 것이 자연스럽습니다. '점심'이라는 대상을 묻는 질문이므로 '점심은'이 더 정확합니다.",
   "verdict": "minor",
-  "seconds": 17.3
+  "seconds": 2.1
  },
  {
   "id": "g03",
   "issues": [],
   "corrected": "파일 다시 보내 주실 수 있나요?",
   "model_answer": "파일 다시 보내 주실 수 있나요?",
-  "note": "The learner's answer is very close and shows good understanding of the polite form '주실' (juseul) and the structure. The only minor adjustment needed is changing the ending to '요' for a more natural question tone in this context. Both versions are polite and appropriate for a coworker.",
+  "note": "This is a very good attempt! You correctly used the honorific '주실' and the polite ending '요'. The only small adjustment needed is to make the question mark clearer by adding '요' at the end of the verb phrase, turning it into '보내 주실 수 있나요?'. This is the most natural way to ask a coworker this question.",
   "verdict": "minor",
-  "seconds": 21.5
+  "seconds": 2.7
  },
  {
   "id": "g04",
   "issues": [],
   "corrected": "우산을 깜빡해서 비에 젖었어요.",
   "model_answer": "우산을 깜빡해서 비에 젖었어요.",
-  "note": "비에 젖다",
+  "note": "우선, '비에 젖다'가 자연스러운 표현입니다. '비에'는 '비'를 직접적으로 받는 것을 나타내므로, '비 쫄딱 맞다'보다는 '비에 젖다'가 더 일반적입니다. 또한, 친구에게 이야기할 때 과거 행위를 설명할 때는 존칭인 '-었어요'를 사용하는 것이 더 자연스럽습니다. '쫄딱 맞다'라는 표현은 문법적으로 틀린 것은 아니지만, '비'와 함께 쓰일 때 '비에 젖다'가 훨씬 더 통용되는 표현입니다.",
   "verdict": "minor",
-  "seconds": 8.9
+  "seconds": 2.3
  },
  {
   "id": "g05",
   "issues": [],
   "corrected": "오랜만이야! 잘 지냈어?",
   "model_answer": "오랜만이야! 잘 지냈어?",
-  "note": "이 답변은 매우 자연스럽고 정확한 한국어입니다. '오랜만이야'는 친구에게 쓰는 매우 친근한 표현이며, '잘 지냈어?'는 현재 상태를 묻는 적절한 질문입니다. 문법과 어휘 선택 모두 완벽합니다.",
+  "note": "Your answer is perfect! '오랜만이야' is the natural way to say 'It's been a while' to a friend, and '잘 지냈어' is the correct and natural response to 'How have you been?'. The grammar, word choice, and register are all excellent for this situation.",
   "verdict": "correct",
-  "seconds": 12.0
+  "seconds": 1.6
  },
  {
   "id": "g06",
   "issues": [],
   "corrected": "10 분 정도 늦을 것 같습니다.",
   "model_answer": "10 분 정도 늦을 것 같습니다.",
-  "note": "Your answer is perfect! You correctly used '10 분' for the time, '정도' for 'about', '늦을' for 'be late', and the polite ending '-습니다' which is very appropriate for speaking to your boss. Great job!",
+  "note": "Your answer is perfect! You correctly used '10 분' for the time, '정도' for 'about', and the polite ending '-습니다' which is very appropriate for speaking to your boss. The sentence structure is natural and grammatically correct.",
   "verdict": "correct",
-  "seconds": 14.7
+  "seconds": 1.4
  },
  {
   "id": "g07",
   "issues": [],
   "corrected": "피곤한데 오늘은 일찍 자요.",
   "model_answer": "피곤한데 오늘은 일찍 자요.",
-  "note": "잘게는 '잘게' (roughly) 의 의미로 쓰이는 말입니다. '잘게'가 아니라 '자요' (자다) 가 필요합니다. '피곤하다'는 형용사이므로 '-한데'로 연결했습니다. 문장은 자연스럽고 문법적으로 정확합니다.",
+  "note": "잘게는 '잘게' (roughly/carelessly)라는 뜻으로, 여기서는 '잘' (sleep well)을 의미해야 합니다. '일찍 잘'이 자연스러운 표현입니다.",
   "verdict": "minor",
-  "seconds": 14.1
+  "seconds": 1.6
  },
  {
   "id": "g08",
   "issues": [],
-  "corrected": "요즘 너무 바빠서 운동을 못 했어요.",
+  "corrected": "네, 아주 훌륭합니다! 문장 구조가 완벽하고 자연스럽습니다.",
   "model_answer": "요즘 너무 바빠서 운동을 못 했어요.",
-  "note": "이 답변은 문법적으로 완벽하고 자연스럽습니다. '바쁘다'를 '바빠서'로 연결하여 원인을 설명하고, '못 했다'로 결과 (운동하지 못함) 를 나타냈습니다. '요즘 너무'라는 표현이 일상적인 대화에서 매우 자연스럽게 들리므로, 1 단계 학습자에게도 충분히 이해하기 좋은 좋은 답변입니다.",
-  "verdict": "correct",
-  "seconds": 16.5
+  "note": "이 답변은 '바쁘다'와 '-아서'를 올바르게 사용하여 원인과 결과를 연결했습니다. '요즘 너무'라는 표현이 상황에 딱 맞고, '못 했어요'라는 표현도 매우 자연스럽습니다. 완벽합니다!",
+  "verdict": "minor",
+  "seconds": 1.5
  },
  {
   "id": "g09",
   "issues": [],
   "corrected": "음악을 들으면서 공부해요.",
   "model_answer": "음악을 들으면서 공부해요.",
-  "note": "이 답변이 매우 훌륭합니다. -(으)면서 문법과 듣다 단어를 정확히 사용했고, 자연스러운 한국어 문장을 만들었습니다. '음악을 들으면서'와 '공부해요'의 연결이 매우 자연스럽습니다.",
+  "note": "Your answer is perfect! You correctly used the grammar pattern -(으)면서 to show two actions happening at the same time (listening to music and studying). The word order and conjugation are natural and grammatically correct for a Grade 1 learner.",
   "verdict": "correct",
-  "seconds": 12.5
+  "seconds": 1.4
  },
  {
   "id": "g10",
   "issues": [],
   "corrected": "너무 비싸기 때문에 안 샀어요.",
   "model_answer": "너무 비싸기 때문에 안 샀어요.",
-  "note": "Your answer is perfect! You correctly used the grammar pattern '-기 때문에' to explain the reason (because it was too expensive) and connected it naturally with the verb '안 샀어요' (did not buy). The sentence is grammatically correct, natural, and clearly expresses your intended meaning.",
+  "note": "이 답변이 완벽합니다. '비싸다'를 '기 때문에'와 자연스럽게 연결하여 '비싸서'라는 의미를 명확히 전달했습니다. 문법과 어휘 선택이 모두 정확하며, 한국어 학습자에게 매우 좋은 예시입니다.",
   "verdict": "correct",
-  "seconds": 13.4
+  "seconds": 1.5
  },
  {
   "id": "g11",
   "issues": [],
   "corrected": "저는 운전할 수 있어요.",
   "model_answer": "저는 운전할 수 있어요.",
-  "note": "Your answer is perfect! You correctly used the grammar pattern -(으)ㄹ 수 있다 (to be able to) with the verb 운전하다 (to drive). The sentence structure is natural and grammatically correct. Great job!",
+  "note": "이 답변은 문법 (-(으)ㄹ 수 있다), 단어 선택 (운전하다), 그리고 자연스러운 표현이 모두 정확합니다. '해요'체로 끝나는 것은 한국어 학습자에게 가장 자연스러운 말하기 형태입니다.",
   "verdict": "correct",
-  "seconds": 11.2
+  "seconds": 1.4
  },
  {
   "id": "g12",
   "issues": [],
   "corrected": "다음 달에 부산으로 이사하게 되었습니다.",
-  "model_answer": "다음 달에 부산으로 이사하게 됩니다.",
-  "note": "Your sentence is understandable and grammatically correct! The only small adjustment is changing '-됐어요' to '-됩니다' for better politeness and naturalness in this context. Great job using the grammar correctly!",
+  "model_answer": "다음 달에 부산으로 이사하게 되었습니다.",
+  "note": "The learner's sentence is grammatically correct and natural in casual conversation. The only minor adjustment is the ending, which can be made slightly more formal with '-되었습니다' depending on the context.",
   "verdict": "minor",
-  "seconds": 21.3
+  "seconds": 2.0
  },
  {
   "id": "g13",
   "issues": [],
   "corrected": "늦잠을 자는 바람에 버스를 놓쳤어요.",
   "model_answer": "늦잠을 자는 바람에 버스를 놓쳤어요.",
-  "note": "Your answer is perfect! You used the grammar point '-는 바람에' correctly to show the cause-and-effect relationship (oversleeping caused missing the bus). The word choice and sentence structure are natural and appropriate for a learner. Great job!",
+  "note": "Your sentence is perfect! You correctly used the grammar pattern '-는 바람에' to show the cause-and-effect relationship (because of oversleeping, I missed the bus). The word choice and naturalness are excellent for a Grade 1 learner.",
   "verdict": "correct",
-  "seconds": 11.9
+  "seconds": 1.5
  },
  {
   "id": "g14",
   "issues": [],
   "corrected": "퇴근하고 커피 한 잔 하자.",
   "model_answer": "퇴근하고 커피 한 잔 하자.",
-  "note": "대체로 '한잔'을 쓰지만, '한 잔'으로 띄어 쓰는 것이 더 자연스럽습니다. '하자'는 친구에게 제안할 때 가장 적절한 표현입니다.",
+  "note": "대체로 '한 잔'을 쓰는 것이 더 자연스럽습니다. '한잔'도 쓰이지만, '한 잔'이 더 표준적인 표현입니다.",
   "verdict": "correct",
-  "seconds": 11.1
+  "seconds": 1.5
  },
  {
   "id": "g15",
   "issues": [],
   "corrected": "어제 도와주셔서 감사합니다.",
   "model_answer": "어제 도와주셔서 감사합니다.",
-  "note": "정답입니다! '어제' (昨天), '도와주다' (帮助), '감사합니다' (感谢) 를 자연스럽게 연결한 표현이네요. 특히 '도와주셔서'라는 표현을 사용하여 존칭을 담았으므로, 상급 동료에게도 매우 적절한 어조입니다.",
+  "note": "Perfect answer. The learner used the correct honorific ending (-시-) for a senior colleague and the appropriate time marker (-에/어제). The sentence is natural and polite.",
   "verdict": "correct",
-  "seconds": 11.6
+  "seconds": 1.2
  },
  {
   "id": "g16",
   "issues": [],
   "corrected": "그 식당 생각보다 맛있더라고요.",
   "model_answer": "그 식당 생각보다 맛있더라고요.",
-  "note": "Your sentence is perfect! You correctly used the grammar pattern -더라고요 to express that something was surprising or different from what you expected, and you naturally combined it with the word 맛있다. The word order and sentence structure are natural for a Grade 1 learner. Great job!",
+  "note": "Your answer is perfect! You used the grammar '-더라고요' correctly to express that something was surprising or noteworthy (in this case, that the restaurant was tastier than expected). The word choice and sentence structure are natural and appropriate for a learner. Well done!",
   "verdict": "correct",
-  "seconds": 11.2
+  "seconds": 1.2
  },
  {
   "id": "g17",
   "issues": [],
   "corrected": "저는 수영할 수 있어요.",
   "model_answer": "저는 수영할 수 있어요.",
-  "note": "The learner's sentence means 'I cannot swim.' While grammatically correct for expressing inability, the task likely aimed for the positive form 'I can swim.' The corrected version uses the positive form of the grammar point naturally.",
+  "note": "The learner's answer is grammatically correct but uses the negative form of the grammar pattern. While '수 없다' is a valid use of the pattern, the task typically expects the affirmative form to demonstrate the basic ability. The model answer provides the standard affirmative version.",
   "verdict": "minor",
-  "seconds": 26.5
+  "seconds": 2.3
  },
  {
   "id": "g18",
   "issues": [],
   "corrected": "내일은 못 가요. 일이 좀 바쁘거든요.",
   "model_answer": "내일은 못 가요. 일이 좀 바쁘거든요.",
-  "note": "The learner's answer is excellent. The grammar '-거든요' is used perfectly to explain the reason for not going tomorrow. The word choice '일 좀 바쁘다' (a bit busy with work) is natural and appropriate for this context. The sentence structure is clear and grammatically correct.",
+  "note": "Your answer is perfect! You used the grammar point '-거든요' correctly to explain the reason for not going tomorrow. The word '바쁘다' is also used naturally. The sentence sounds very polite and natural for a learner.",
   "verdict": "correct",
-  "seconds": 12.4
+  "seconds": 1.6
  },
  {
   "id": "g19",
   "issues": [],
-  "corrected": "집에 가서 쉴 거야.",
-  "model_answer": "집에 가서 쉴 거야.",
-  "note": "The learner's answer is very natural for a friend! The only small corrections needed are adding spaces between the words for better readability, which is standard in written Korean. '집에가서' is often heard in speech, but '집에 가서' is clearer in writing. Similarly, '쉴거야' becomes '쉴 거야'.",
-  "verdict": "correct",
-  "seconds": 44.7
+  "corrected": "집에 가서 쉬겠습니다.",
+  "model_answer": "집에 가서 쉬겠습니다.",
+  "note": "The learner's answer is understandable but uses a very casual tone ('거야') which might be too informal depending on the exact relationship. '습니다' is a safer, more polite choice. The word '쉬다' is correct for 'rest'.",
+  "verdict": "minor",
+  "seconds": 2.1
  },
  {
   "id": "g20",
   "issues": [],
-  "corrected": "그거 몰라요.",
-  "model_answer": "몰랐어.",
-  "note": "This is a very natural and common way to say 'I didn't know that' to a friend. '몰랐어' uses the past tense of 'know' (몰라다) with the casual ending '-어'. If you want to be slightly more polite but still casual, '몰라요' is also good. '그거' can be omitted as it's often implied in context.",
+  "corrected": "그거 몰랐어요.",
+  "model_answer": "그건 몰랐어요.",
+  "note": "To a friend, using the honorific '-세요' form ('-었어요') is appropriate and kind. The subject marker '건' is slightly more natural than '거' here, but both are acceptable depending on how casual you want to be.",
   "verdict": "minor",
-  "seconds": 37.5
+  "seconds": 2.1
  },
  {
   "id": "g21",
   "issues": [],
   "corrected": "잠시만 기다려 주세요.",
   "model_answer": "잠시만 기다려 주세요.",
-  "note": "기다려 주세요는 올바른 표현입니다. '기달려'는 오타로, '기다려'가 되어야 합니다. 다른 올바른 표현으로는 '잠시만 기다려 주십시오'를 사용할 수도 있습니다.",
+  "note": "기다려 주세요",
   "verdict": "minor",
-  "seconds": 11.3
+  "seconds": 1.3
  },
  {
   "id": "g22",
   "issues": [],
-  "corrected": "바깥에 비가 오는데 우산 있어요?",
-  "model_answer": "바깥 비가 오는데, 우산 있어요?",
-  "note": "The learner's answer is very close and shows good understanding of the grammar point. The main error was the spelling of the conjunction '데'. The model answer provides a slightly more natural flow by placing '바깥' before '비가 오는데'.",
+  "corrected": "밖에 비가 오는데 우산 있어요?",
+  "model_answer": "밖에 비가 오는데 우산 있어요?",
+  "note": "This sentence is natural and appropriate for a Grade 1 learner. It correctly uses '-는데' to show the relationship between the rain and the need for an umbrella. The tone is polite and friendly.",
   "verdict": "minor",
-  "seconds": 20.9
+  "seconds": 2.5
  },
  {
   "id": "g23",
   "issues": [],
   "corrected": "괜찮아요, 걱정하지 마세요.",
   "model_answer": "괜찮아요, 걱정하지 마세요.",
-  "note": "Your meaning is perfect for a coworker! Just remember to spell '괜찮아요' correctly. Otherwise, it is a natural and polite way to say 'It's okay, don't worry' in Korean.",
+  "note": "Your answer is perfect! '괜찮아요' is the natural and kind way to say 'It's okay' in this context, and '걱정하지 마세요' correctly translates 'don't worry.' The tone is appropriate for a coworker. Well done!",
   "verdict": "minor",
-  "seconds": 14.7
+  "seconds": 1.5
  },
  {
   "id": "g24",
   "issues": [],
-  "corrected": "내일 보겠습니다.",
-  "model_answer": "내일 보겠습니다.",
-  "note": "The learner's answer is grammatically perfect but too formal for a coworker. '보겠습니다' is the standard, polite way to say 'I will see you' in a professional yet friendly context. '뵙다' implies a higher degree of respect that might not be necessary here.",
+  "corrected": "내일 봐요.",
+  "model_answer": "내일 봐요.",
+  "note": "뵙다 (beopda) 는 상대방을 존중하거나, 상대방이 자신을 만나는 상황을 쓸 때 주로 사용합니다. 동료 (coworker) 와는 '봐요'가 더 자연스럽고 일상적인 표현입니다.",
   "verdict": "minor",
-  "seconds": 18.9
+  "seconds": 1.6
  },
  {
   "id": "g25",
   "issues": [],
   "corrected": "오늘 좀 늦을 것 같아요.",
   "model_answer": "오늘 좀 늦을 것 같아요.",
-  "note": "The learner's sentence is grammatically correct in meaning and word choice, but it needs a space to be properly written. The use of '좀' (a bit) and '요' (polite ending) is natural for a learner speaking to someone they know well or in a casual setting.",
+  "note": "Your sentence is almost perfect! You used the grammar correctly and the word choice is natural. Just remember to add a space between '늦을' and '것' in Korean writing. Otherwise, it's a great answer!",
   "verdict": "correct",
-  "seconds": 15.3
+  "seconds": 1.7
  },
  {
   "id": "g26",
   "issues": [],
   "corrected": "언젠가 거기 가보고 싶어요.",
   "model_answer": "언젠가 거기 가보고 싶어요.",
-  "note": "The learner's answer is mostly correct but has a minor grammatical error in the verb form. The correct form is '가고 싶어요' or more naturally '가보고 싶어요'. The rest of the sentence is correct.",
+  "note": "Your answer was very close! The only small mistake was the verb ending. Remember to add '-고' before '-싶다'. Also, in Korean, we usually add the particle '-에' after a place name when talking about going there, so '거기에' sounds very natural.",
   "verdict": "minor",
-  "seconds": 33.9
+  "seconds": 2.0
  },
  {
   "id": "g27",
   "issues": [],
   "corrected": "저는 매운 음식을 좋아해요.",
   "model_answer": "저는 매운 음식을 좋아해요.",
-  "note": "The learner's answer is very close and understandable, but the particle usage is slightly off. Using '-을' makes it grammatically correct for a coworker conversation.",
+  "note": "The learner's answer is very close and shows good understanding of the vocabulary. The only small error is the particle usage. In Korean, we say 'A 를 B 하다' (do B to A), so '음식' becomes '음식을'. This is a common mistake for learners, but it doesn't change the meaning much. Keep practicing!",
   "verdict": "minor",
-  "seconds": 17.2
+  "seconds": 2.7
  },
  {
   "id": "g28",
   "issues": [],
   "corrected": "카페에서 친구를 만났어요.",
   "model_answer": "카페에서 친구를 만났어요.",
-  "note": "The learner's answer is grammatically understandable but slightly unnatural due to the preposition. In Korean, we use '에서' to indicate the place where an action takes place. The rest of the sentence is perfect for a Grade 1 learner.",
+  "note": "The learner's answer is grammatically understandable but uses the wrong preposition. In Korean, we use '에서' to indicate the place where an action happens, while '에' is used for location of existence or arrival. The rest of the sentence is natural and polite for a coworker.",
   "verdict": "minor",
-  "seconds": 17.1
+  "seconds": 2.2
  },
  {
   "id": "g29",
   "issues": [],
-  "corrected": "지하철로 회사에 가요.",
-  "model_answer": "지하철로 회사에 가요.",
-  "note": "지하철을 회사에 가요는 '지하철을 타고 회사에 가요'라는 뜻이 되지만, 한국어에서는 '지하철로'를 사용하여 이동 수단을 나타내는 것이 더 자연스럽습니다.",
+  "corrected": "회사에 지하철로 가요.",
+  "model_answer": "회사에 지하철로 가요.",
+  "note": "The learner's answer was understandable but contained a grammatical error regarding the preposition for means of transport. The corrected version uses '로' to indicate 'by subway' and places the destination '회사' at the beginning for better flow, though '지하철로 회사에 가요' is also perfectly natural.",
   "verdict": "minor",
-  "seconds": 13.8
+  "seconds": 37.0
  },
  {
   "id": "g30",
   "issues": [],
   "corrected": "내 남동생은 나보다 키가 커요.",
   "model_answer": "내 남동생은 나보다 키가 커요.",
-  "note": "이 문장은 친구에게 말하고 있으므로 존댓말 (해요체) 을 사용하는 것이 자연스럽습니다. '나만큼' 대신 '나보다'를 사용하여 비교를 명확히 하고, '남동생' 앞에 '내'를 붙여 소유 관계를 부드럽게 표현했습니다. '키가 커'는 현재 상태를 나타내는 데 적합하며, 문장 끝에 '요'를 붙여 부드러운 어조를 만들었습니다.",
+  "note": "This sentence is natural and polite for speaking to a friend. It correctly uses '보다' for comparison and ends with the polite ending '-요'.",
   "verdict": "minor",
-  "seconds": 16.2
+  "seconds": 2.5
  },
  {
   "id": "g31",
   "issues": [],
-  "corrected": "엄마에게 선물을 줬어.",
-  "model_answer": "엄마에게 선물을 줬어.",
-  "note": "The learner's answer is understandable and natural for a casual conversation with a friend. The only grammatical error is the missing recipient marker '에게'. The rest of the sentence structure and vocabulary are appropriate for the situation.",
+  "corrected": "엄마한테 선물을 줬어.",
+  "model_answer": "엄마한테 선물을 줬어.",
+  "note": "The learner's answer is understandable and grammatically close, but using the object marker '-을' with the person being given the gift is incorrect. The correct structure requires the dative marker '-한테' or '-에게' for the recipient. The rest of the sentence is natural for a friend.",
   "verdict": "minor",
-  "seconds": 20.8
+  "seconds": 3.1
  },
  {
   "id": "g32",
   "issues": [],
   "corrected": "한국 역사에 관심이 있어요.",
   "model_answer": "한국 역사에 관심이 있어요.",
-  "note": "The learner's answer is very close and would be understood perfectly by a native speaker. The main adjustment needed is adding the particle '에' after '한국 역사' to make the sentence grammatically standard. The rest of the sentence is excellent for a beginner.",
+  "note": "This is a very good answer for a Grade 1 learner. It correctly uses the verb ending '-어요' for polite speech with a coworker and uses the correct preposition '에' with the verb '관심'. The meaning is clear and natural.",
   "verdict": "minor",
-  "seconds": 27.5
+  "seconds": 2.1
  },
  {
   "id": "g33",
   "issues": [],
-  "corrected": "우리 토요일에 만날기로 했어요.",
-  "model_answer": "우리 토요일에 만날기로 했어요.",
-  "note": "The learner's attempt shows they know the vocabulary and the general idea, but the grammatical pattern '-기로 하다' was applied incorrectly. The correct form is verb stem + '-기로 하다'.",
+  "corrected": "우리 토요일에 만나기로 했어요.",
+  "model_answer": "우리 토요일에 만나기로 했어요.",
+  "note": "The learner's answer used '만나기' instead of the verb stem '만나-'. The correct structure is '만나 + 기로 하다' (to decide to meet). The meaning is correct, but the grammar form was slightly off.",
   "verdict": "minor",
-  "seconds": 17.8
+  "seconds": 2.0
  },
  {
   "id": "g34",
-  "issues": [],
-  "corrected": "나만 알아요.",
-  "model_answer": "나만 알아요.",
-  "note": "The learner's answer '나도 알아' conveys 'I know too', which is different from 'Only I know'. The correct translation for 'Only I know' is '나만 알아요'. The particle '-만' is crucial here to express exclusivity.",
-  "verdict": "minor",
-  "seconds": 42.2
+  "error": "the model returned an invalid Grade twice",
+  "seconds": 68.6
  },
  {
   "id": "g35",
   "issues": [],
   "corrected": "회의가 연기**는데** 몰랐어요.",
   "model_answer": "회의가 연기**는데** 몰랐어요.",
-  "note": "The learner's sentence is grammatically correct and natural. The structure '...는데' (indicating a contrast or unexpected fact) is used perfectly to show that the postponement was surprising because the speaker didn't know about it. No corrections are needed.",
+  "note": "The learner's answer is grammatically correct and natural. The structure 'A 하는데 B' (A happened, but I didn't know B) is used perfectly here. No corrections are needed.",
   "verdict": "minor",
-  "seconds": 13.6
+  "seconds": 1.5
  },
  {
   "id": "g36",
   "issues": [],
   "corrected": "문이 저절로 열렸습니다.",
-  "model_answer": "문이 저절로 열렸습니다.",
-  "note": "Your answer '문이 저절로 열었어' is grammatically correct and very natural for talking to a close friend! The word '저절로' is excellent. If you want to sound a bit more polite even to a friend in a general context, you could say '열렸습니다'. Both are right!",
+  "model_answer": "문이 저절로 열렸어.",
+  "note": "The learner's answer is actually quite good! The grammar is correct, and the word choice is natural. However, since the situation is talking to a friend, using the casual ending '-었어' is perfectly fine and more natural than '-었어' in this context. The only issue is that the original answer used '-었어' which is correct for a friend, but the model answer suggests '-었어' which is also correct. Let me re-evaluate.",
   "verdict": "minor",
-  "seconds": 22.8
+  "seconds": 36.9
  },
  {
   "id": "g37",
   "issues": [],
   "corrected": "내 핸드폰 화면이 깨졌어요.",
   "model_answer": "내 핸드폰 화면이 깨졌어요.",
-  "note": "This answer is natural, polite, and grammatically correct for a friend. It uses the correct verb for screens and includes a polite ending.",
+  "note": "친구에게 말하더라도 '내'를 포함하고, '깨지다'라는 표현을 사용하는 것이 자연스럽습니다.",
   "verdict": "minor",
-  "seconds": 22.2
+  "seconds": 1.6
  },
  {
   "id": "g38",
   "issues": [],
   "corrected": "모기가 물었어요.",
   "model_answer": "모기가 물었어요.",
-  "note": "The learner's answer '모기가 물렸어' is grammatically understandable but slightly too casual for a general statement to a friend. Using '물었어요' makes it sound more natural and polite while still being friendly.",
+  "note": "When talking to a friend, you can also say '모기가 물었어' (using the plain form) if you are very close. However, '물었어요' is always correct and polite enough for most situations.",
   "verdict": "minor",
-  "seconds": 18.6
+  "seconds": 2.8
  },
  {
   "id": "g39",
   "issues": [],
-  "corrected": "다음 주에 부산에 가요.",
-  "model_answer": "다음 주에 부산에 가요.",
-  "note": "The learner's answer used the past tense ending '-어요', which means 'I went'. Since the original sentence is about a future plan ('going to'), it should use the future tense '-가요' or '-갈 거예요'. In a professional setting with a coworker, '-가요' is polite and natural.",
-  "verdict": "minor",
-  "seconds": 17.0
+  "corrected": "다음 주에 부산에 갈 거예요.",
+  "model_answer": "다음 주에 부산에 갈 거예요.",
+  "note": "의미가 정확하지 않습니다. '다음 주'는 미래이므로, 과거 완료형인 '갔어요' 대신 미래의 계획이나 의도를 나타내는 '갈 거예요'를 사용해야 합니다. 동료에게 미래 계획을 공유하는 상황에서는 '~할 거예요'가 가장 자연스러운 표현입니다.",
+  "verdict": "wrong",
+  "seconds": 2.2
  },
  {
   "id": "g40",
   "issues": [],
-  "corrected": "날씨가 춥는데 어디 가요?",
-  "model_answer": "날씨가 춥는데 어디 가요?",
-  "note": "Your answer is perfect! You correctly used the grammar pattern '-는데' to connect the fact that 'it is cold' with the question 'where are you going?'. The word choice and sentence structure are natural and grammatically correct for a learner. Great job!",
-  "verdict": "correct",
-  "seconds": 10.8
+  "corrected": "날씨가 춥는데 어디 가세요?",
+  "model_answer": "날씨가 춥는데 어디 가세요?",
+  "note": "The learner's sentence is grammatically correct, but the politeness level could be improved. '-요' is used correctly, but the verb ending should be adjusted to match the politeness level of the conversation. In this case, '-세요' is more appropriate for a polite conversation.",
+  "verdict": "minor",
+  "seconds": 3.1
  },
  {
   "id": "g41",
-  "error": "the model returned an invalid Grade twice",
-  "seconds": 773.0
+  "issues": [],
+  "corrected": "친구를 이사를 도와주었어요.",
+  "model_answer": "친구를 이사를 도와주었어요.",
+  "note": "이 문장은 동료에게 말하므로 존댓말을 사용하는 것이 적절합니다. '도와주다'는 '도움'을 '주다'는 뉘앙스를 포함하여, 타인을 위해 일을 해준다는 뉘앙스를 더 잘 전달합니다.",
+  "verdict": "minor",
+  "seconds": 2.8
  },
  {
   "id": "g42",
   "issues": [],
-  "corrected": "밥 먹었어요?",
+  "corrected": "밥 먹으셨어요?",
   "model_answer": "밥 먹으셨어요?",
-  "note": "When speaking to a boss, it is polite to use the honorific suffix '-ss-i-t-taeyo' (먹으셨어요) instead of the casual '-eot-taeyo' (먹었어). Using '밥 먹었어?' might sound too informal. '밥 먹으셨어요?' is the natural and respectful way to ask this in a professional context.",
+  "note": "When speaking to a boss, always use honorifics (존댓말). '먹었**어**' is too casual. The correct polite form is '먹으시**셨**어요'.",
   "verdict": "minor",
-  "seconds": 14.7
+  "seconds": 2.2
  },
  {
   "id": "g43",
   "issues": [],
-  "corrected": "회의가 다음주로 미뤄졌어요.",
+  "corrected": "회의가 다음 주로 미뤄졌어요.",
   "model_answer": "회의가 다음 주로 미뤄졌어요.",
-  "note": "이 문장은 존칭을 사용하고, '다음 주로'라는 표현을 사용하여 자연스러운 한국어 문장을 만들었습니다.",
+  "note": "의미는 정확히 전달되었지만, 직장 내 상사에게 말씀하실 때는 문장을 조금 더 완결시키고 존칭을 사용하는 것이 좋습니다. '다음 주로'를 추가하면 '다음 주에'보다 더 자연스러운 표현이 됩니다.",
   "verdict": "minor",
-  "seconds": 19.2
+  "seconds": 2.1
  },
  {
   "id": "g44",
   "issues": [],
   "corrected": "할머니가 자고 있어요.",
   "model_answer": "할머니가 자고 있어요.",
-  "note": "이 답변은 완벽합니다. '할머니'는 할머니를, '가'는 주어를 나타내는 조사, '자고 있어요'는 '잠을 자다'라는 동사를 현재 진행형으로 올바르게 표현했습니다. 동료에게 전하는 상황에도 자연스럽고 정중한 어조입니다.",
+  "note": "Perfect answer! Your Korean is natural and grammatically correct. The use of '할머니' (grandmother) and the verb '자다' (to sleep) with the present continuous ending '-고 있어요' fits the situation perfectly. It sounds polite enough for a coworker while remaining clear and concise.",
   "verdict": "correct",
-  "seconds": 11.1
+  "seconds": 1.4
  },
  {
   "id": "g45",
   "issues": [],
   "corrected": "고객님, 이름이 무엇인가요?",
   "model_answer": "고객님, 이름이 무엇인가요?",
-  "note": "이 답변은 존칭과 적절한 문법 구조를 사용하여 직장 내 고객에게 정중하게 이름을 묻는 표준적인 표현입니다.",
+  "note": "In a professional setting, it's important to be polite. Using '무엇인가요' instead of '뭐야' shows respect. Also, addressing the customer as '고객님' is a good practice.",
   "verdict": "minor",
-  "seconds": 18.4
+  "seconds": 36.5
  },
  {
   "id": "g46",
   "issues": [],
   "corrected": "오늘 밤에 오시나요?",
   "model_answer": "오늘 밤에 오시나요?",
-  "note": "This is a natural and polite way to ask a close friend. If the friendship is extremely casual, you could also say '오늘 밤에 오냐?' but '오시나요?' is perfect for most close relationships.",
+  "note": "Since this is for a close friend, keep the tone friendly but polite. '-요' is the standard ending for this situation. '-십니까' is too formal and distant for a friend.",
   "verdict": "minor",
-  "seconds": 21.6
+  "seconds": 2.3
  },
  {
   "id": "g47",
   "issues": [],
   "corrected": "선생님이 그렇게 말씀하셨어요.",
   "model_answer": "선생님이 그렇게 말씀하셨어요.",
-  "note": "The learner's answer is understandable and grammatically correct, but '말씀하셨어요' is the standard polite form for a teacher. In a workplace setting, using honorifics is important.",
+  "note": "말씀하다는 존칭으로, 선생님에게나 선생님에게서 들은 말을 말할 때 사용합니다. 말씀하다를 사용해도 문법적으로 틀린 것은 아니지만, 존칭을 사용해야 더 자연스럽습니다.",
   "verdict": "minor",
-  "seconds": 15.2
+  "seconds": 1.7
  },
  {
   "id": "g48",
   "issues": [],
   "corrected": "저는 나중에 전화하겠습니다.",
   "model_answer": "저는 나중에 전화하겠습니다.",
-  "note": "The learner's answer incorrectly uses the humble form '하시겠습니다' which implies the listener is doing the action. The correct form should be '전화하겠습니다' to indicate that the speaker ('I') will make the call. The subject '저는' can be omitted for naturalness, but including it is also acceptable.",
+  "note": "This is a polite and natural way to say 'I'll call you later' to a boss. It uses the humble form '-하겠습니다' which is appropriate for speaking to someone of higher status.",
   "verdict": "minor",
-  "seconds": 26.5
+  "seconds": 2.1
  },
  {
   "id": "g49",
   "issues": [],
   "corrected": "많이 드세요.",
   "model_answer": "많이 드세요.",
-  "note": "The learner's answer '많이 먹어요' is understandable but not polite enough for the situation. When speaking to older guests, we must use honorifics. '드세요' is the polite form of '드시다' (to eat), and it is the standard way to say 'Please eat' in this context.",
+  "note": "When speaking to older guests, always use honorifics. '드시다' is the honorific form of '먹다'. The ending '-세요' turns the statement into a polite request.",
   "verdict": "minor",
-  "seconds": 23.6
+  "seconds": 2.6
  },
  {
   "id": "g50",
   "issues": [],
-  "corrected": "비가 와서 우산을 가져와 주세요.",
-  "model_answer": "비가 와서 우산을 챙겨가세요.",
-  "note": "The learner's sentence is grammatically correct but slightly unnatural. A more natural way to express this request is '비가 와서 우산을 챙겨가세요' (Please take an umbrella with you because it's raining). The learner used '가져가세요', which is also correct but less common in this context. The key point is the correct use of '-아/어서' to connect the cause (it's raining) and the effect (taking an umbrella).",
-  "verdict": "minor",
-  "seconds": 76.7
+  "corrected": "비가 와서 우산을 가져가세요.",
+  "model_answer": "비가 와서 우산을 가져가세요.",
+  "note": "Your sentence is perfect! You correctly used the '-아/어서' grammar to connect '비가 오다' (to rain) with the action of taking an umbrella. The word choice and politeness level are natural for this situation. Great job!",
+  "verdict": "correct",
+  "seconds": 1.5
  },
  {
   "id": "g51",
   "issues": [],
-  "corrected": "밥을 먹으면서 친구가 TV 를 봐요.",
-  "model_answer": "밥을 먹으면서 친구가 TV 를 봐요.",
-  "note": "The learner's answer is already correct. No changes are needed. The sentence clearly shows two simultaneous actions: eating rice and watching TV.",
-  "verdict": "correct",
-  "seconds": 16.6
+  "corrected": "밥을 먹으면서 친구가 TV 를 보다.",
+  "model_answer": "친구가 TV 를 보며 밥을 먹다.",
+  "note": "The learner's sentence is understandable but grammatically incorrect in the verb ending. The corrected version uses the proper '-ㅂ니다' form (or '-다' in declarative sentences) and improves the natural flow of the sentence.",
+  "verdict": "minor",
+  "seconds": 2.1
  },
  {
   "id": "g52",
   "issues": [],
   "corrected": "비가 오는 바람에 소풍이 **불행**했어요.",
   "model_answer": "비가 오는 바람에 소풍이 **불행**했어요.",
-  "note": "The learner's grammar structure (Subject + -는 바람에 + Predicate) is perfect. The error lies only in the logical connection between the cause (rain) and the effect (fun). A better sentence would be: '비가 오는 바람에 소풍이 **망**했어요.' (Because it rained, the picnic was ruined.) or '비가 오는 바람에 소풍이 **즐거워**질 수 없었어요.' (Because it rained, we couldn't have a fun picnic.)",
+  "note": "The learner's sentence is grammatically correct in structure but logically incorrect in meaning. '는 바람에' implies a regrettable or negative outcome. For example, '비가 오는 바람에 소풍이 **취소**되었어요' (The picnic was cancelled because it rained) or '비가 오는 바람에 소풍이 **불행**했어요' (The picnic was unhappy because it rained) would be appropriate.",
   "verdict": "minor",
-  "seconds": 21.8
+  "seconds": 2.6
  },
  {
   "id": "g53",
   "issues": [],
-  "corrected": "그 사람을 작년에 알게 되었어요.",
-  "model_answer": "그 사람을 작년에 알게 되었어요.",
-  "note": "The corrected sentence uses '알다' + '-게 되다' to mean 'became known to'. This structure naturally expresses that the state of knowing someone changed over time. Other correct variations could include '그 사람을 작년에 알게 되었습니다' (more formal) or '그 사람을 작년에 알게 됐어요' (colloquial).",
+  "corrected": "그 사람을 작년에 알게 되었습니다.",
+  "model_answer": "그 사람을 작년에 알게 되었습니다.",
+  "note": "The learner correctly used the past tense ending '-았어요' for the verb '알다', but the task specifically asked to use the grammar pattern '-게 되다'. The corrected version changes the verb form to '알아-게 되-다' (알게 되다) and uses the polite past form '-되었습니다' to match the learner's register.",
   "verdict": "minor",
-  "seconds": 21.4
+  "seconds": 2.5
  },
  {
   "id": "g54",
   "issues": [],
-  "corrected": "아파서 학교에 안 갔어요.",
-  "model_answer": "아파서 학교에 안 갔어요.",
-  "note": "The learner's answer is grammatically correct and natural for everyday speech, but it does not use the required '-기 때문에' structure. A correct answer using the target grammar would be: '아파서 학교에 안 갔어요.' -> '아파서 학교에 안 갔어요.' (Wait, this still doesn't use '-기 때문에'. Let me correct the model answer properly).",
-  "verdict": "correct",
-  "seconds": 19.1
+  "corrected": "아프기 때문에 학교에 안 갔어요.",
+  "model_answer": "아프기 때문에 학교에 안 갔어요.",
+  "note": "The learner's sentence is natural and correct Korean, but it misses the specific grammar point requested in the task. The corrected version simply adds the required '-기 때문에' structure while keeping the rest of the sentence the same.",
+  "verdict": "minor",
+  "seconds": 2.0
  },
  {
   "id": "g55",
   "issues": [],
-  "corrected": "샤워를 할게요.",
-  "model_answer": "샤워할게요.",
-  "note": "The learner's answer is understandable and shows good effort, but using the correct verb and a slightly more natural ending makes it sound more native-like.",
+  "corrected": "샤워를 할게.",
+  "model_answer": "샤워할게.",
+  "note": "The learner's answer is very close and natural for a close friend. The only issue is the verb choice. 'Shawareul bangeulge' sounds slightly unnatural to native ears, whereas 'Shawareul halge' is the standard way to say this.",
   "verdict": "minor",
-  "seconds": 17.1
+  "seconds": 2.4
  },
  {
   "id": "g56",
   "issues": [],
-  "corrected": "감기를 걸었어요.",
-  "model_answer": "감기를 걸었어요.",
-  "note": "This is a very common and natural way to say it to a coworker. It is polite and correct. You can also say '감기 걸렸어요' (more casual) if you want to sound slightly less formal, but '걸었어요' is perfectly safe for a coworker.",
+  "corrected": "감기 걸렸어요.",
+  "model_answer": "감기 걸렸어요.",
+  "note": "This is a very common and natural way to say it to a coworker. It is polite and friendly. You can also say '감기 걸렸습니다' for slightly more formal situations, but '걸렸어요' is perfect for talking to a colleague.",
   "verdict": "minor",
-  "seconds": 18.4
+  "seconds": 2.1
  },
  {
   "id": "g57",
   "issues": [],
-  "corrected": "두 명으로 예약을 해 주세요.",
-  "model_answer": "두 명으로 예약해 주세요.",
-  "note": "이 답변은 식당 직원에게 할 때 가장 자연스럽고 정확한 표현입니다. '만들다' 대신 '해다'를 사용하고, '두 명으로'라는 표현을 사용하여 문맥에 맞는 어휘를 선택했습니다.",
+  "corrected": "두 명 예약을 해 주세요.",
+  "model_answer": "두 명 예약해 주세요.",
+  "note": "The learner's sentence is understandable but slightly unnatural. In Korean, we typically use the verb '하다' (to do) with the object '예약' (reservation) and omit the object marker '을' in casual or polite requests, or simply use the verb form directly. '만들다' (to make) is rarely used for reservations; '예약하다' (to make a reservation) is the standard term. Also, '해 주세요' is more natural than '만들어 주세요' in this context.",
   "verdict": "minor",
-  "seconds": 17.5
+  "seconds": 2.1
  },
  {
   "id": "g58",
   "issues": [],
-  "corrected": "자료를 다 준비했습니다.",
-  "model_answer": "자료를 다 준비했습니다.",
-  "note": "In a business setting, '자재' (materials/supplies) or '준비물' (prepared items) is often more precise than '재료' (ingredients/materials). If you specifically mean work documents or files, '문서' or '자료' might also be better. However, '자료를 다 준비했습니다' is the most natural standard correction for general work materials.",
+  "corrected": "모든 재료를 준비했습니다.",
+  "model_answer": "모든 재료를 준비했습니다.",
+  "note": "이 문장은 문법적으로 완전히 맞습니다. '다'를 '모든'으로 바꾸거나, '다'를 생략해도 자연스러운 비즈니스 표현이 됩니다. 다만, 'I've got'의 뉘앙스 (이미 준비되어 있다는 상태) 을 강조하고 싶다면 '모든 재료를 준비해 두었습니다'라고 하면 더 완벽할 수 있습니다. 하지만 현재 답변도 충분히 자연스럽고 정확한 표현입니다.",
   "verdict": "minor",
-  "seconds": 22.0
+  "seconds": 2.1
  },
  {
   "id": "g59",
   "issues": [],
-  "corrected": "체중을 줄였어.",
-  "model_answer": "체중을 줄였어.",
-  "note": "This is the most natural and common way to say 'I lost weight' to a friend. It sounds friendly and accurate. You could also say '무게를 감았어' (muge-gam-ass-eo), which is also correct and very common, but '체중을 줄였어' is slightly more standard.",
+  "corrected": "몸무게를 줄였어.",
+  "model_answer": "나 몸무게를 줄였어.",
+  "note": "The learner's answer is grammatically correct in structure (Object + Verb + Particle + Subject marker), but the vocabulary choice is unnatural. '몸무게를 줄이다' is the standard expression for 'to lose weight'. Since the situation is talking to a friend, the informal ending '-었어' is perfect. Adding the subject '나' (I) makes it slightly more complete, though omitting it is also very common in casual speech.",
   "verdict": "minor",
-  "seconds": 23.7
+  "seconds": 2.5
  },
  {
   "id": "g60",
   "issues": [],
   "corrected": "불을 켜 주세요.",
   "model_answer": "불을 켜줘.",
-  "note": "To a friend, you can use the casual form '-줘' instead of the more polite '-주세요', but the object marker and verb ending must be correct.",
+  "note": "Since the situation is 'to a friend', a casual tone is appropriate. '불을 켜줘' is natural and friendly. If you want to be slightly more polite even with a friend, '불을 켜주세요' works too.",
   "verdict": "minor",
-  "seconds": 13.5
+  "seconds": 2.8
  },
  {
   "id": "g61",
   "issues": [],
   "corrected": "햇빛이 강하니까 모자를 써야 해.",
-  "model_answer": "날씨가 맑으니까 모자를 써야 해.",
-  "note": "말하기는 자연스럽지만, 문법과 어휘 선택을 조금 더 다듬으면 더 완벽한 표현이 될 것입니다.",
+  "model_answer": "햇빛이 강하니까 모자를 써야 해.",
+  "note": "The learner's answer conveys the meaning well but has small grammatical errors. '모자 입어' should be '모자를 써야 해' or '모자를 입어야 해'. Using '쓰다' (seuda) is very common for hats in Korea.",
   "verdict": "minor",
-  "seconds": 18.6
+  "seconds": 2.9
  },
  {
   "id": "g62",
   "issues": [],
-  "corrected": "저는 실수를 했습니다.",
-  "model_answer": "저는 실수를 했습니다.",
-  "note": "실수를 '만들다'가 아니라 '하다'로 표현하는 것이 자연스럽습니다. '저는'으로 시작하여 주어와 주술어를 명확히 하는 것이 좋습니다.",
+  "corrected": "제가 실수를 했어요.",
+  "model_answer": "실수했어요.",
+  "note": "This is a very common and natural way to say it. If you want to be slightly more polite but still casual for a coworker, you can say '저 실수했어요.' or '제가 실수했어요.' The verb '만들다' is the main issue here.",
   "verdict": "minor",
-  "seconds": 10.8
+  "seconds": 2.3
  },
  {
   "id": "g63",
-  "error": "the model returned an invalid Grade twice",
-  "seconds": 740.0
+  "issues": [],
+  "corrected": "어제 너무 피곤했어서 일찍 **자**서.",
+  "model_answer": "어제 너무 피곤했어서 일찍 자서.",
+  "note": "말하기 실수 (자세/잣) 를 교정했습니다. 문장 구조와 어휘 선택은 훌륭합니다. 친구에게 말하기 위한 자연스러운 표현이네요.",
+  "verdict": "minor",
+  "seconds": 2.0
  },
  {
   "id": "g64",
   "issues": [],
   "corrected": "날씨가 좋아서 산책하러 가자.",
   "model_answer": "날씨가 좋아서 산책하러 가자.",
-  "note": "이 답변은 완벽합니다. '날씨가 좋아서' (because the weather is nice) 와 '산책하러 가자' (let's go for a walk) 가 자연스럽고 문법적으로 정확합니다. 친구에게 말할 때 사용하는 적절한 어조 (존댓말) 를 잘 사용했습니다.",
+  "note": "Your answer is perfect! You used the correct grammar structure (Noun + -아/어 + 서 + Verb + -자) to express 'because' and the suggestion 'let's'. The word choice is natural and polite enough for a friend. Great job!",
   "verdict": "correct",
-  "seconds": 12.2
+  "seconds": 1.5
  },
  {
   "id": "g65",
   "issues": [],
   "corrected": "아파서 보고서를 끝내지 못했어요.",
-  "model_answer": "아파서 보고서를 끝내지 못했어요.",
-  "note": "This answer is polite and natural for speaking to a boss. It uses the humble/polite ending '-었어요' and the correct verb form '끝내지 못했'.",
+  "model_answer": "보고서를 끝내지 못했어요. 제가 아파서 그랬어요.",
+  "note": "The learner's answer is grammatically correct in meaning but lacks the necessary politeness level for a workplace conversation with a superior. The correction focuses on elevating the register from casual to polite.",
   "verdict": "minor",
-  "seconds": 16.1
+  "seconds": 2.1
  },
  {
   "id": "g66",
   "issues": [],
   "corrected": "엄마를 위한 선물을 찾고 있어요.",
-  "model_answer": "점포 직원에게 존댓말을 사용해야 합니다. '찾고 있어요'를 '찾고 있습니다'로 바꾸고, '엄마를 위한'이라고 명확히 하면 더 자연스럽습니다.",
-  "note": "학습자의 답변은 의미 전달에는 성공적이지만, 상황 (점포 직원) 에게 맞는 존댓말과 문장 순서를 다듬으면 훨씬 더 자연스러운 표현이 됩니다.",
+  "model_answer": "엄마를 위한 선물을 찾고 있어요.",
+  "note": "선물과 엄마의 관계를 명확히 하기 위해 '를 위한'을 추가했습니다. '찾고 있어요'는 '찾아다니고 있다'라는 뜻이 될 수 있어, '찾고 있다'를 쓰는 것이 더 자연스럽습니다.",
   "verdict": "minor",
-  "seconds": 25.2
+  "seconds": 36.0
  }
 ]
