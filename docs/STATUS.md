@@ -7,10 +7,10 @@ DECISIONS "2026-11-23 Unit 7 plan".
 - **Unit 7 build order** (each step tested before the next):
   1. Done: `MBXREAD_URL` opt-in (empty default = no MbxRead calls, no notes; importer says
      "skipped, MBXREAD_URL not set"). The author's `.env` sets it; live bot reaches MbxRead.
-  2. Own krdict client `mbxchat/krdict.py`: built and tested offline (cache table
-     `krdict_cache`, 3 s gap, 30 min pause after a failure stored in `setting`, survives
-     restarts). `search` = 1 request, `examples` = 1 more, only when needed. **Waiting on the
-     user's `KRDICT_API_KEY` in `.env`** (MbxRead's key can be reused); then one live request.
+  2. Done: own krdict client `mbxchat/krdict.py` (cache table `krdict_cache`, 3 s gap, 30 min
+     pause after a failure stored in `setting`, survives restarts; `search` = 1 request,
+     `examples` = 1 more, only when needed). Live: key in `.env`, one request (최적화 → 0
+     entries: not in the learners' dictionary); parsing checked on MbxRead's cached answers.
   3. `mcp` service: read-only tools `krdict_lookup`, `library_examples` (only with
      `MBXREAD_URL`), `known_items`; the bot loads them through LangChain's MCP adapters. Pin it.
   4. Capture agent behind `CAPTURE_MODE` (default `workflow`): kind + Korean by the agent,

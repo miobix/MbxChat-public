@@ -284,7 +284,10 @@ tool-calling check, 20 of 20 runs valid, right path every time, 0.65 s median; n
 
 - **The agent decides:** what kind of capture this is (a **word**: "the word for optimization";
   or a **sentence**), the Korean (word choice, the two drafts), and what to do with what the
-  tools return (a word not in the dictionary → pick another).
+  tools return. krdict is a learners' dictionary and misses many work words (최적화 returned
+  nothing): a word path with no entry keeps the word, says "not in the learners' dictionary",
+  and leans on library or marked model-written examples; a sentence draft's unknown word is
+  still a reason to reconsider it.
 - **Grounding is enforced, not chosen:** in the check, given the choice, the model skipped the
   dictionary on 19 of 20 sentence captures and wrote its own examples for 9 of 10 words. So code
   always runs the dictionary check on the chosen word (or the drafts' rare lemmas) and fetches
