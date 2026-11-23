@@ -33,17 +33,15 @@ flowchart LR
     bot[bot: python-telegram-bot + LangGraph]
     mcp[mcp: tool server]
     db[(Postgres: items, memory, checkpoints)]
-    gec[gec: small Korean GEC model]
     phoenix[Phoenix: traces + evals]
     prom[Prometheus] --> grafana[Grafana]
   end
   subgraph mbxread [compose project: mbxread, separate repo]
     reader[MbxRead API :8002]
-    llm[ollama: gemma4:e4b, CPU]
+    llm[ollama: gemma4:e4b, GPU]
   end
   bot --> mcp
   bot --> db
-  bot --> gec
   bot -->|host.docker.internal:11434| llm
   bot -.OTel.-> phoenix
   prom -.scrape /metrics.-> bot
@@ -67,7 +65,8 @@ flowchart LR
   calls after one failure. One client per IP keeps the "never burst" rule in one place (krdict
   has blocked this IP before). MbxChat still spaces its own lookups 3 s apart.
 - **CPU only.** Every model must be usable on CPU. GPU passthrough gets one timeboxed attempt
-  (unit 6); it is a speed-up, never a requirement.
+  (unit 6); it is a speed-up, never a requirement. Unit 6b got it working (Docker Desktop update):
+  gemma grades in ~1.4 s on GPU against ~11 s on CPU.
 
 ## 3. Fixed constraints
 
@@ -128,13 +127,14 @@ first:
 
 0. **Reference match:** the answer equals the reference (spaces and punctuation ignored) → correct,
    no model call.
-1. **Rules + small GEC model:** kiwipiepy and `dadeum-gec-base` (KoBART, 124M, ~120 ms on CPU)
-   flag spelling, spacing and particle slips. They do not decide the verdict: open GEC models are
-   trained on native writing and miss most learner errors (word choice, voice, register), so
-   their fixes go to the LLM as hints and feed the word diff.
-2. **Local LLM** decides the verdict and explains. Shortlist (2026-11-22, reasons in DECISIONS):
-   `gemma4:e4b` (baseline), A.X 4.0 Light, Mi:dm 2.0 Mini, Nemotron-3.5-Bolt-E4B,
-   Olala-v1.0-mini-7A1B, Qwen3.5-4B. Licences are checked on each model card before adoption.
+1. **Local LLM** decides the verdict and explains: `gemma4:e4b`, picked in the unit 6b eval over
+   A.X 4.0 Light, Mi:dm 2.0 Mini, Nemotron-3.5-Bolt-E4B and Qwen3.5-4B (Olala-v1.0-mini-7A1B did
+   not load). Results and reasons in DECISIONS (2026-11-23). Licences are checked on each model
+   card before adoption.
+
+A GEC hint tier (`dadeum-gec-base` fixes passed to the LLM) was evaluated in 6b and dropped: it
+edits 6 of 48 learner errors and its hints did not change gemma's scores. `grade()` keeps an
+optional `hint` for the eval harness only.
 
 Grading and capture are separate model roles (`GRADER_MODEL`, `CAPTURE_MODEL`); the eval can
 pick a different model for each. **Moving hosts:** quality scores carry over (same weights and
@@ -286,7 +286,7 @@ Each unit is a branch and a PR, ends green in CI, and updates the docs.
 | 4 | **Anki:** chunk note type, AnkiConnect, outbox while Anki is closed, idempotent adds; nightly Postgres backups (hardening) | approve with Anki closed, open Anki, card appears once |
 | 5 | **Practice loop:** `/practice`, `/stop`, `/pause`, pings at 10:00 13:00 17:00 21:00 (configurable), grader, resurfacing ladder (3/10/30/90 days), `[📖 Grammar]` on prompts; capture context (text after `//` is the situation, stored and passed to draft, critic and chunks) | a ping arrives on time, an answer gets graded, a miss comes back sooner |
 | 6a | **Eval groundwork:** model shortlist with reasons, labeled grading set (`evals/grader_set.md`, written for the purpose, proofread by the user), corrected line shown as a word diff | set drafted and in the repo; diff live on the phone |
-| 6b | **Cost router + model eval** (after the proofread): harness with runs in Phoenix, the shortlist on the set, side-by-side capture pass, reference-match + hints router, GPU attempt (timeboxed) | eval shows quality held on the cheap path and the tier mix; grader and capture models chosen and recorded |
+| 6b | **Cost router + model eval** (after the proofread): harness with runs in Phoenix, the shortlist on the set, side-by-side capture pass, reference-match router (GEC hints tested and dropped), GPU attempt (timeboxed) | eval shows quality held on the cheap path and the tier mix; grader and capture models chosen and recorded |
 | 7 | **The agent:** tutor agent chooses tools and next drill; tools served by the MCP server; eval agent vs unit 3 workflow | agent beats or matches the workflow on the eval, with numbers on latency and calls |
 | 8 | **Learner memory:** weak points across sessions steer drills (Postgres first; Graphiti/Zep evaluated) | a repeated mistake visibly changes what practice serves |
 | 9 | **Monitoring:** `/metrics`, Prometheus + Grafana, dashboard (calls per tier, latency, errors), alert on stalled polling | stop the bot, the alert fires |
