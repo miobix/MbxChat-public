@@ -1,11 +1,9 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 6a (eval groundwork) merged. Unit 6b on `unit-6b-eval`, gated on the proofread.
+**Phase:** unit 6a (eval groundwork) merged. Unit 6b on `unit-6b-eval`, proofread done.
 
 ## Next
-- **Proofread reminder, every session:** count the empty `check:` lines in
-  `evals/grader_set.md` (`grep -c '^- check: *$'`). If any remain and the user has not said it is
-  done, remind them first thing. Edits to the file land on `unit-6b-eval` with 6b.
+- **Grader set proofread** (2026-11-23): all 66 items `check: ok`; g51 verdict raised to wrong.
 - **Shortlisted models pulled into MbxRead's Ollama** (2026-11-22; Q4_K_M where offered, else the
   smallest quant each repo has). Ollama digests (prefix): `hf.co/mykor/A.X-4.0-Light-gguf:Q4_K_M`
   `9f0107f24601` (4.4 GB), `hf.co/mykor/Midm-2.0-Mini-Instruct-gguf:Q4_K_M` `68bc4560da12`
@@ -17,7 +15,7 @@
   (Qwen needs `think: false`). **Olala dropped:** "unknown model architecture: 'olala'"; its
   model card says upstream llama.cpp and Ollama do not support it (OVHcloud fork only). Record
   in DECISIONS with 6b; `ollama rm` it then.
-- **Unit 6b, gated on the proofread:** eval harness (runs in Phoenix), the five LLMs + dadeum on
+- **Unit 6b:** eval harness (runs in Phoenix), the five LLMs + dadeum on
   the set, side-by-side capture pass, reference-match + hints router, GPU attempt (SPEC §8).
   dadeum needs `torch` + `transformers`: keep them out of the bot image (eval-only deps).
 - **Practice is shaped by use:** the user tweaks prompts, mix and grading as real use shows what
