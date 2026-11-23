@@ -79,3 +79,14 @@ def test_network_calls_are_spaced_by_the_gap(fetch, monkeypatch):
     krdict.search("하나")  # cached: no request, no wait
     krdict.search("둘")
     assert len(stamps) == 2 and stamps[1] - stamps[0] >= 0.3
+
+
+def test_the_gap_holds_across_processes(fetch, monkeypatch):
+    import time
+    monkeypatch.setattr(krdict, "GAP", 0.5)
+    krdict.search("하나")  # records krdict_last in Postgres
+    stamps = []
+    monkeypatch.setattr(krdict, "_fetch", lambda url: stamps.append(time.time()) or SEARCH)
+    start = time.time()
+    krdict.search("둘")  # a fresh connection, as another process would use
+    assert stamps[0] - start >= 0.4

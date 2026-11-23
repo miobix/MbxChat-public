@@ -17,6 +17,7 @@ services:
       DATABASE_URL: postgresql://mbxchat:${POSTGRES_PASSWORD:-mbxchat}@db:5432/mbxchat
       # MBXREAD_URL comes from .env only (unset = MbxRead features off).
       OLLAMA_URL: http://host.docker.internal:11434
+      MCP_URL: http://mcp:8006/mcp
       ANKI_URL: http://host.docker.internal:8765
       PHOENIX_COLLECTOR_ENDPOINT: http://phoenix:6006
     extra_hosts:
@@ -26,6 +27,27 @@ services:
         condition: service_healthy
       phoenix:
         condition: service_started
+    restart: unless-stopped
+    logging: *logging
+
+  # MCP tool server (SPEC §7e): the bot's image, read-only tools, compose network only (no host port).
+  mcp:
+    image: mbxchat
+    command: ["python", "-m", "mbxchat.mcp_server"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://mbxchat:${POSTGRES_PASSWORD:-mbxchat}@db:5432/mbxchat
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8006), 3)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    depends_on:
+      bot:
+        condition: service_healthy  # the bot creates the schema at startup
     restart: unless-stopped
     logging: *logging
 

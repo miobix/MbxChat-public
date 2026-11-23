@@ -9,6 +9,10 @@ MBXREAD_URL = os.getenv("MBXREAD_URL", "").strip()
 # krdict Open API key (free, krdict.korean.go.kr). Empty = no dictionary checks.
 KRDICT_API_KEY = os.getenv("KRDICT_API_KEY", "").strip()
 
+# MCP tool server (SPEC §7e): its port, and where the bot finds it (compose: http://mcp:8006/mcp).
+MCP_PORT = int(os.getenv("MCP_PORT", "8006"))
+MCP_URL = os.getenv("MCP_URL", "http://127.0.0.1:8006/mcp").strip()
+
 # Capture model (SPEC §6, §7c). The ID is Ollama's digest prefix, checked at startup.
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434").strip()
 CAPTURE_MODEL = os.getenv("CAPTURE_MODEL", "gemma4:e4b").strip()

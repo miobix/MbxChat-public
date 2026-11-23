@@ -1,10 +1,11 @@
 """krdict, the NIKL Korean learners' dictionary (Open API; free key from krdict.korean.go.kr).
 
 Sparse by design (CLAUDE.md rule 3): every answer cached in Postgres, network calls 3 s apart,
-never retried; the first failure pauses all calls for 30 min, across restarts.
+never retried; the first failure pauses all calls for 30 min. Pause and gap live in Postgres
+(an advisory lock serializes requests), so they hold across restarts and across the bot and
+the MCP server.
 """
 import json
-import threading
 import time
 import urllib.parse
 import urllib.request
@@ -19,8 +20,7 @@ SEARCH_URL = "https://krdict.korean.go.kr/api/search"
 VIEW_URL = "https://krdict.korean.go.kr/api/view"
 GAP = 3.0
 COOLDOWN = 30 * 60
-_lock = threading.Lock()
-_last = 0.0
+LOCK_ID = 0x6B72646963  # "krdic"
 
 
 class Unavailable(Exception):
@@ -31,9 +31,14 @@ def enabled() -> bool:
     return bool(config.KRDICT_API_KEY)
 
 
-def _blocked_until(conn) -> float | None:
-    row = conn.execute("SELECT value FROM setting WHERE key = 'krdict_blocked_until'").fetchone()
-    return float(row[0]) if row and float(row[0]) > time.time() else None
+def _setting(conn, key: str) -> float:
+    row = conn.execute("SELECT value FROM setting WHERE key = %s", (key,)).fetchone()
+    return float(row[0]) if row else 0.0
+
+
+def _set(conn, key: str, value: float) -> None:
+    conn.execute("INSERT INTO setting (key, value) VALUES (%s, %s) "
+                 "ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value", (key, str(value)))
 
 
 def _fetch(url: str) -> str:
@@ -42,30 +47,32 @@ def _fetch(url: str) -> str:
 
 
 def _get(url: str, params: dict) -> ET.Element:
-    global _last
     key = json.dumps([url, params], sort_keys=True, ensure_ascii=False)
     with psycopg.connect(config.DATABASE_URL, autocommit=True) as conn:
         row = conn.execute("SELECT body FROM krdict_cache WHERE key = %s", (key,)).fetchone()
         if row:
             return ET.fromstring(row[0])
-        with _lock:
-            if until := _blocked_until(conn):
+        conn.execute("SELECT pg_advisory_lock(%s)", (LOCK_ID,))
+        try:
+            if row := conn.execute("SELECT body FROM krdict_cache WHERE key = %s", (key,)).fetchone():
+                return ET.fromstring(row[0])  # another process fetched it while we waited
+            if (until := _setting(conn, "krdict_blocked_until")) > time.time():
                 raise Unavailable(f"krdict paused after a failure, until {datetime.fromtimestamp(until):%H:%M}")
-            time.sleep(max(0.0, _last + GAP - time.monotonic()))
+            time.sleep(max(0.0, _setting(conn, "krdict_last") + GAP - time.time()))
             try:
                 body = _fetch(f"{url}?{urllib.parse.urlencode({'key': config.KRDICT_API_KEY, **params})}")
                 root = ET.fromstring(body)
                 if root.tag == "error":
                     raise ValueError(root.findtext("message", "") or "error")
             except Exception as e:
-                conn.execute(
-                    "INSERT INTO setting (key, value) VALUES ('krdict_blocked_until', %s) "
-                    "ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value", (str(time.time() + COOLDOWN),))
+                _set(conn, "krdict_blocked_until", time.time() + COOLDOWN)
                 raise Unavailable(f"krdict request failed ({e}); paused for {COOLDOWN // 60} min") from e
             finally:
-                _last = time.monotonic()
-        conn.execute("INSERT INTO krdict_cache (key, body) VALUES (%s, %s) ON CONFLICT DO NOTHING", (key, body))
-    return root
+                _set(conn, "krdict_last", time.time())
+            conn.execute("INSERT INTO krdict_cache (key, body) VALUES (%s, %s) ON CONFLICT DO NOTHING", (key, body))
+            return root
+        finally:
+            conn.execute("SELECT pg_advisory_unlock(%s)", (LOCK_ID,))
 
 
 def search(word: str, max_entries: int = 3) -> list[dict]:

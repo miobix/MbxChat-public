@@ -11,8 +11,11 @@ DECISIONS "2026-11-23 Unit 7 plan".
      pause after a failure stored in `setting`, survives restarts; `search` = 1 request,
      `examples` = 1 more, only when needed). Live: key in `.env`, one request (최적화 → 0
      entries: not in the learners' dictionary); parsing checked on MbxRead's cached answers.
-  3. `mcp` service: read-only tools `krdict_lookup`, `library_examples` (only with
-     `MBXREAD_URL`), `known_items`; the bot loads them through LangChain's MCP adapters. Pin it.
+  3. Done: `mcp` compose service (`mbxchat/mcp_server.py`, the bot's image, streamable HTTP on
+     `mcp:8006/mcp`, no host port). Tools offered only when configured: `krdict_lookup` (key),
+     `library_examples` (`MBXREAD_URL`), `known_items` (always). Live: the bot lists all three
+     over HTTP and calls them. krdict's 3 s gap now holds across processes (Postgres advisory
+     lock + `krdict_last` in `setting`). Deps `mcp==1.30.0`, `langchain-mcp-adapters==0.3.2`.
   4. Capture agent behind `CAPTURE_MODE` (default `workflow`): kind + Korean by the agent,
      grounding (dictionary check, library examples) as fixed steps; sentence path hands off to
      the unit 3 critic → chunks → review → save.
@@ -62,12 +65,14 @@ DECISIONS "2026-11-23 Unit 7 plan".
 - Anki (SPEC §7): deck `MbxChat`, note type `MbxChat Chunk` (created once; template changes in
   code do not reach an existing note type), AnkiConnect at `host.docker.internal:8765`. `chunk`
   is the outbox; retried every 60 s.
+- Lockfile: `pip-compile` on Windows pins `pywin32` (pulled by `mcp`) for every platform; re-add
+  `; sys_platform == "win32"` to its line in `requirements.txt` or the image build fails.
 - Errors: reported in the chat, except Telegram network errors (logged; polling retries alone).
   `httpx` logging is held at WARNING because request URLs contain the token.
 - Evals (host only, `requirements-eval.txt`): `python -m evals.grader_eval MODEL...` (also
   `dadeum`, `<model>+dadeum`) and `python -m evals.capture_side_by_side MODEL...` (set
   `MBXREAD_URL=http://127.0.0.1:8002` in the shell for lookups). Results in `evals/results/`. Set `PYTHONUTF8=1` when output goes to a file.
-- Tests: 101 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 107 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
   MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002 .venv/Scripts/python -m mbxchat.importer`
