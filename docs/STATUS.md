@@ -18,15 +18,24 @@
 - **Unit 6b plan** (SPEC §8):
   1. Done: grader harness `evals/grader_eval.py` (one Phoenix experiment per model; per-item
      JSON in `evals/results/`; eval-only deps in `requirements-eval.txt`). `GRADER_MODEL` config.
-  2. Running: the five LLMs on the set (CPU, ~12 min per model).
-  3. dadeum hints: eval-only `torch` + `transformers`; score its edits on the set, then the best
-     LLM with hints vs without.
-  4. Router: reference match → correct with no call; otherwise LLM (+ hints if step 3 pays).
-  5. Capture side-by-side: ~10 English prompts × top models into one `.md` for the user to judge.
+  2. LLMs on the set: 4 summaries in `evals/results/grader_summary.jsonl` (gemma leads: 43/66
+     verdicts, 2 false alarms, 8 missed; Nemotron writes ~600 tokens/answer, 60 s median).
+     **Qwen was still running at handoff (2026-11-23).** When `evals/results/grader-hf.co_unsloth_
+     Qwen3.5-4B-GGUF_Q4_K_M.json` exists, append its line: `summary()` over that file and the
+     parsed set, with `"date"` and `"set": "grader_set-499d7ab3"` in front; then commit.
+  3. dadeum: in the harness as model `dadeum` (`python -m evals.grader_eval dadeum`), not run
+     yet. Smoke: fixes spacing, misses 잣어/찿고. Then the best LLM with hints vs without.
+  4. Router: reference match → correct with no call (done, tested). Live: 0 of 5 answers with a
+     reference matched exactly; the set has 0 hits.
+  5. Capture side-by-side: `evals/capture_side_by_side.py` ready, not run (needs MbxRead :8002).
   6. GPU (timeboxed): MbxRead-public's Ollama container has the NVIDIA reservation and CUDA
-     libs, host driver 610.88, yet discovery reports CPU only. Next: restart it with
-     `OLLAMA_DEBUG=1` (MbxRead-public's container: ask the user first). Latency reruns after.
+     libs, host driver 610.88, yet discovery reports CPU only. **User approved:** once Qwen is
+     done, restart it with `OLLAMA_DEBUG=1` via a scratch compose override (`docker compose -f
+     compose.yaml -f <override> up -d ollama` in the MbxRead checkout, never edit its
+     compose), read why the GPU is missed, report, then restart it plain. Latency reruns after.
   7. Pick grader + capture models, record in DECISIONS, `ollama rm` losers and Olala.
+- **Later, not now (user):** move the benchmark core (grader set + harness + results log) into
+  a standalone project, run once a month against new model versions. Spec it as its own project.
 - **Practice is shaped by use:** the user tweaks prompts, mix and grading as real use shows what
   to change; record each change in DECISIONS.
 - **Model quality pass:** remember to compare grading and capture quality across different
