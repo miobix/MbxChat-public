@@ -52,18 +52,21 @@ flowchart LR
 
 - **Telegram long polling:** the bot asks Telegram for updates; nothing listens on a public
   port. Only the allowlisted Telegram user ID gets answers; everyone else is ignored.
-- **MbxRead** (sibling project, its own compose stack) is reached at
-  `http://host.docker.internal:8002`. MbxRead refuses unknown Host headers, so its `.env`
-  `ALLOWED_HOSTS` must include `host.docker.internal`. MbxRead is **optional**: when it is down,
-  the tool reports "unavailable" and the agent carries on without library examples.
+- **MbxRead** (sibling project, its own compose stack) is **optional**: when `MBXREAD_URL` is
+  set (e.g. `http://host.docker.internal:8002`), MbxChat uses its material (library example
+  sentences, saved terms for practice); unset (the default from unit 7), those features are
+  off and silent. MbxChat runs without it for anyone. MbxRead refuses unknown Host headers, so
+  its `.env` `ALLOWED_HOSTS` must include `host.docker.internal`. When set but down, the tool
+  reports "unavailable" and the agent carries on without library examples.
 - **Anki** runs on the desktop; AnkiConnect is reached at `host.docker.internal:8765`, as in
   MbxRead. Card writes queue while Anki is closed.
-- **Ollama:** MbxRead's compose `ollama` service (CPU, `gemma4:e4b`), reached at
-  `host.docker.internal:11434` (`OLLAMA_URL`), so the model is not stored or loaded twice. If
-  MbxRead is retired, MbxChat gets its own `ollama` service; only the URL changes.
-- **krdict goes through MbxRead's `GET /api/dict`**, which caches every lookup and stops all
-  calls after one failure. One client per IP keeps the "never burst" rule in one place (krdict
-  has blocked this IP before). MbxChat still spaces its own lookups 3 s apart.
+- **Ollama:** any Ollama at `OLLAMA_URL` (default `host.docker.internal:11434`). The author's
+  is MbxRead's compose `ollama` service (GPU, `gemma4:e4b`), shared so the model is not stored
+  or loaded twice; anyone else runs their own. The README says so (unit 11).
+- **krdict:** until unit 7 it goes through MbxRead's `GET /api/dict`. From unit 7 MbxChat has
+  its own client (an MCP tool, `KRDICT_API_KEY`), so it runs without MbxRead: one request every
+  3 s, every answer cached in Postgres, all calls stopped after the first failure. Running both
+  apps on one IP means two clients; each paces itself, and MbxChat's cache keeps its share small.
 - **CPU only.** Every model must be usable on CPU. GPU passthrough gets one timeboxed attempt
   (unit 6); it is a speed-up, never a requirement. Unit 6b got it working (Docker Desktop update):
   gemma grades in ~1.4 s on GPU against ~11 s on CPU.
@@ -89,7 +92,7 @@ flowchart LR
 | Orchestration | **LangGraph** | `interrupt()` for Approve/Edit/Skip; Postgres checkpointer, one thread per capture |
 | Structured output | Pydantic models | every model step returns a schema-validated object; invalid output is retried once, then reported |
 | Models | open models on CPU | configured in one place; see §6 |
-| Tools | MCP server | krdict, MbxRead usage, item pool, Anki; the agent loads them through LangChain's MCP adapters |
+| Tools | MCP server | read-only: krdict (own client), MbxRead library examples (optional), item pool; the agent loads them through LangChain's MCP adapters. Anki writes stay in code (the outbox), never a tool |
 | Storage | Postgres | items, learner memory, Anki outbox, LangGraph checkpoints |
 | Tracing + evals | **Arize Phoenix**, via OpenTelemetry | one container; swapping to Langfuse is an exporter change |
 | Monitoring | **Prometheus + Grafana** | `/metrics` on the bot, one provisioned dashboard, one alert |
@@ -273,6 +276,31 @@ Plain code, no graph (one model call, no pause inside it).
   downtime it is skipped), and not while a session is open or `/pause` is active.
   `/pause 3h|30m|2d`, `/pause off`, `/pause` alone shows the state.
 
+## 7e. Capture agent (unit 7)
+
+A LangGraph tool-calling agent takes the front of capture, behind `CAPTURE_MODE`
+(`workflow` | `agent`; `workflow` until the unit 7 eval decides). Model: `gemma4:e4b` (in the
+tool-calling check, 20 of 20 runs valid, right path every time, 0.65 s median; no model router).
+
+- **The agent decides:** what kind of capture this is (a **word**: "the word for optimization";
+  or a **sentence**), the Korean (word choice, the two drafts), and what to do with what the
+  tools return (a word not in the dictionary → pick another).
+- **Grounding is enforced, not chosen:** in the check, given the choice, the model skipped the
+  dictionary on 19 of 20 sentence captures and wrote its own examples for 9 of 10 words. So code
+  always runs the dictionary check on the chosen word (or the drafts' rare lemmas) and fetches
+  library examples when MbxRead is configured, and the agent sees the results before it submits.
+- **Word path:** `submit_word {korean, english, examples}` with 2-4 examples, library sentences
+  first, then dictionary examples, model-written ones marked as such. One card proposal,
+  `[✅ Approve] [⏭ Skip]`. Note type `MbxChat Word` (English, Korean, Examples), deck
+  `ANKI_WORD_DECK` (default `MbxChat::Words`), the same outbox and push loop as chunks. Before
+  adding, `findNotes` looks for the Korean word in that deck: found → "already in your deck",
+  nothing added. Word cards are Anki-only; practice does not use them.
+- **Sentence path:** `submit_sentence {casual, polite}` then the unit 3 nodes unchanged
+  (critic → chunks → review → save), so the comparison isolates the agent's part.
+- **Session routing:** inside an open session, free text is classified first (one structured
+  call: answer / capture / question). An answer is graded as today; capture and question are
+  offered with a button, never run unasked.
+
 ## 8. Units
 
 Each unit is a branch and a PR, ends green in CI, and updates the docs.
@@ -287,8 +315,8 @@ Each unit is a branch and a PR, ends green in CI, and updates the docs.
 | 5 | **Practice loop:** `/practice`, `/stop`, `/pause`, pings at 10:00 13:00 17:00 21:00 (configurable), grader, resurfacing ladder (3/10/30/90 days), `[📖 Grammar]` on prompts; capture context (text after `//` is the situation, stored and passed to draft, critic and chunks) | a ping arrives on time, an answer gets graded, a miss comes back sooner |
 | 6a | **Eval groundwork:** model shortlist with reasons, labeled grading set (`evals/grader_set.md`, written for the purpose, proofread by the user), corrected line shown as a word diff | set drafted and in the repo; diff live on the phone |
 | 6b | **Cost router + model eval** (after the proofread): harness with runs in Phoenix, the shortlist on the set, side-by-side capture pass, reference-match router (GEC hints tested and dropped), GPU attempt (timeboxed) | eval shows quality held on the cheap path and the tier mix; grader and capture models chosen and recorded |
-| 7 | **The agent:** tutor agent chooses tools and next drill; tools served by the MCP server; eval agent vs unit 3 workflow | agent beats or matches the workflow on the eval, with numbers on latency and calls |
-| 8 | **Learner memory:** weak points across sessions steer drills (Postgres first; Graphiti/Zep evaluated) | a repeated mistake visibly changes what practice serves |
+| 7 | **The agent** (§7e): capture as a tool-calling agent (word and sentence captures, enforced grounding), word cards to `ANKI_WORD_DECK`, read-only tools on the MCP server with MbxChat's own krdict client, MbxRead off unless `MBXREAD_URL` is set, free-text routing in a session; eval agent vs unit 3 workflow | agent matches or beats the workflow on the capture eval, with numbers on latency and calls; a word capture lands a card in Anki |
+| 8 | **Learner memory:** weak points across sessions steer drills (Postgres first; Graphiti/Zep evaluated); the agent choosing the next drill is considered here, once practice data exists (moved from unit 7) | a repeated mistake visibly changes what practice serves |
 | 9 | **Monitoring:** `/metrics`, Prometheus + Grafana, dashboard (calls per tier, latency, errors), alert on stalled polling | stop the bot, the alert fires |
 | 10 | **Public demo:** Pages replay of seeded conversations; notes which features are not live (MbxRead examples, Anki) | demo deployed from CI |
 | 11 | **Go public:** history and content sweep, README + FEATURES, flip the repo public | sweep finds nothing personal; repo public; demo linked |
@@ -304,4 +332,6 @@ At the end of each cycle (after units 4, 8 and 11): hardening pass and doc roll-
   error detection precision/recall, correction accuracy, false alarms on correct sentences,
   latency and tier mix.
 - **Agent vs workflow (unit 7):** same inputs, compare quality, latency and number of model calls.
+  Inputs: the 10 capture side-by-side prompts plus word prompts, judged side by side by the user;
+  tool-calling mechanics checked by `evals/tool_calling.py`.
 - Datasets and experiment runs live in Phoenix; the labeled files live in the repo.

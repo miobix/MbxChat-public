@@ -1,9 +1,26 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 6b (model eval) done on `unit-6b-eval`, PR open. `gemma4:e4b` kept for grading and capture (DECISIONS 2026-11-23).
+**Phase:** unit 6b merged (PR #12). Unit 7 (the agent) planned on `unit-7-agent`: SPEC §7e,
+DECISIONS "2026-11-23 Unit 7 plan".
 
 ## Next
-- **Unit 6b PR open, waiting for the user's merge.** Then unit 7 (the agent) from a fresh `main`.
+- **Unit 7 build order** (each step tested before the next):
+  1. `MBXREAD_URL` opt-in: empty default in config and compose = MbxRead features off, silent.
+  2. Own krdict client: paced 1 request / 3 s, cached in Postgres, stop at the first failure.
+     Needs a krdict Open API key from the user (`KRDICT_API_KEY` in `.env`).
+  3. `mcp` service: read-only tools `krdict_lookup`, `library_examples` (only with
+     `MBXREAD_URL`), `known_items`; the bot loads them through LangChain's MCP adapters. Pin it.
+  4. Capture agent behind `CAPTURE_MODE` (default `workflow`): kind + Korean by the agent,
+     grounding (dictionary check, library examples) as fixed steps; sentence path hands off to
+     the unit 3 critic → chunks → review → save.
+  5. Word path: `MbxChat Word` note type, `ANKI_WORD_DECK` (default `MbxChat::Words`), outbox
+     rows on the chunk push loop, `findNotes` dedupe, `[✅ Approve] [⏭ Skip]` card.
+  6. Session routing: one structured call (answer / capture / question) before grading.
+  7. Eval: agent vs workflow on the 10 side-by-side prompts + word prompts (user judges), calls
+     and latency; rerun `evals/tool_calling.py` with real tools. Pick `CAPTURE_MODE` default.
+  8. Phone check, docs, PR.
+- **README note for unit 11:** MbxRead material (library examples, saved terms) is used when
+  `MBXREAD_URL` is set and ignored when not; the author shares MbxRead's Ollama.
 - **Open question (user): spacing slips.** `grade()` compares with spaces stripped, so a
   spacing-only fix (집에가서 → 집에 가서) keeps the verdict `correct`. Decide whether spacing
   should count as minor; a change would make the three spacing items in the set score.

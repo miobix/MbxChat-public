@@ -1,0 +1,1457 @@
+[
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "최적화"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "optimization",
+     "examples": [
+      "이 알고리즘은 성능 최적화에 도움이 됩니다. (This algorithm helps with performance optimization.)",
+      "우리는 이 프로세스를 최적화하려고 노력하고 있어요. (We are trying to optimize this process.)",
+      "최적화된 코드는 더 빠릅니다. (Optimized code is faster.)"
+     ],
+     "korean": "최적화"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "optimization",
+    "examples": [
+     "이 알고리즘은 성능 최적화에 도움이 됩니다. (This algorithm helps with performance optimization.)",
+     "우리는 이 프로세스를 최적화하려고 노력하고 있어요. (We are trying to optimize this process.)",
+     "최적화된 코드는 더 빠릅니다. (Optimized code is faster.)"
+    ],
+    "korean": "최적화"
+   }
+  },
+  "seconds": 1.2,
+  "model": "gemma4:e4b",
+  "prompt": "the word for optimization, a coworker said it",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "최적화"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "optimization",
+     "examples": [
+      "이 알고리즘은 최적화가 잘 되어 있어요. (This algorithm is well optimized.)",
+      "프로세스 최적화가 필요해요. (Process optimization is needed.)",
+      "비용 최적화 방안을 찾아봅시다. (Let's find ways to optimize costs.)"
+     ],
+     "korean": "최적화"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "optimization",
+    "examples": [
+     "이 알고리즘은 최적화가 잘 되어 있어요. (This algorithm is well optimized.)",
+     "프로세스 최적화가 필요해요. (Process optimization is needed.)",
+     "비용 최적화 방안을 찾아봅시다. (Let's find ways to optimize costs.)"
+    ],
+    "korean": "최적화"
+   }
+  },
+  "seconds": 0.7,
+  "model": "gemma4:e4b",
+  "prompt": "the word for optimization, a coworker said it",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "deadline"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "deadline",
+     "examples": [
+      "마감일이 언제예요? (When is the deadline?)",
+      "이 프로젝트의 마감일은 다음 주 금요일이에요. (The deadline for this project is next Friday.)",
+      "마감일을 지키는 것이 중요해요. (It is important to meet the deadline.)"
+     ],
+     "korean": "마감일"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "deadline",
+    "examples": [
+     "마감일이 언제예요? (When is the deadline?)",
+     "이 프로젝트의 마감일은 다음 주 금요일이에요. (The deadline for this project is next Friday.)",
+     "마감일을 지키는 것이 중요해요. (It is important to meet the deadline.)"
+    ],
+    "korean": "마감일"
+   }
+  },
+  "seconds": 0.8,
+  "model": "gemma4:e4b",
+  "prompt": "word: deadline",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "deadline"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "deadline",
+     "examples": [
+      "마감일이 언제예요? (When is the deadline?)",
+      "이 프로젝트는 마감일이 촉박해요. (The deadline for this project is tight.)",
+      "마감일을 지키려고 노력했어요. (I tried to meet the deadline.)"
+     ],
+     "korean": "마감일"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "deadline",
+    "examples": [
+     "마감일이 언제예요? (When is the deadline?)",
+     "이 프로젝트는 마감일이 촉박해요. (The deadline for this project is tight.)",
+     "마감일을 지키려고 노력했어요. (I tried to meet the deadline.)"
+    ],
+    "korean": "마감일"
+   }
+  },
+  "seconds": 0.7,
+  "model": "gemma4:e4b",
+  "prompt": "word: deadline",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "통근"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "commute",
+     "examples": [
+      "매일 통근하는 것은 힘들어요. (It's hard to commute every day.)",
+      "통근 시간이 너무 길어요. (The commute time is too long.)",
+      "통근길에 커피를 마셔요. (I drink coffee on my way to work.)"
+     ],
+     "korean": "통근"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "commute",
+    "examples": [
+     "매일 통근하는 것은 힘들어요. (It's hard to commute every day.)",
+     "통근 시간이 너무 길어요. (The commute time is too long.)",
+     "통근길에 커피를 마셔요. (I drink coffee on my way to work.)"
+    ],
+    "korean": "통근"
+   }
+  },
+  "seconds": 0.9,
+  "model": "gemma4:e4b",
+  "prompt": "how do you say 'commute' as a noun",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "통근"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "commute",
+     "examples": [
+      "매일 통근하는 것은 힘든 일이에요. (It's hard to commute every day.)",
+      "통근 시간이 너무 길어요. (The commute time is too long.)",
+      "통근길에 커피를 마시곤 해요. (I sometimes drink coffee on my commute.)"
+     ],
+     "korean": "통근"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "commute",
+    "examples": [
+     "매일 통근하는 것은 힘든 일이에요. (It's hard to commute every day.)",
+     "통근 시간이 너무 길어요. (The commute time is too long.)",
+     "통근길에 커피를 마시곤 해요. (I sometimes drink coffee on my commute.)"
+    ],
+    "korean": "통근"
+   }
+  },
+  "seconds": 0.8,
+  "model": "gemma4:e4b",
+  "prompt": "how do you say 'commute' as a noun",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "영수증"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "receipt",
+     "examples": [
+      "영수증을 보여주세요. (Please show me the receipt.)",
+      "이 영수증은 어디에 써야 하나요? (Where should I write this receipt?)",
+      "영수증을 잃어버렸어요. (I lost the receipt.)"
+     ],
+     "korean": "영수증"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "receipt",
+    "examples": [
+     "영수증을 보여주세요. (Please show me the receipt.)",
+     "이 영수증은 어디에 써야 하나요? (Where should I write this receipt?)",
+     "영수증을 잃어버렸어요. (I lost the receipt.)"
+    ],
+    "korean": "영수증"
+   }
+  },
+  "seconds": 0.8,
+  "model": "gemma4:e4b",
+  "prompt": "Korean for receipt?",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "영수증"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "receipt",
+     "examples": [
+      "영수증을 잃어버렸어요. (I lost the receipt.)",
+      "영수증을 보여주세요. (Please show me the receipt.)",
+      "이 영수증이 맞나요? (Is this the correct receipt?)"
+     ],
+     "korean": "영수증"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "receipt",
+    "examples": [
+     "영수증을 잃어버렸어요. (I lost the receipt.)",
+     "영수증을 보여주세요. (Please show me the receipt.)",
+     "이 영수증이 맞나요? (Is this the correct receipt?)"
+    ],
+    "korean": "영수증"
+   }
+  },
+  "seconds": 0.7,
+  "model": "gemma4:e4b",
+  "prompt": "Korean for receipt?",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "미루다"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "k": 1,
+     "lemma": "미루다"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "procrastinate",
+     "examples": [
+      "예문 1: ...미루다..."
+     ],
+     "korean": "미루다"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "procrastinate",
+    "examples": [
+     "예문 1: ...미루다..."
+    ],
+    "korean": "미루다"
+   }
+  },
+  "seconds": 0.7,
+  "model": "gemma4:e4b",
+  "prompt": "procrastinate",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "procrastinate"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "procrastinate",
+     "examples": [
+      "숙제를 미루지 마세요. (Don't procrastinate on your homework.)",
+      "나는 항상 일을 미루는 경향이 있어요. (I always tend to procrastinate.)",
+      "시간을 낭비하지 말고 지금 시작하세요. (Don't waste time and start now.)"
+     ],
+     "korean": "미루다"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "procrastinate",
+    "examples": [
+     "숙제를 미루지 마세요. (Don't procrastinate on your homework.)",
+     "나는 항상 일을 미루는 경향이 있어요. (I always tend to procrastinate.)",
+     "시간을 낭비하지 말고 지금 시작하세요. (Don't waste time and start now.)"
+    ],
+    "korean": "미루다"
+   }
+  },
+  "seconds": 0.8,
+  "model": "gemma4:e4b",
+  "prompt": "procrastinate",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "나 늦으니까 너희들 먼저 시작해.",
+     "chunks": [
+      "나 늦으니까",
+      "너희들 먼저 시작해"
+     ],
+     "polite": "제가 늦으니까 먼저 시작하세요."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "나 늦으니까 너희들 먼저 시작해.",
+    "chunks": [
+     "나 늦으니까",
+     "너희들 먼저 시작해"
+    ],
+    "polite": "제가 늦으니까 먼저 시작하세요."
+   }
+  },
+  "seconds": 0.5,
+  "model": "gemma4:e4b",
+  "prompt": "I'm running late, start without me // to a friend",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "나 늦으니까 너희들 먼저 시작해.",
+     "chunks": [
+      "나 늦으니까",
+      "너희들 먼저 시작해"
+     ],
+     "polite": "제가 늦을 것 같으니 먼저 시작하세요."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "나 늦으니까 너희들 먼저 시작해.",
+    "chunks": [
+     "나 늦으니까",
+     "너희들 먼저 시작해"
+    ],
+    "polite": "제가 늦을 것 같으니 먼저 시작하세요."
+   }
+  },
+  "seconds": 0.5,
+  "model": "gemma4:e4b",
+  "prompt": "I'm running late, start without me // to a friend",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "내일 회의 전에 보고서 좀 봐줘.",
+     "chunks": [
+      "내일 회의 전에",
+      "보고서 좀 봐줘"
+     ],
+     "polite": "내일 회의 전에 보고서 좀 검토해 주시겠어요?"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "내일 회의 전에 보고서 좀 봐줘.",
+    "chunks": [
+     "내일 회의 전에",
+     "보고서 좀 봐줘"
+    ],
+    "polite": "내일 회의 전에 보고서 좀 검토해 주시겠어요?"
+   }
+  },
+  "seconds": 0.5,
+  "model": "gemma4:e4b",
+  "prompt": "Could you check the report before the meeting tomorrow? // to my boss",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "내일 회의 전에 보고서 좀 봐줘.",
+     "chunks": [
+      "내일 회의 전에",
+      "보고서 좀 봐줘"
+     ],
+     "polite": "내일 회의 전에 보고서 좀 봐주시겠어요?"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "내일 회의 전에 보고서 좀 봐줘.",
+    "chunks": [
+     "내일 회의 전에",
+     "보고서 좀 봐줘"
+    ],
+    "polite": "내일 회의 전에 보고서 좀 봐주시겠어요?"
+   }
+  },
+  "seconds": 0.4,
+  "model": "gemma4:e4b",
+  "prompt": "Could you check the report before the meeting tomorrow? // to my boss",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "나 너무 매워.",
+     "chunks": [
+      "나 너무 매워"
+     ],
+     "polite": "저 너무 매워요."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "나 너무 매워.",
+    "chunks": [
+     "나 너무 매워"
+    ],
+    "polite": "저 너무 매워요."
+   }
+  },
+  "seconds": 0.4,
+  "model": "gemma4:e4b",
+  "prompt": "This is way too spicy for me // at dinner with friends",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "나한테 너무 매워.",
+     "chunks": [
+      "나한테 너무 매워"
+     ],
+     "polite": "저한테는 너무 매워요."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "나한테 너무 매워.",
+    "chunks": [
+     "나한테 너무 매워"
+    ],
+    "polite": "저한테는 너무 매워요."
+   }
+  },
+  "seconds": 0.3,
+  "model": "gemma4:e4b",
+  "prompt": "This is way too spicy for me // at dinner with friends",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "카드 돼요?",
+     "chunks": [
+      "카드 돼요?"
+     ],
+     "polite": "카드 되나요?"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "카드 돼요?",
+    "chunks": [
+     "카드 돼요?"
+    ],
+    "polite": "카드 되나요?"
+   }
+  },
+  "seconds": 0.3,
+  "model": "gemma4:e4b",
+  "prompt": "Is it okay if I pay by card? // to a shop clerk",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "카드 돼요?",
+     "chunks": [
+      "카드 돼요?"
+     ],
+     "polite": "카드 되나요?"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "카드 돼요?",
+    "chunks": [
+     "카드 돼요?"
+    ],
+    "polite": "카드 되나요?"
+   }
+  },
+  "seconds": 0.3,
+  "model": "gemma4:e4b",
+  "prompt": "Is it okay if I pay by card? // to a shop clerk",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "아프 때 돌봐주셔서 감사해요.",
+     "chunks": [
+      "아프 때",
+      "돌봐주셔서 감사해요"
+     ],
+     "polite": "아프셨을 때 돌봐주셔서 정말 감사드립니다."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "아프 때 돌봐주셔서 감사해요.",
+    "chunks": [
+     "아프 때",
+     "돌봐주셔서 감사해요"
+    ],
+    "polite": "아프셨을 때 돌봐주셔서 정말 감사드립니다."
+   }
+  },
+  "seconds": 0.5,
+  "model": "gemma4:e4b",
+  "prompt": "Thank you for taking care of me while I was sick // to my mother-in-law",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "감사하다"
+    }
+   },
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "몸 아플 때 잘 돌봐주셔서 정말 감사해요.",
+     "chunks": [
+      "몸 아플 때",
+      "잘 돌봐주셔서",
+      "정말 감사해요"
+     ],
+     "polite": "몸 아프셨을 때 잘 돌봐주셔서 정말 감사합니다."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "몸 아플 때 잘 돌봐주셔서 정말 감사해요.",
+    "chunks": [
+     "몸 아플 때",
+     "잘 돌봐주셔서",
+     "정말 감사해요"
+    ],
+    "polite": "몸 아프셨을 때 잘 돌봐주셔서 정말 감사합니다."
+   }
+  },
+  "seconds": 0.6,
+  "model": "gemma4:e4b",
+  "prompt": "Thank you for taking care of me while I was sick // to my mother-in-law",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "최적화"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "lemma": "최적화"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "optimization",
+     "examples": [
+      "시스템 최적화가 필요해요.",
+      "이 프로세스를 최적화해야 합니다."
+     ],
+     "korean": "최적화"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "optimization",
+    "examples": [
+     "시스템 최적화가 필요해요.",
+     "이 프로세스를 최적화해야 합니다."
+    ],
+    "korean": "최적화"
+   }
+  },
+  "seconds": 40.0,
+  "model": "gemma4:12b",
+  "prompt": "the word for optimization, a coworker said it",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "최적화"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "lemma": "최적화"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "optimization",
+     "examples": [
+      "시스템 최적화가 필요해요.",
+      "비용 최적화를 위해 노력하고 있습니다."
+     ],
+     "korean": "최적화"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "optimization",
+    "examples": [
+     "시스템 최적화가 필요해요.",
+     "비용 최적화를 위해 노력하고 있습니다."
+    ],
+    "korean": "최적화"
+   }
+  },
+  "seconds": 14.1,
+  "model": "gemma4:12b",
+  "prompt": "the word for optimization, a coworker said it",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "마감 기한"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "lemma": "마감 기한"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "deadline",
+     "examples": [
+      "마감 기한을 지켜야 해요.",
+      "마감이 내일까지예요."
+     ],
+     "korean": "마감 기한"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "deadline",
+    "examples": [
+     "마감 기한을 지켜야 해요.",
+     "마감이 내일까지예요."
+    ],
+    "korean": "마감 기한"
+   }
+  },
+  "seconds": 12.9,
+  "model": "gemma4:12b",
+  "prompt": "word: deadline",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "마감 기한"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "lemma": "마감 기한"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "deadline",
+     "examples": [
+      "마감 기한을 꼭 지켜주세요.",
+      "마감 기한이 내일까지예요."
+     ],
+     "korean": "마감 기한"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "deadline",
+    "examples": [
+     "마감 기한을 꼭 지켜주세요.",
+     "마감 기한이 내일까지예요."
+    ],
+    "korean": "마감 기한"
+   }
+  },
+  "seconds": 13.7,
+  "model": "gemma4:12b",
+  "prompt": "word: deadline",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "통근"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "lemma": "통근"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "commute (noun)",
+     "examples": [
+      "통근 시간이 너무 길어요.",
+      "통근 거리가 멀어서 힘들어요."
+     ],
+     "korean": "통근"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "commute (noun)",
+    "examples": [
+     "통근 시간이 너무 길어요.",
+     "통근 거리가 멀어서 힘들어요."
+    ],
+    "korean": "통근"
+   }
+  },
+  "seconds": 11.5,
+  "model": "gemma4:12b",
+  "prompt": "how do you say 'commute' as a noun",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "통근"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "lemma": "통근"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "commute (noun)",
+     "examples": [
+      "통근 시간이 너무 길어요. (The commute time is too long.)",
+      "출퇴근 길이 많이 막혀요. (The commute route is very congested.)"
+     ],
+     "korean": "통근"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "commute (noun)",
+    "examples": [
+     "통근 시간이 너무 길어요. (The commute time is too long.)",
+     "출퇴근 길이 많이 막혀요. (The commute route is very congested.)"
+    ],
+    "korean": "통근"
+   }
+  },
+  "seconds": 17.5,
+  "model": "gemma4:12b",
+  "prompt": "how do you say 'commute' as a noun",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "영수증"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "lemma": "영수증"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "receipt",
+     "examples": [
+      "영수증 좀 주시겠어요?",
+      "영수증을 잃어버렸어요."
+     ],
+     "korean": "영수증"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "receipt",
+    "examples": [
+     "영수증 좀 주시겠어요?",
+     "영수증을 잃어버렸어요."
+    ],
+    "korean": "영수증"
+   }
+  },
+  "seconds": 10.1,
+  "model": "gemma4:12b",
+  "prompt": "Korean for receipt?",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "영수증"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "lemma": "영수증"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "receipt",
+     "examples": [
+      "영수증 좀 주시겠어요?",
+      "영수증을 잃어버렸어요.",
+      "영수증을 꼭 챙기세요."
+     ],
+     "korean": "영수증"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "receipt",
+    "examples": [
+     "영수증 좀 주시겠어요?",
+     "영수증을 잃어버렸어요.",
+     "영수증을 꼭 챙기세요."
+    ],
+    "korean": "영수증"
+   }
+  },
+  "seconds": 12.2,
+  "model": "gemma4:12b",
+  "prompt": "Korean for receipt?",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "미루다"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "lemma": "미루다"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "to put off, to delay, to procrastinate",
+     "examples": [
+      "숙제를 내일까지 미루지 마세요.",
+      "회의를 다음 주로 미뤘어요.",
+      "자꾸 일을 미루면 안 돼요."
+     ],
+     "korean": "미루다"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "to put off, to delay, to procrastinate",
+    "examples": [
+     "숙제를 내일까지 미루지 마세요.",
+     "회의를 다음 주로 미뤘어요.",
+     "자꾸 일을 미루면 안 돼요."
+    ],
+    "korean": "미루다"
+   }
+  },
+  "seconds": 17.9,
+  "model": "gemma4:12b",
+  "prompt": "procrastinate",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "krdict_lookup",
+    "args": {
+     "word": "미루다"
+    }
+   },
+   {
+    "name": "library_examples",
+    "args": {
+     "lemma": "미루다"
+    }
+   },
+   {
+    "name": "submit_word",
+    "args": {
+     "english": "to procrastinate, to put off, to delay",
+     "examples": [
+      "숙제를 내일까지 미뤘어요.",
+      "할 일을 자꾸 미루지 마세요."
+     ],
+     "korean": "미루다"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_word",
+   "args": {
+    "english": "to procrastinate, to put off, to delay",
+    "examples": [
+     "숙제를 내일까지 미뤘어요.",
+     "할 일을 자꾸 미루지 마세요."
+    ],
+    "korean": "미루다"
+   }
+  },
+  "seconds": 13.2,
+  "model": "gemma4:12b",
+  "prompt": "procrastinate",
+  "want": "submit_word"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "나 좀 늦을 것 같아, 그냥 먼저 시작해.",
+     "chunks": [
+      "늦을 것 같아 (I think I'll be late)",
+      "먼저 시작해 (Start first)"
+     ],
+     "polite": "저 좀 늦을 것 같아요, 먼저 시작하세요."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "나 좀 늦을 것 같아, 그냥 먼저 시작해.",
+    "chunks": [
+     "늦을 것 같아 (I think I'll be late)",
+     "먼저 시작해 (Start first)"
+    ],
+    "polite": "저 좀 늦을 것 같아요, 먼저 시작하세요."
+   }
+  },
+  "seconds": 17.0,
+  "model": "gemma4:12b",
+  "prompt": "I'm running late, start without me // to a friend",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "나 좀 늦을 것 같아, 그냥 먼저 시작해.",
+     "chunks": [
+      "늦을 것 같아 (I think I'll be late)",
+      "먼저 시작해 (Start first)"
+     ],
+     "polite": "저 좀 늦을 것 같아요, 먼저 시작하세요."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "나 좀 늦을 것 같아, 그냥 먼저 시작해.",
+    "chunks": [
+     "늦을 것 같아 (I think I'll be late)",
+     "먼저 시작해 (Start first)"
+    ],
+    "polite": "저 좀 늦을 것 같아요, 먼저 시작하세요."
+   }
+  },
+  "seconds": 18.8,
+  "model": "gemma4:12b",
+  "prompt": "I'm running late, start without me // to a friend",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "내일 회의 전에 보고서 좀 확인해 줄 수 있어?",
+     "chunks": [
+      "회의 전에 (Before the meeting)",
+      "보고서 좀 (The report)",
+      "확인해 주실 수 있나요? (Could you please check?)"
+     ],
+     "polite": "내일 회의 전에 보고서 좀 확인해 주실 수 있나요?"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "내일 회의 전에 보고서 좀 확인해 줄 수 있어?",
+    "chunks": [
+     "회의 전에 (Before the meeting)",
+     "보고서 좀 (The report)",
+     "확인해 주실 수 있나요? (Could you please check?)"
+    ],
+    "polite": "내일 회의 전에 보고서 좀 확인해 주실 수 있나요?"
+   }
+  },
+  "seconds": 16.7,
+  "model": "gemma4:12b",
+  "prompt": "Could you check the report before the meeting tomorrow? // to my boss",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "내일 회의 전에 보고서 좀 확인해 줄 수 있어?",
+     "chunks": [
+      "내일 회의 전에",
+      "보고서",
+      "검토해 주실 수 있나요?"
+     ],
+     "polite": "내일 회의 전에 보고서 좀 검토해 주실 수 있나요?"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "내일 회의 전에 보고서 좀 확인해 줄 수 있어?",
+    "chunks": [
+     "내일 회의 전에",
+     "보고서",
+     "검토해 주실 수 있나요?"
+    ],
+    "polite": "내일 회의 전에 보고서 좀 검토해 주실 수 있나요?"
+   }
+  },
+  "seconds": 18.0,
+  "model": "gemma4:12b",
+  "prompt": "Could you check the report before the meeting tomorrow? // to my boss",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "이거 나한테는 너무 매워.",
+     "chunks": [
+      "나한테는 (For me)",
+      "너무 매워 (Too spicy)"
+     ],
+     "polite": "이거 저한테는 너무 매워요."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "이거 나한테는 너무 매워.",
+    "chunks": [
+     "나한테는 (For me)",
+     "너무 매워 (Too spicy)"
+    ],
+    "polite": "이거 저한테는 너무 매워요."
+   }
+  },
+  "seconds": 18.5,
+  "model": "gemma4:12b",
+  "prompt": "This is way too spicy for me // at dinner with friends",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "나한테는 너무 매워.",
+     "chunks": [
+      "나한테는 (For me)",
+      "너무 매워요 (It's too spicy)"
+     ],
+     "polite": "저한테는 너무 매워요."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "나한테는 너무 매워.",
+    "chunks": [
+     "나한테는 (For me)",
+     "너무 매워요 (It's too spicy)"
+    ],
+    "polite": "저한테는 너무 매워요."
+   }
+  },
+  "seconds": 18.4,
+  "model": "gemma4:12b",
+  "prompt": "This is way too spicy for me // at dinner with friends",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "카드로 결제해도 돼?",
+     "chunks": [
+      "카드로 (By card)",
+      "결제해도 될까요? (May I pay?)"
+     ],
+     "polite": "카드로 결제해도 될까요?"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "카드로 결제해도 돼?",
+    "chunks": [
+     "카드로 (By card)",
+     "결제해도 될까요? (May I pay?)"
+    ],
+    "polite": "카드로 결제해도 될까요?"
+   }
+  },
+  "seconds": 13.5,
+  "model": "gemma4:12b",
+  "prompt": "Is it okay if I pay by card? // to a shop clerk",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "카드 돼?",
+     "chunks": [
+      "카드 돼요?",
+      "카드 결제 가능한가요?"
+     ],
+     "polite": "카드 결제 가능한가요?"
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "카드 돼?",
+    "chunks": [
+     "카드 돼요?",
+     "카드 결제 가능한가요?"
+    ],
+    "polite": "카드 결제 가능한가요?"
+   }
+  },
+  "seconds": 13.4,
+  "model": "gemma4:12b",
+  "prompt": "Is it okay if I pay by card? // to a shop clerk",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "내가 아플 때 돌봐줘서 고마워.",
+     "chunks": [
+      "아플 때 (When sick)",
+      "돌봐주셔서 (For taking care of me)",
+      "정말 감사드려요 (I really thank you)"
+     ],
+     "polite": "제가 아팠을 때 정성껏 돌봐주셔서 정말 감사드립니다."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "내가 아플 때 돌봐줘서 고마워.",
+    "chunks": [
+     "아플 때 (When sick)",
+     "돌봐주셔서 (For taking care of me)",
+     "정말 감사드려요 (I really thank you)"
+    ],
+    "polite": "제가 아팠을 때 정성껏 돌봐주셔서 정말 감사드립니다."
+   }
+  },
+  "seconds": 29.5,
+  "model": "gemma4:12b",
+  "prompt": "Thank you for taking care of me while I was sick // to my mother-in-law",
+  "want": "submit_sentence"
+ },
+ {
+  "calls": [
+   {
+    "name": "submit_sentence",
+    "args": {
+     "casual": "내가 아플 때 돌봐줘서 고마워.",
+     "chunks": [
+      "아플 때 (when sick)",
+      "돌봐주셔서 (because you took care of me)",
+      "챙겨주셔서 (because you looked after me)"
+     ],
+     "polite": "제가 아플 때 챙겨주셔서 정말 감사드려요."
+    }
+   }
+  ],
+  "bad": 0,
+  "submit": {
+   "name": "submit_sentence",
+   "args": {
+    "casual": "내가 아플 때 돌봐줘서 고마워.",
+    "chunks": [
+     "아플 때 (when sick)",
+     "돌봐주셔서 (because you took care of me)",
+     "챙겨주셔서 (because you looked after me)"
+    ],
+    "polite": "제가 아플 때 챙겨주셔서 정말 감사드려요."
+   }
+  },
+  "seconds": 27.7,
+  "model": "gemma4:12b",
+  "prompt": "Thank you for taking care of me while I was sick // to my mother-in-law",
+  "want": "submit_sentence"
+ }
+]
