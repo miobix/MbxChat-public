@@ -15,9 +15,18 @@
   (Qwen needs `think: false`). **Olala dropped:** "unknown model architecture: 'olala'"; its
   model card says upstream llama.cpp and Ollama do not support it (OVHcloud fork only). Record
   in DECISIONS with 6b; `ollama rm` it then.
-- **Unit 6b:** eval harness (runs in Phoenix), the five LLMs + dadeum on
-  the set, side-by-side capture pass, reference-match + hints router, GPU attempt (SPEC §8).
-  dadeum needs `torch` + `transformers`: keep them out of the bot image (eval-only deps).
+- **Unit 6b plan** (SPEC §8):
+  1. Done: grader harness `evals/grader_eval.py` (one Phoenix experiment per model; per-item
+     JSON in `evals/results/`; eval-only deps in `requirements-eval.txt`). `GRADER_MODEL` config.
+  2. Running: the five LLMs on the set (CPU, ~12 min per model).
+  3. dadeum hints: eval-only `torch` + `transformers`; score its edits on the set, then the best
+     LLM with hints vs without.
+  4. Router: reference match → correct with no call; otherwise LLM (+ hints if step 3 pays).
+  5. Capture side-by-side: ~10 English prompts × top models into one `.md` for the user to judge.
+  6. GPU (timeboxed): MbxRead-public's Ollama container has the NVIDIA reservation and CUDA
+     libs, host driver 610.88, yet discovery reports CPU only. Next: restart it with
+     `OLLAMA_DEBUG=1` (MbxRead-public's container: ask the user first). Latency reruns after.
+  7. Pick grader + capture models, record in DECISIONS, `ollama rm` losers and Olala.
 - **Practice is shaped by use:** the user tweaks prompts, mix and grading as real use shows what
   to change; record each change in DECISIONS.
 - **Model quality pass:** remember to compare grading and capture quality across different

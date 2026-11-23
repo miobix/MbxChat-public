@@ -1,0 +1,596 @@
+[
+ {
+  "id": "g01",
+  "issues": [],
+  "corrected": "지금 마트 가는 길인데 필요한 거 있어?",
+  "model_answer": "지금 마트 가는데 뭐 필요한 거 있어?",
+  "note": "The learner's answer is a bit informal, but it conveys the same meaning as the reference answer.",
+  "verdict": "correct",
+  "seconds": 4.6
+ },
+ {
+  "id": "g02",
+  "issues": [],
+  "corrected": "회의가 길어졌는데 점심 드셨어요?",
+  "model_answer": "회의가 길어졌는데 점심 드셨어요?",
+  "note": "The learner's answer is grammatically correct and natural in Korean. It is appropriate for a casual conversation with a coworker.",
+  "verdict": "correct",
+  "seconds": 5.5
+ },
+ {
+  "id": "g03",
+  "issues": [],
+  "corrected": "파일 다시 보내주실 수 있어요?",
+  "model_answer": "파일 다시 보내주실 수 있어요?",
+  "note": "한국어에서는 '있을 수 있어요'를 '있을 수 있어요'로 표현하는 것이 자연스럽습니다.",
+  "verdict": "correct",
+  "seconds": 5.1
+ },
+ {
+  "id": "g04",
+  "issues": [],
+  "corrected": "우산을 깜빡해서 비를 쫄딱 맞았어.",
+  "model_answer": "우산을 깜빡해서 비를 쫄딱 맞았어.",
+  "note": "The learner's answer is grammatically correct and natural in Korean, but it could be improved for clarity and register in a formal or formal conversation.",
+  "verdict": "correct",
+  "seconds": 5.8
+ },
+ {
+  "id": "g05",
+  "issues": [],
+  "corrected": "오랜만이야! 잘 지냈어?",
+  "model_answer": "오랜만이야! 잘 지냈어?",
+  "note": "The learner's answer is correct and natural in Korean.",
+  "verdict": "correct",
+  "seconds": 4.8
+ },
+ {
+  "id": "g06",
+  "issues": [],
+  "corrected": "10분 정도 늦을 것 같습니다.",
+  "model_answer": "10분 정도 늦을 것 같습니다.",
+  "note": "The learner's answer is correct in Korean, but it is a bit informal. A more formal way to say this would be: '10분 정도 늦을 것 같습니다.' or '10분 정도 늦을 것 같습니다.'",
+  "verdict": "correct",
+  "seconds": 6.5
+ },
+ {
+  "id": "g07",
+  "issues": [],
+  "corrected": "피곤한데 오늘은 일찍 잘게요.",
+  "model_answer": "피곤한데 오늘은 일찍 잘게요.",
+  "note": "피곤한데",
+  "verdict": "correct",
+  "seconds": 4.3
+ },
+ {
+  "id": "g08",
+  "issues": [],
+  "corrected": "요즘 너무 바빠서 운동을 못 했어요.",
+  "model_answer": "요즘 너무 바빠서 운동을 못 했어요.",
+  "note": "The learner's answer is correct, but it could be improved by adding a more formal or natural expression.",
+  "verdict": "correct",
+  "seconds": 4.9
+ },
+ {
+  "id": "g09",
+  "issues": [],
+  "corrected": "음악을 들으면서 공부해요.",
+  "model_answer": "음악을 들으면서 공부해요.",
+  "note": "The learner's answer is correct.",
+  "verdict": "correct",
+  "seconds": 4.2
+ },
+ {
+  "id": "g10",
+  "issues": [],
+  "corrected": "너무 비싸서 안 샀어요.",
+  "model_answer": "너무 비싸서 안 샀어요.",
+  "note": "정답입니다. '비싸다'는 '비싸기 때문에'와 함께 사용할 수 있습니다.",
+  "verdict": "minor",
+  "seconds": 5.3
+ },
+ {
+  "id": "g11",
+  "issues": [],
+  "corrected": "저는 운전할 수 있어요.",
+  "model_answer": "저는 운전할 수 있어요.",
+  "note": "The learner's answer is grammatically correct and naturally expresses the ability to drive.",
+  "verdict": "correct",
+  "seconds": 5.0
+ },
+ {
+  "id": "g12",
+  "issues": [],
+  "corrected": "다음 달에 부산으로 이사하게 됐어요.",
+  "model_answer": "다음 달에 부산으로 이사하게 됐어요.",
+  "note": "The learner's answer is grammatically correct and natural in Korean.",
+  "verdict": "correct",
+  "seconds": 4.7
+ },
+ {
+  "id": "g13",
+  "issues": [],
+  "corrected": "늦잠을 자는 바람에 버스를 놓쳤어요.",
+  "model_answer": "늦잠을 자는 바람에 버스를 놓쳤어요.",
+  "note": "The sentence is grammatically correct and naturally expresses the situation.",
+  "verdict": "correct",
+  "seconds": 5.1
+ },
+ {
+  "id": "g14",
+  "issues": [],
+  "corrected": "퇴근하고 커피 한잔하자.",
+  "model_answer": "퇴근하고 커피 한잔하자.",
+  "note": "The learner's answer is correct and natural in Korean.",
+  "verdict": "correct",
+  "seconds": 4.5
+ },
+ {
+  "id": "g15",
+  "issues": [],
+  "corrected": "어제 도와주셔서 감사합니다.",
+  "model_answer": "어제 도와주셔서 감사합니다.",
+  "note": "Korean grammar is correct, but '어제' should be '어제' (yesterday) and '도와주셔서' should be '도와주셔서' (to help)",
+  "verdict": "correct",
+  "seconds": 5.7
+ },
+ {
+  "id": "g16",
+  "issues": [],
+  "corrected": "그 식당 생각보다 맛있더라고요.",
+  "model_answer": "그 식당 생각보다 맛있더라고요.",
+  "note": "The sentence is grammatically correct and naturally expresses the idea.",
+  "verdict": "correct",
+  "seconds": 4.7
+ },
+ {
+  "id": "g17",
+  "issues": [],
+  "corrected": "저는 수영할 수 없어요.",
+  "model_answer": "저는 수영할 수 없어요.",
+  "note": "The sentence is grammatically correct and uses the appropriate word in the context.",
+  "verdict": "correct",
+  "seconds": 4.5
+ },
+ {
+  "id": "g18",
+  "issues": [],
+  "corrected": "내일은 못 가요. 일이 좀 바쁘거든요.",
+  "model_answer": "내일은 못 가요. 일이 좀 바쁘거든요.",
+  "note": "The sentence is grammatically correct and uses the appropriate word '바쁘다'.",
+  "verdict": "correct",
+  "seconds": 5.1
+ },
+ {
+  "id": "g19",
+  "issues": [],
+  "corrected": "집에 가서 쉴 거야.",
+  "model_answer": "집에 가서 쉴 거야.",
+  "note": "Korean sentence structure is different from English, so the word order is adjusted to fit Korean grammar.",
+  "verdict": "correct",
+  "seconds": 5.2
+ },
+ {
+  "id": "g20",
+  "issues": [],
+  "corrected": "그거 몰랐어.",
+  "model_answer": "그거 몰랐어.",
+  "note": "The learner's answer is correct in Korean, but it is not grammatically perfect. The correct way to say 'I didn't know that' in Korean is '그거 몰랐어.'",
+  "verdict": "minor",
+  "seconds": 5.8
+ },
+ {
+  "id": "g21",
+  "issues": [],
+  "corrected": "잠시만 기다려 주세요.",
+  "model_answer": "잠시만 기다려 주세요.",
+  "note": "한국어에서 '기달려'는 '기다려'의 비표준어입니다. '기다려'가 더 자연스러운 표현입니다.",
+  "verdict": "minor",
+  "seconds": 4.9
+ },
+ {
+  "id": "g22",
+  "issues": [],
+  "corrected": "밖에 비가 오는데 우산 있어요?",
+  "model_answer": "밖에 비가 오는데 우산 있어요?",
+  "note": "문법적으로 올바른 문장입니다.",
+  "verdict": "minor",
+  "seconds": 5.2
+ },
+ {
+  "id": "g23",
+  "issues": [],
+  "corrected": "괜찮아요, 걱정하지 마세요.",
+  "model_answer": "괜찮아요, 걱정하지 마세요.",
+  "note": "The learner's answer is correct in Korean.",
+  "verdict": "minor",
+  "seconds": 4.5
+ },
+ {
+  "id": "g24",
+  "issues": [],
+  "corrected": "내일 봬요.",
+  "model_answer": "내일 봬요.",
+  "note": "The corrected answer is '내일 봬요.' in Korean, which is appropriate for a coworker.",
+  "verdict": "minor",
+  "seconds": 4.8
+ },
+ {
+  "id": "g25",
+  "issues": [],
+  "corrected": "오늘 좀 늦을 것 같아요.",
+  "model_answer": "오늘 좀 늦을 것 같아요.",
+  "note": "The learner's answer is grammatically correct and natural in Korean.",
+  "verdict": "correct",
+  "seconds": 4.7
+ },
+ {
+  "id": "g26",
+  "issues": [],
+  "corrected": "언젠가 거기 가고 싶어요.",
+  "model_answer": "언젠가 거기 가고 싶어요.",
+  "note": "한국어에서 '언젠가'는 '언젠가'로 발음되며, '가고 싶어요'는 '가고 싶어요'로 발음됩니다.",
+  "verdict": "correct",
+  "seconds": 5.2
+ },
+ {
+  "id": "g27",
+  "issues": [],
+  "corrected": "저는 매운 음식을 좋아해요.",
+  "model_answer": "저는 매운 음식을 좋아해요.",
+  "note": "Learner's answer is close but needs correction in word choice and form.",
+  "verdict": "minor",
+  "seconds": 9.2
+ },
+ {
+  "id": "g28",
+  "issues": [],
+  "corrected": "카페에서 친구를 만났어요.",
+  "model_answer": "카페에서 친구를 만났어요.",
+  "note": "Korean grammar is correct, but '카페에' is not the right way to say 'at the café' in Korean. It should be '카페에서'.",
+  "verdict": "minor",
+  "seconds": 5.9
+ },
+ {
+  "id": "g29",
+  "issues": [],
+  "corrected": "지하철을 타고 회사에 가요.",
+  "model_answer": "지하철을 타고 회사에 가요.",
+  "note": "지하철을 회사에 가요.",
+  "verdict": "minor",
+  "seconds": 4.1
+ },
+ {
+  "id": "g30",
+  "issues": [],
+  "corrected": "내 남동생이 나보다 키가 커요.",
+  "model_answer": "내 남동생이 나보다 키가 커요.",
+  "note": "동생이 나보다 키가 크다는 것을 말하는 문장입니다. '내 남동생'은 '남동생'을, '키가 커요'는 '키가 크다'를 의미합니다.",
+  "verdict": "minor",
+  "seconds": 6.3
+ },
+ {
+  "id": "g31",
+  "issues": [],
+  "corrected": "엄마에게 선물을 드렸어.",
+  "model_answer": "엄마에게 선물을 드렸어.",
+  "note": "The corrected answer is more natural and appropriate for a conversation with a friend.",
+  "verdict": "minor",
+  "seconds": 4.8
+ },
+ {
+  "id": "g32",
+  "issues": [],
+  "corrected": "한국 역사에 관심이 있어요.",
+  "model_answer": "한국 역사를 관심이 있어요.",
+  "note": "한국어에서 '역사를'은 '역사에'로 표현하는 것이 더 자연스럽습니다. '역사에'는 '역사에 대한 관심'이라는 의미를 더 잘 전달합니다.",
+  "verdict": "minor",
+  "seconds": 5.9
+ },
+ {
+  "id": "g33",
+  "issues": [],
+  "corrected": "우리 토요일에 만나기로 했어요.",
+  "model_answer": "우리 토요일에 만나기로 했어요.",
+  "note": "The learner's answer is grammatically correct but the verb '기로 하다' is not used properly. Instead, '기로 하다' should be used as '기로 하다' (to decide) or '기로 하다' (to meet). In this case, '기로 하다' is not needed here. So the corrected answer is '우리 토요일에 만나기로 했어요.' ",
+  "verdict": "minor",
+  "seconds": 8.5
+ },
+ {
+  "id": "g34",
+  "issues": [],
+  "corrected": "나만 알아.",
+  "model_answer": "나만 알아.",
+  "note": "Only I know.",
+  "verdict": "minor",
+  "seconds": 3.6
+ },
+ {
+  "id": "g35",
+  "issues": [],
+  "corrected": "회의가 연기했는데 몰랐어요.",
+  "model_answer": "회의가 연기했는데 몰랐어요.",
+  "note": "이미 정답이 주어졌으므로 추가 설명 없음.",
+  "verdict": "correct",
+  "seconds": 4.4
+ },
+ {
+  "id": "g36",
+  "issues": [],
+  "corrected": "문이 저절로 열었어.",
+  "model_answer": "문이 저절로 열었어.",
+  "note": "문이 저절로 열었어.",
+  "verdict": "correct",
+  "seconds": 4.2
+ },
+ {
+  "id": "g37",
+  "issues": [],
+  "corrected": "핸드폰 화면이 깨졌어.",
+  "model_answer": "핸드폰 화면이 깨졌어.",
+  "note": "핸드폰은 'haneulbin'으로 표기하는 것이 더 정확합니다.",
+  "verdict": "minor",
+  "seconds": 4.9
+ },
+ {
+  "id": "g38",
+  "issues": [],
+  "corrected": "모기한테 물렸어.",
+  "model_answer": "모기한테 물렸어.",
+  "note": "The corrected answer is more natural and appropriate for a conversation with a friend.",
+  "verdict": "minor",
+  "seconds": 4.6
+ },
+ {
+  "id": "g39",
+  "issues": [],
+  "corrected": "다음 주에 부산에 갈 거예요.",
+  "model_answer": "다음 주에 부산에 갈 거예요.",
+  "note": "한국어에서 '가다'는 '~에 가다'로 표현하며, '가요'는 '~에 가요'로 표현합니다. 따라서 '갔어요'는 잘못된 표현입니다.",
+  "verdict": "minor",
+  "seconds": 5.8
+ },
+ {
+  "id": "g40",
+  "issues": [],
+  "corrected": "날씨가 춥는데 어디 가요?",
+  "model_answer": "날씨가 춥는데 어디 가요?",
+  "note": "The learner's answer is correct and natural in Korean.",
+  "verdict": "correct",
+  "seconds": 4.5
+ },
+ {
+  "id": "g41",
+  "issues": [],
+  "corrected": "친구 이사를 도와줬어요.",
+  "model_answer": "친구 이사를 도와줬어요.",
+  "note": "친구 이사를 돕았어요.",
+  "verdict": "minor",
+  "seconds": 4.3
+ },
+ {
+  "id": "g42",
+  "issues": [],
+  "corrected": "밥 먹었어?",
+  "model_answer": "밥 먹었어?",
+  "note": "The learner's answer is correct in Korean, but it's a bit informal. In a more formal situation like talking to a boss, you might say '밥 먹었습니까?' or '밥 먹었습니까?' depending on the formality you want to use.",
+  "verdict": "correct",
+  "seconds": 6.1
+ },
+ {
+  "id": "g43",
+  "issues": [],
+  "corrected": "회의가 다음 주로 미뤄졌어요.",
+  "model_answer": "회의가 다음 주로 미뤄졌어요.",
+  "note": "The learner's answer is close, but '미뤄졌어' should be '미뤄졌어요' to match the correct grammar.",
+  "verdict": "minor",
+  "seconds": 5.1
+ },
+ {
+  "id": "g44",
+  "issues": [],
+  "corrected": "할머니가 자고 계세요.",
+  "model_answer": "할머니가 자고 계세요.",
+  "note": "할머니가 자고 계세요.",
+  "verdict": "minor",
+  "seconds": 4.2
+ },
+ {
+  "id": "g45",
+  "issues": [],
+  "corrected": "이름이 뭐야?",
+  "model_answer": "이름이 뭐야?",
+  "note": "The learner's answer is correct in Korean, but it's a bit informal. In a professional setting, you might use '이름이 어떻게 되세요?' or '이름을 말씀해 주시겠어요?' instead.",
+  "verdict": "correct",
+  "seconds": 5.6
+ },
+ {
+  "id": "g46",
+  "issues": [],
+  "corrected": "오늘 밤에 오십니까?",
+  "model_answer": "오늘 밤에 오십니까?",
+  "note": "The learner's answer is correct in Korean.",
+  "verdict": "correct",
+  "seconds": 4.2
+ },
+ {
+  "id": "g47",
+  "issues": [],
+  "corrected": "선생님이 그렇게 말씀하셨어요.",
+  "model_answer": "선생님이 그렇게 말씀하셨어요.",
+  "note": "The learner's answer is close, but the correct form is '선생님이 그렇게 말씀하셨어요.' The learner's answer is grammatically correct but the word order is slightly different. In Korean, 'so' is not used in this context, and 'so' is replaced with '그렇게'. The learner's answer is very close to the correct answer, but the word order is slightly different. In Korean, 'so' is not used in this context, and 'so' is replaced with '그렇게'. The learner's answer is very close to the correct answer, but the word order is slightly different. In Korean, 'so' is not used in this context, and 'so' is replaced with '그렇게'. The learner's answer is very close to the correct answer, but the word order is slightly different. In Korean, 'so' is not used in this context, and 'so' is replaced with '그렇게'. The learner's answer is very close to the correct answer, but the word order is slightly different.",
+  "verdict": "minor",
+  "seconds": 15.8
+ },
+ {
+  "id": "g48",
+  "issues": [],
+  "corrected": "제가 나중에 전화 드리겠습니다.",
+  "model_answer": "제가 나중에 전화 드리겠습니다.",
+  "note": "Korean polite form for a boss",
+  "verdict": "minor",
+  "seconds": 4.6
+ },
+ {
+  "id": "g49",
+  "issues": [],
+  "corrected": "많이 먹으세요.",
+  "model_answer": "많이 먹으세요.",
+  "note": "The learner's answer is correct, but it should be corrected to '많이 먹으세요' in Korean, which is polite and suitable for older guests.",
+  "verdict": "minor",
+  "seconds": 5.2
+ },
+ {
+  "id": "g50",
+  "issues": [],
+  "corrected": "비가 와서 우산을 가져가세요.",
+  "model_answer": "비가 와서 우산을 가져가세요.",
+  "note": "정답입니다. 문장의 구조와 단어 선택이 적절합니다.",
+  "verdict": "correct",
+  "seconds": 4.9
+ },
+ {
+  "id": "g51",
+  "issues": [],
+  "corrected": "밥을 먹으면서 친구가 TV를 봐요.",
+  "model_answer": "밥을 먹으면서 친구가 TV를 봐요.",
+  "note": "The sentence is grammatically correct and naturally expresses the idea.",
+  "verdict": "correct",
+  "seconds": 4.9
+ },
+ {
+  "id": "g52",
+  "issues": [],
+  "corrected": "비가 오는 바람에 소풍이 즐거웠어요.",
+  "model_answer": "비가 오는 바람에 소풍이 즐거웠어요.",
+  "note": "정답입니다. 문장이 자연스럽고 문법적으로 올바릅니다.",
+  "verdict": "correct",
+  "seconds": 4.7
+ },
+ {
+  "id": "g53",
+  "issues": [],
+  "corrected": "그 사람을 작년에 알게 되었어요.",
+  "model_answer": "그 사람을 작년에 알게 되었어요.",
+  "note": "알다의 과거형은 알게 되었어요로 표현합니다.",
+  "verdict": "minor",
+  "seconds": 4.4
+ },
+ {
+  "id": "g54",
+  "issues": [],
+  "corrected": "아파서 학교에 안 갔어요.",
+  "model_answer": "아파서 학교에 안 갔어요.",
+  "note": "The sentence is grammatically correct and naturally expresses the meaning.",
+  "verdict": "correct",
+  "seconds": 4.6
+ },
+ {
+  "id": "g55",
+  "issues": [],
+  "corrected": "샤워를 할게.",
+  "model_answer": "샤워를 할게.",
+  "note": "샤워를 받을게는 잘못된 표현입니다. '받을게'는 '받을 것이다'라는 의미로, 샤워를 하는 것이 아니라 샤워를 받는 것을 의미합니다. 올바른 표현은 '샤워를 할게'입니다.",
+  "verdict": "minor",
+  "seconds": 6.7
+ },
+ {
+  "id": "g56",
+  "issues": [],
+  "corrected": "감기를 잡았어요.",
+  "model_answer": "감기를 걸었어요.",
+  "note": "In a formal workplace setting, '감기를 걸었어요' or '감기를 걸렸어요' is a more appropriate choice.",
+  "verdict": "correct",
+  "seconds": 11.7
+ },
+ {
+  "id": "g57",
+  "issues": [],
+  "corrected": "두 명 예약을 만들어 주세요.",
+  "model_answer": "두 명 예약을 만들어 주세요.",
+  "note": "두 명 예약을 만들어 주세요.",
+  "verdict": "correct",
+  "seconds": 4.2
+ },
+ {
+  "id": "g58",
+  "issues": [],
+  "corrected": "재료를 다 준비했습니다.",
+  "model_answer": "재료를 다 준비했습니다.",
+  "note": "The learner's answer is correct and natural in Korean.",
+  "verdict": "correct",
+  "seconds": 4.2
+ },
+ {
+  "id": "g59",
+  "issues": [],
+  "corrected": "몸무게를 잃었어.",
+  "model_answer": "몸무게를 잃었어.",
+  "note": "한국어에서 '몸무게'는 '몸의 무게'를 의미하며, '잃다'는 '줄다' 또는 '감소하다'의 의미로 사용됩니다. '몸무게를 잃다'는 '몸의 무게가 줄어들다'라는 뜻입니다.",
+  "verdict": "correct",
+  "seconds": 6.9
+ },
+ {
+  "id": "g60",
+  "issues": [],
+  "corrected": "불 켜 줘.",
+  "model_answer": "불 켜 줘.",
+  "note": "불 켜 줘.",
+  "verdict": "minor",
+  "seconds": 3.6
+ },
+ {
+  "id": "g61",
+  "issues": [],
+  "corrected": "햇빛이 강하니까 모자 입어.",
+  "model_answer": "햇빛이 강하니까 모자 입어.",
+  "note": "한국어에서 '햇빛이 강하니까'는 '햇빛이 쨍쨍하니까'로 표현할 수 있습니다.",
+  "verdict": "correct",
+  "seconds": 5.0
+ },
+ {
+  "id": "g62",
+  "issues": [],
+  "corrected": "제가 실수를 했어요.",
+  "model_answer": "제가 실수를 했어요.",
+  "note": "Korean grammar is correct and natural in this context.",
+  "verdict": "minor",
+  "seconds": 4.2
+ },
+ {
+  "id": "g63",
+  "issues": [],
+  "corrected": "어제 너무 피곤해서 일찍 잤어.",
+  "model_answer": "어제 너무 피곤해서 일찍 잤어.",
+  "note": "한국어에서 '잣어'는 '잤다'의 잘못된 표현입니다. '잤다'는 '잠을 자다'라는 의미로, '잔다'는 '잠을 자다'의 과거형입니다.",
+  "verdict": "minor",
+  "seconds": 6.6
+ },
+ {
+  "id": "g64",
+  "issues": [],
+  "corrected": "날씨가 좋아서 산책하러 가자.",
+  "model_answer": "날씨가 좋아서 산책하러 가자.",
+  "note": "날씨가 좋다",
+  "verdict": "correct",
+  "seconds": 4.1
+ },
+ {
+  "id": "g65",
+  "issues": [],
+  "corrected": "아파서 보고서를 끝내지 못했어.",
+  "model_answer": "아파서 보고서를 끝내지 못했어.",
+  "note": "아파서",
+  "verdict": "minor",
+  "seconds": 4.9
+ },
+ {
+  "id": "g66",
+  "issues": [],
+  "corrected": "엄마 선물을 찾고 있어요.",
+  "model_answer": "엄마 선물을 찾고 있어요.",
+  "note": "이 문장은 상황에 맞게 잘 쓰였어요. 다만, '선물을'이 아니라 '선물을'로 써야 자연스러워요.",
+  "verdict": "minor",
+  "seconds": 9.7
+ }
+]

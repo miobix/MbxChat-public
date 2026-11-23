@@ -30,6 +30,13 @@ def test_a_correct_verdict_with_a_fix_becomes_minor(monkeypatch):
     assert practice.grade(p, "회의를 미뤄요").verdict == "correct"  # punctuation alone is no fix
 
 
+def test_a_reference_match_is_correct_without_a_model_call(monkeypatch):
+    p = {"kind": "translate", "en": "x", "situation": "", "register": "", "reference": "회의가 미뤄졌어요.", "word": None}
+    monkeypatch.setattr(practice, "ask", lambda *a: BAD)
+    assert practice.grade(p, "회의가 미뤄졌어요").verdict == "correct"
+    assert practice.grade(p, "회의 미뤄졌어요").verdict == "wrong"
+
+
 def test_ping_due_fires_once_and_never_late():
     tz = ZoneInfo("Asia/Seoul")
     pings = [time(10), time(13)]
@@ -50,7 +57,7 @@ def test_parse_duration():
 @pytest.fixture
 def pool(db_url, monkeypatch):
     importer.import_public()
-    monkeypatch.setattr(practice, "ask", lambda schema, system, user: GOOD)
+    monkeypatch.setattr(practice, "ask", lambda *a: GOOD)
     cid = capture.new_capture("the meeting got pushed", "to my boss")
     with psycopg.connect(db_url) as conn:
         conn.execute("UPDATE capture SET polite = '회의가 미뤄졌어요.' WHERE id = %s", (cid,))

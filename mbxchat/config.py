@@ -11,6 +11,7 @@ MBXREAD_URL = os.getenv("MBXREAD_URL", "http://127.0.0.1:8002").strip()
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434").strip()
 CAPTURE_MODEL = os.getenv("CAPTURE_MODEL", "gemma4:e4b").strip()
 CAPTURE_MODEL_ID = os.getenv("CAPTURE_MODEL_ID", "dc35e8d9c606").strip()
+GRADER_MODEL = os.getenv("GRADER_MODEL", CAPTURE_MODEL).strip()
 
 # AnkiConnect on the desktop (compose: host.docker.internal). Chunk cards go to ANKI_DECK.
 ANKI_URL = os.getenv("ANKI_URL", "http://127.0.0.1:8765").strip()
