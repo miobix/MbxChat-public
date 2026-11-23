@@ -14,9 +14,10 @@
   `hf.co/unsloth/Qwen3.5-4B-GGUF:Q4_K_M` `d31742299266` (3.4 GB); gemma4:e4b `dc35e8d9c606`.
   Move to DECISIONS when 6b records the eval; `ollama rm` the losers after it.
   Smoke test (2026-11-23, one correction prompt): A.X, Mi:dm, Nemotron, Qwen answer and fix it
-  (Qwen needs `think: false`). Olala fails to load on Ollama 0.40.15: "unknown model
-  architecture: 'olala'". Retry on a newer Ollama at 6b start, else drop it.
-- **Unit 6b, gated on the proofread:** eval harness (runs in Phoenix), the six LLMs + dadeum on
+  (Qwen needs `think: false`). **Olala dropped:** "unknown model architecture: 'olala'"; its
+  model card says upstream llama.cpp and Ollama do not support it (OVHcloud fork only). Record
+  in DECISIONS with 6b; `ollama rm` it then.
+- **Unit 6b, gated on the proofread:** eval harness (runs in Phoenix), the five LLMs + dadeum on
   the set, side-by-side capture pass, reference-match + hints router, GPU attempt (SPEC §8).
   dadeum needs `torch` + `transformers`: keep them out of the bot image (eval-only deps).
 - **Practice is shaped by use:** the user tweaks prompts, mix and grading as real use shows what
