@@ -90,6 +90,7 @@ async def on_capture(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 # Label shown once the key node has finished, i.e. what runs next.
 NEXT_STEP = {
+    "agent": "Checking words in krdict and your library…",
     "draft": "Checking words in krdict and your library…",
     "lookup": "Critic reviewing…",
     "critic": "Picking chunks…",
@@ -299,12 +300,33 @@ async def on_late(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await _answer(context, original, p, late=True)
 
 
+EXAMPLE_SOURCE = {"library": "from your library", "krdict": "from krdict", "model": "model-written, unchecked"}
+
+
+def _word_summary(v: dict) -> str:
+    w = v["word"]
+    lines = [f"<b>{esc(w['korean'])}</b> · {esc(w['english'])}"]
+    if w["entries"]:
+        gloss = " | ".join(g for e in w["entries"] for g in e["glosses"][:1]) or "?"
+        where = f"not in the learners' dictionary; root <b>{esc(w['root'])}</b>" if w["root"] else "krdict"
+        lines.append(f"📖 {where}: {esc(gloss)}")
+    else:
+        lines.append("📖 not in the learners' dictionary")
+    if w["examples"]:
+        lines.append(f"<i>Examples, {EXAMPLE_SOURCE[w['source']]}:</i>")
+        lines += [f"• {esc(e)}" for e in w["examples"]]
+    lines += [f"⚠️ {esc(n)}" for n in v["findings"]["notes"]]
+    return "\n".join(lines)
+
+
 def _summary(v: dict) -> str:
+    if v.get("kind") == "word":
+        return _word_summary(v)
     r, d = v["review"], v["draft"]
     lines = [f"<b>Polite:</b> {esc(r['polite'])}", f"<b>Casual:</b> {esc(r['casual'])}", f"<i>{esc(d['note'])}</i>"]
     if r["issues"]:
         lines.append(fold("<b>Critic fixed:</b>\n" + "\n".join(f"• {esc(i)}" for i in r["issues"])))
-    lines += [f"⚠️ {esc(n)}" for n in v["findings"]["notes"]]
+    lines += [f"⚠️ {esc(n)}" for n in v.get("agent_notes", []) + v["findings"]["notes"]]
     n = len(v["chunks"])
     lines.append(f"{n} chunk{'' if n == 1 else 's'} to review below." if n else "No chunks worth a card this time.")
     return "\n".join(lines)

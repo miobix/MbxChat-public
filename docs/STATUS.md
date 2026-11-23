@@ -16,9 +16,13 @@ DECISIONS "2026-11-23 Unit 7 plan".
      `library_examples` (`MBXREAD_URL`), `known_items` (always). Live: the bot lists all three
      over HTTP and calls them. krdict's 3 s gap now holds across processes (Postgres advisory
      lock + `krdict_last` in `setting`). Deps `mcp==1.30.0`, `langchain-mcp-adapters==0.3.2`.
-  4. Capture agent behind `CAPTURE_MODE` (default `workflow`): kind + Korean by the agent,
-     grounding (dictionary check, library examples) as fixed steps; sentence path hands off to
-     the unit 3 critic → chunks → review → save.
+  4. Done: `mbxchat/agent.py` behind `CAPTURE_MODE` (default `workflow`, live bot unchanged).
+     Agent node (MCP tools + submit_word / submit_sentence, max 6 steps, a bad submit goes back
+     to the model) → sentence: unit 3 chain from `lookup`; word: `word_lookup` (krdict, one root
+     fallback 최적화 → 최적, examples library → krdict → model, marked). Live, nodes called
+     directly (no capture rows): word 16 s, 1 tool call, root found, 1 krdict request; sentence
+     6 s, 0 tool calls. **Library examples for 최적화 were transcript fragments** ("해서 어떻게
+     최적화를 좀 달할 수"): decide in step 5 whether cards prefer krdict/model examples.
   5. Word path: `MbxChat Word` note type, `ANKI_WORD_DECK` (default `MbxChat::Words`), outbox
      rows on the chunk push loop, `findNotes` dedupe, `[✅ Approve] [⏭ Skip]` card.
   6. Session routing: one structured call (answer / capture / question) before grading.
@@ -72,7 +76,7 @@ DECISIONS "2026-11-23 Unit 7 plan".
 - Evals (host only, `requirements-eval.txt`): `python -m evals.grader_eval MODEL...` (also
   `dadeum`, `<model>+dadeum`) and `python -m evals.capture_side_by_side MODEL...` (set
   `MBXREAD_URL=http://127.0.0.1:8002` in the shell for lookups). Results in `evals/results/`. Set `PYTHONUTF8=1` when output goes to a file.
-- Tests: 107 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 119 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
   MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002 .venv/Scripts/python -m mbxchat.importer`

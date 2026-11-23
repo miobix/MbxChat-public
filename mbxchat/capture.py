@@ -66,6 +66,10 @@ class State(TypedDict, total=False):
     chunks: list[dict]
     decisions: list[dict]
     saved: int
+    kind: str  # agent mode: "sentence" or "word"
+    word: dict
+    agent_calls: int
+    agent_notes: list[str]
 
 
 def ask(schema: type[BaseModel], system: str, user: str, model: str | None = None) -> BaseModel:
@@ -241,12 +245,25 @@ def save(state: State) -> State:
 NODES = {"draft": draft, "lookup": lookup, "critic": critic, "chunks": chunks, "review": review, "save": save}
 
 
-def build(checkpointer):
+def build(checkpointer, mode: str | None = None):
+    """`workflow`: the fixed unit 3 chain. `agent` (SPEC §7e): the agent drafts a sentence (then the
+    same chain from lookup) or finds a word (then word_lookup)."""
     g = StateGraph(State)
     names = list(NODES)
+    if (mode or config.CAPTURE_MODE) == "agent":
+        from mbxchat import agent
+
+        names = names[1:]
+        g.add_node("agent", agent.agent)
+        g.add_node("word_lookup", agent.word_lookup)
+        g.add_edge(START, "agent")
+        g.add_conditional_edges("agent", lambda s: "word_lookup" if s["kind"] == "word" else "lookup")
+        g.add_edge("word_lookup", END)
+    else:
+        g.add_edge(START, names[0])
     for name in names:
         g.add_node(name, NODES[name])
-    for a, b in zip([START, *names], [*names, END]):
+    for a, b in zip(names, [*names[1:], END]):
         g.add_edge(a, b)
     return g.compile(checkpointer=checkpointer)
 
