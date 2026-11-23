@@ -72,9 +72,9 @@ class State(TypedDict, total=False):
     saved: int
 
 
-def ask(schema: type[BaseModel], system: str, user: str) -> BaseModel:
+def ask(schema: type[BaseModel], system: str, user: str, model: str | None = None) -> BaseModel:
     llm = ChatOllama(
-        model=config.CAPTURE_MODEL, base_url=config.OLLAMA_URL, temperature=0.2, reasoning=False
+        model=model or config.CAPTURE_MODEL, base_url=config.OLLAMA_URL, temperature=0.2, reasoning=False
     ).with_structured_output(schema, method="json_schema")
     try:
         return llm.invoke([("system", system), ("human", user)])

@@ -1,0 +1,5 @@
+-c requirements.txt
+-r requirements.in
+arize-phoenix-client==3.7.0
+torch==2.15.0
+transformers==5.22.2

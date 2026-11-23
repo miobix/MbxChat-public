@@ -1,0 +1,398 @@
+[
+ {
+  "id": "g01",
+  "corrected": "지금 마트 가는 길인데 필요한 거 있어?",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g02",
+  "corrected": "회의가 길어졌는데 점심 드셨어요?",
+  "verdict": "correct",
+  "seconds": 0.1
+ },
+ {
+  "id": "g03",
+  "corrected": "파일 다시 보내 주실 수 있어요?",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g04",
+  "corrected": "우산을 깜빡해서 비를 쫄딱 맞았어.",
+  "verdict": "correct",
+  "seconds": 0.1
+ },
+ {
+  "id": "g05",
+  "corrected": "오랜만이야! 잘 지냈어?",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g06",
+  "corrected": "10분 정도 늦을 것 같습니다.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g07",
+  "corrected": "피곤한데 오늘은 일찍 잘게요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g08",
+  "corrected": "요즘 너무 바빠서 운동을 못 했어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g09",
+  "corrected": "음악을 들으면서 공부해요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g10",
+  "corrected": "너무 비싸기 때문에 안 샀어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g11",
+  "corrected": "저는 운전할 수 있어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g12",
+  "corrected": "다음 달에 부산으로 이사하게 됐어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g13",
+  "corrected": "늦잠을 자는 바람에 버스를 놓쳤어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g14",
+  "corrected": "퇴근하고 커피 한잔하자.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g15",
+  "corrected": "어제 도와주셔서 감사합니다.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g16",
+  "corrected": "그 식당 생각보다 맛있더라고요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g17",
+  "corrected": "저는 수영할 수 없어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g18",
+  "corrected": "내일은 못 가요. 일이 좀 바쁘거든요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g19",
+  "corrected": "집에 가서 쉴 거야.",
+  "verdict": "minor",
+  "seconds": 0.2
+ },
+ {
+  "id": "g20",
+  "corrected": "그거 몰랐어.",
+  "verdict": "minor",
+  "seconds": 0.1
+ },
+ {
+  "id": "g21",
+  "corrected": "잠시만 기달려 주세요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g22",
+  "corrected": "밖에 비가 오는대 우산 있어요?",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g23",
+  "corrected": "괜찮아요, 걱정하지 마세요.",
+  "verdict": "minor",
+  "seconds": 0.2
+ },
+ {
+  "id": "g24",
+  "corrected": "내일 봬요.",
+  "verdict": "minor",
+  "seconds": 0.1
+ },
+ {
+  "id": "g25",
+  "corrected": "오늘 좀 늦을 것 같아요.",
+  "verdict": "minor",
+  "seconds": 0.2
+ },
+ {
+  "id": "g26",
+  "corrected": "언젠가 거기 가고 싶어요.",
+  "verdict": "minor",
+  "seconds": 0.1
+ },
+ {
+  "id": "g27",
+  "corrected": "저는 매운 음식이 좋아해요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g28",
+  "corrected": "카페에 친구를 만났어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g29",
+  "corrected": "지하철을 회사에 가요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g30",
+  "corrected": "남동생이 나만큼 키가 커.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g31",
+  "corrected": "엄마를 선물을 줬어.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g32",
+  "corrected": "한국 역사를 관심이 있어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g33",
+  "corrected": "우리 토요일에 만나기를 했어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g34",
+  "corrected": "나도 알아.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g35",
+  "corrected": "회의가 연기했는데 몰랐어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g36",
+  "corrected": "문이 저절로 열었어.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g37",
+  "corrected": "핸드폰 화면이 깼어.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g38",
+  "corrected": "모기가 물렸어.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g39",
+  "corrected": "다음 주에 부산에 갔어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g40",
+  "corrected": "날씨가 춥는데 어디 가요?",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g41",
+  "corrected": "친구 이사를 돕았어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g42",
+  "corrected": "밥 먹었어?",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g43",
+  "corrected": "회의 다음 주로 미뤄졌어.",
+  "verdict": "correct",
+  "seconds": 0.1
+ },
+ {
+  "id": "g44",
+  "corrected": "할머니가 자고 있어요.",
+  "verdict": "correct",
+  "seconds": 0.1
+ },
+ {
+  "id": "g45",
+  "corrected": "이름이 뭐야?",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g46",
+  "corrected": "오늘 밤에 오십니까?",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g47",
+  "corrected": "선생님이 그렇게 말했어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g48",
+  "corrected": "제가 나중에 전화하시겠습니다.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g49",
+  "corrected": "많이 먹어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g50",
+  "corrected": "비가 와서 우산을 가져가세요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g51",
+  "corrected": "밥을 먹으면서 친구가 TV를 봐요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g52",
+  "corrected": "비가 오는 바람에 소풍이 즐거웠어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g53",
+  "corrected": "그 사람을 작년에 알았어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g54",
+  "corrected": "아파서 학교에 안 갔어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g55",
+  "corrected": "샤워를 받을게.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g56",
+  "corrected": "감기를 잡았어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g57",
+  "corrected": "두 명 예약을 만들어 주세요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g58",
+  "corrected": "재료를 다 준비했습니다.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g59",
+  "corrected": "몸무게를 잃었어.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g60",
+  "corrected": "불 열어 줘.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g61",
+  "corrected": "햇빛이 강하니까 모자 입어.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g62",
+  "corrected": "제가 실수를 만들었어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g63",
+  "corrected": "어제 너무 피곤했어서 일찍 잣어.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g64",
+  "corrected": "날씨가 좋아서 산책하러 가자.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g65",
+  "corrected": "아파서 보고서를 끝나지 못했어.",
+  "verdict": "correct",
+  "seconds": 0.0
+ },
+ {
+  "id": "g66",
+  "corrected": "엄마 선물을 찿고 있어요.",
+  "verdict": "correct",
+  "seconds": 0.0
+ }
+]

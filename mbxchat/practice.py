@@ -175,13 +175,17 @@ def task(p: dict) -> str:
     return f"Say this in Korean: {p['en']}"
 
 
-def grade(p: dict, answer: str) -> Grade:
+def grade(p: dict, answer: str, model: str | None = None) -> Grade:
+    if p["reference"] and bare(answer) == bare(p["reference"]):
+        return Grade(issues=[], corrected=answer, model_answer=p["reference"], note="", verdict="correct")
     lines = [f"Task: {task(p)}"]
     lines += [f"Situation: {p['situation']}"] * bool(p["situation"])
     lines += [f"Register: {p['register']}"] * bool(p["register"])
     lines += [f"Reference answer: {p['reference']}"] * bool(p["reference"])
     lines.append(f"Learner's answer: {answer}")
-    g = ask(Grade, GRADER_SYSTEM, "\n".join(lines))
+    if p.get("hint"):
+        lines.append(f"A spelling checker suggests: {p['hint']} (it can be wrong, and misses many errors)")
+    g = ask(Grade, GRADER_SYSTEM, "\n".join(lines), model or config.GRADER_MODEL)
     g.issues = [i for i in g.issues if "→" in i]
     if g.verdict == "correct" and (g.issues or bare(g.corrected) != bare(answer)):
         g.verdict = "minor"  # gemma sometimes fixes the sentence and still says correct
