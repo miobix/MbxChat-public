@@ -119,6 +119,8 @@ def import_public(url: str | None = None, data_dir: Path = DATA_DIR) -> list[str
 
 
 def import_personal(url: str | None = None) -> list[str]:
+    if not config.MBXREAD_URL:
+        return ["term: skipped, MBXREAD_URL not set"]
     try:
         terms = fetch_terms(config.MBXREAD_URL)
     except (OSError, ValueError) as e:

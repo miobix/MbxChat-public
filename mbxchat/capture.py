@@ -188,6 +188,8 @@ def lookup(state: State) -> State:
     grades = nikl_grades(lemmas)
     rare = [lemma for lemma in lemmas if lemma not in grades]
     findings: dict = {"krdict": {}, "usage": {}, "notes": []}
+    if not config.MBXREAD_URL:
+        return {"findings": findings}
     for lemma in rare[:MAX_KRDICT]:
         try:
             findings["krdict"][lemma] = krdict_gloss(lemma)

@@ -4,8 +4,8 @@ from datetime import time
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://mbxchat:mbxchat@127.0.0.1:5434/mbxchat")
 HEALTH_PORT = int(os.getenv("HEALTH_PORT", "8005"))
 
-# MbxRead saved terms, read by `python -m mbxchat.importer` on the host.
-MBXREAD_URL = os.getenv("MBXREAD_URL", "http://127.0.0.1:8002").strip()
+# Optional MbxRead (library examples, krdict relay until unit 7, saved terms). Empty = off.
+MBXREAD_URL = os.getenv("MBXREAD_URL", "").strip()
 
 # Capture model (SPEC §6, §7c). The ID is Ollama's digest prefix, checked at startup.
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434").strip()

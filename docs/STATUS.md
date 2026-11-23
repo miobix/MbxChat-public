@@ -5,7 +5,8 @@ DECISIONS "2026-11-23 Unit 7 plan".
 
 ## Next
 - **Unit 7 build order** (each step tested before the next):
-  1. `MBXREAD_URL` opt-in: empty default in config and compose = MbxRead features off, silent.
+  1. Done: `MBXREAD_URL` opt-in (empty default = no MbxRead calls, no notes; importer says
+     "skipped, MBXREAD_URL not set"). The author's `.env` sets it; live bot reaches MbxRead.
   2. Own krdict client: paced 1 request / 3 s, cached in Postgres, stop at the first failure.
      Needs a krdict Open API key from the user (`KRDICT_API_KEY` in `.env`).
   3. `mcp` service: read-only tools `krdict_lookup`, `library_examples` (only with
@@ -53,23 +54,24 @@ DECISIONS "2026-11-23 Unit 7 plan".
   disabled in BotFather. `/demo` is a UI preview; remove it once real flows replace it.
 - Capture (SPEC §7c): ➕ runs draft → lookup → critic → chunks (~10 s on GPU), then one card
   per chunk; approved and edited chunks land in `chunk`. A pending ✏️ edit lives in memory (a
-  restart forgets it). Needs MbxRead's stack: API :8002 (krdict via `/api/dict`, `/api/usage`)
-  and its Ollama :11434 (`gemma4:e4b`, ID `dc35e8d9c606`, checked at startup with a warning; on
-  GPU since the Docker Desktop update; the only model kept after 6b).
+  restart forgets it). Uses MbxRead when `MBXREAD_URL` is set (krdict via `/api/dict` until
+  unit 7, `/api/usage`); MbxRead's Ollama :11434 (`gemma4:e4b`, ID `dc35e8d9c606`, checked at
+  startup with a warning; on GPU since the Docker Desktop update; the only model kept after 6b).
 - Anki (SPEC §7): deck `MbxChat`, note type `MbxChat Chunk` (created once; template changes in
   code do not reach an existing note type), AnkiConnect at `host.docker.internal:8765`. `chunk`
   is the outbox; retried every 60 s.
 - Errors: reported in the chat, except Telegram network errors (logged; polling retries alone).
   `httpx` logging is held at WARNING because request URLs contain the token.
 - Evals (host only, `requirements-eval.txt`): `python -m evals.grader_eval MODEL...` (also
-  `dadeum`, `<model>+dadeum`) and `python -m evals.capture_side_by_side MODEL...` (needs
-  MbxRead :8002). Results in `evals/results/`. Set `PYTHONUTF8=1` when output goes to a file.
-- Tests: 93 passing (`.venv/Scripts/python -m pytest tests -q`), need
+  `dadeum`, `<model>+dadeum`) and `python -m evals.capture_side_by_side MODEL...` (set
+  `MBXREAD_URL=http://127.0.0.1:8002` in the shell for lookups). Results in `evals/results/`. Set `PYTHONUTF8=1` when output goes to a file.
+- Tests: 95 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
-  MbxRead terms via `.venv/Scripts/python -m mbxchat.importer` on the host (refuses an answer
+  MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002 .venv/Scripts/python -m mbxchat.importer`
+  on the host (refuses an answer
   with under half the stored count). Nothing reads MbxWrite: its wishes were imported once and
   the database (and its backups) is their only copy. Provenance in `docs/DATA.md`. Known grammar
   in `known_grammar`; basics seeded on the first import only.
-- MbxRead is reached at `host.docker.internal:8002`; its `.env` `ALLOWED_HOSTS` includes
-  `host.docker.internal`.
+- MbxRead is reached at `MBXREAD_URL` from `.env` (`host.docker.internal:8002`; compose no longer
+  sets it); MbxRead's `.env` `ALLOWED_HOSTS` includes `host.docker.internal`.

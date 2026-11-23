@@ -25,6 +25,7 @@ def offline(db_url, monkeypatch):
     answers = {capture.Draft: DRAFT, capture.Review: REVIEW, capture.Chunks: CHUNKS}
     monkeypatch.setattr(capture, "ask", lambda schema, system, user: answers[schema])
     monkeypatch.setattr(capture, "KRDICT_GAP", 0)
+    monkeypatch.setattr(capture.config, "MBXREAD_URL", "http://mbxread")
     calls = []
 
     def mbxread(path, body=None, timeout=20):
@@ -218,6 +219,13 @@ def test_a_stale_button_is_already_handled(offline, graph):
     update, q = _tap(f"ch:{cid}:1:ok")
     asyncio.run(bot.on_chunk(update, context))
     q.answer.assert_awaited_with("Already handled")
+
+
+def test_lookup_without_mbxread_calls_nothing_and_notes_nothing(offline, monkeypatch):
+    monkeypatch.setattr(capture.config, "MBXREAD_URL", "")
+    monkeypatch.setattr(capture, "content_lemmas", lambda text: ["뷁뷁"])
+    findings = capture.lookup({"draft": {"casual": "", "polite": ""}})["findings"]
+    assert offline == [] and findings == {"krdict": {}, "usage": {}, "notes": []}
 
 
 def test_krdict_glosses_cover_homographs(monkeypatch):
