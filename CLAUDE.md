@@ -18,6 +18,8 @@ session, if present.
 - `eval-in-container`: run an eval in a one-off container of the bot's image with `evals/`
   mounted. Reach for it when an eval needs the `mcp` tool server or the bot's exact runtime
   (e.g. `evals/capture_ab.py`).
+- `lockfile-recompile`: recompile all three lockfiles in order, keep the `pywin32` marker, read
+  the diff. Reach for it after any change to a `requirements*.in` file.
 - Cycle boundaries (units 4, 8, 11) also use the user-level `hardening-pass` skill.
 
 ## Rules

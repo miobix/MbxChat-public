@@ -1,7 +1,7 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 7 (the agent) done on `unit-7-agent`, PR open; the user merges. Next: unit 8
-(learner memory, SPEC §8), which ends cycle 2 (hardening pass, doc roll-up). Decisions: DECISIONS
+**Phase:** unit 7 (the agent) merged (PR #13, 2026-11-24). Next: unit 8 (learner memory,
+SPEC §8) on `unit-8-memory` from a fresh `main`; it ends cycle 2 (hardening pass, doc roll-up). Decisions: DECISIONS
 "2026-11-23 Unit 7 plan", "2026-11-23 Unit 7 build", "2026-11-24 Unit 7: the agent".
 
 ## Unit 7 in one paragraph
@@ -13,7 +13,9 @@ question). MbxRead is opt-in via `MBXREAD_URL`. Phone check passed 2026-11-24.
 
 ## Later
 - **README note for unit 11:** MbxRead material is used when `MBXREAD_URL` is set and ignored
-  when not; the author shares MbxRead's Ollama.
+  when not; the author shares MbxRead's Ollama. Also CPU vs GPU numbers (same host, same
+  grader set of 66, DECISIONS 2026-11-24 "Unit 7 wrap-up"): gemma4:e4b grading median 11.0 s
+  on CPU vs 1.4 s on GPU; decode ~9 vs 159-192 tokens/s.
 - **Open question (user): spacing slips.** `grade()` compares with spaces stripped, so a
   spacing-only fix (집에가서 → 집에 가서) keeps the verdict `correct`.
 - **Later, not now (user):** move the benchmark core (grader set + harness + results log) into
@@ -26,7 +28,7 @@ question). MbxRead is opt-in via `MBXREAD_URL`. Phone check passed 2026-11-24.
   and `krdict_cache` (all small; revisit at unit 9). Backups sit on the same disk as the
   database; copying them off the machine is the user's call.
 - **Skill proposal, on hold:** `capture-smoke` (scratch-DB traced capture). Skills in use:
-  CLAUDE.md, "Skills" (`eval-in-container` added 2026-11-23).
+  CLAUDE.md, "Skills" (`lockfile-recompile` added 2026-11-24).
 
 ## Facts
 - Remote: `miobix/MbxChat`, private. Rulesets are not enforced on private repos on GitHub Free,
