@@ -115,6 +115,66 @@ services:
     restart: unless-stopped
     logging: *logging
 
+  # Monitoring (SPEC §7g): scrapes bot:8005/metrics, rule in monitoring/alerts.yml.
+  prometheus:
+    image: prom/prometheus:v3.15.1@sha256:fa3302279710be2f21a8301ec17a8b4f2301fd829bd113839b3b6b02b6f191a2
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=30d
+      - --web.external-url=http://127.0.0.1:9090
+    ports:
+      - "127.0.0.1:9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - mbxchat-prometheus:/prometheus
+    restart: unless-stopped
+    logging: *logging
+
+  # Sends alerts to the allowed chat through the Bot API, which works while the bot is down.
+  # Its config has no env expansion, so the entrypoint writes it from .env.
+  alertmanager:
+    image: prom/alertmanager:v0.34.2@sha256:39d8bb3966c694a124428a3a88fbcffd40bd069129ecd47c059f8a3f17c55f3b
+    env_file: .env
+    entrypoint:
+      - sh
+      - -c
+      - |
+        cat > /tmp/alertmanager.yml <<EOF
+        route:
+          receiver: telegram
+          group_wait: 10s
+          group_interval: 1m
+          repeat_interval: 4h
+        receivers:
+          - name: telegram
+            telegram_configs:
+              - bot_token: "$$TELEGRAM_BOT_TOKEN"
+                chat_id: $$TELEGRAM_ALLOWED_USER_ID
+        EOF
+        exec /bin/alertmanager --config.file=/tmp/alertmanager.yml --storage.path=/alertmanager --cluster.listen-address=
+    restart: unless-stopped
+    logging: *logging
+
+  grafana:
+    image: grafana/grafana:13.2.6@sha256:b21409d7951ddcfd63a4b49083e4ef2cc35bc1437d071813bf82bfb238b00bca
+    environment:
+      # Localhost only, like Phoenix: no login.
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /etc/grafana/provisioning/dashboards/mbxchat.json
+    ports:
+      - "127.0.0.1:3005:3000"
+    volumes:
+      - ./monitoring/grafana:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    logging: *logging
+
 volumes:
   mbxchat-pg:
   mbxchat-phoenix:
+  mbxchat-prometheus:

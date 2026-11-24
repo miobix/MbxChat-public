@@ -20,7 +20,9 @@ curl http://127.0.0.1:8005/health
 Captures need an Ollama on :11434 with `gemma4:e4b`. MbxRead (a sibling project) is optional:
 set `MBXREAD_URL` in `.env` and captures use its library examples; leave it unset and they are
 off. Dictionary checks need a free krdict key (`KRDICT_API_KEY`). Traces: Phoenix at
-http://127.0.0.1:6006.
+http://127.0.0.1:6006. Monitoring: Grafana at http://127.0.0.1:3005, Prometheus at
+http://127.0.0.1:9090; if the bot stops or its polling stalls, Alertmanager sends a Telegram
+message to the allowed chat within about two minutes.
 
 ## Backups and moving machines
 

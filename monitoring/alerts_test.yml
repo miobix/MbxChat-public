@@ -1,0 +1,42 @@
+rule_files: [alerts.yml]
+evaluation_interval: 15s
+
+tests:
+  - name: bot stopped
+    interval: 15s
+    input_series:
+      - series: up{job="mbxchat", instance="bot:8005"}
+        values: 1x4 0x10
+    alert_rule_test:
+      - {alertname: BotDown, eval_time: 1m, exp_alerts: []}
+      - alertname: BotDown
+        eval_time: 2m30s
+        exp_alerts:
+          - exp_labels: {job: mbxchat, instance: "bot:8005"}
+            exp_annotations: {summary: MbxChat is down or its Telegram polling has stalled}
+
+  - name: polling stalled while the process is up
+    interval: 15s
+    input_series:
+      - series: up{job="mbxchat", instance="bot:8005"}
+        values: 1x40
+      # last poll stamped at t=0 and never again
+      - series: mbxchat_last_poll_timestamp_seconds{job="mbxchat", instance="bot:8005"}
+        values: 0x40
+    alert_rule_test:
+      - {alertname: BotDown, eval_time: 2m, exp_alerts: []}
+      - alertname: BotDown
+        eval_time: 3m
+        exp_alerts:
+          - exp_labels: {job: mbxchat, instance: "bot:8005"}
+            exp_annotations: {summary: MbxChat is down or its Telegram polling has stalled}
+
+  - name: healthy
+    interval: 15s
+    input_series:
+      - series: up{job="mbxchat", instance="bot:8005"}
+        values: 1x40
+      - series: mbxchat_last_poll_timestamp_seconds{job="mbxchat", instance="bot:8005"}
+        values: 0+15x40
+    alert_rule_test:
+      - {alertname: BotDown, eval_time: 9m, exp_alerts: []}

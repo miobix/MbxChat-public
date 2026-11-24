@@ -1,14 +1,11 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** cycle 2 (units 5-8) closed: unit 8 (learner memory, SPEC §7f) merged (PR #15,
-2026-11-24) with the cycle's hardening pass. Decisions: DECISIONS "2026-11-24 Unit 8 plan",
-"2026-11-24 Unit 8: learner memory", "2026-11-24 Hardening pass, cycle 2".
+**Phase:** cycle 3 (units 9-11, SPEC §8). **Unit 9 (monitoring, SPEC §7g) is done on branch
+`unit-9-monitoring`, PR open, waiting for the user's merge.** Done-when met: stopping the bot sends
+a `BotDown` Telegram message (DECISIONS "2026-11-24 Unit 9: monitoring").
 
-**Next: cycle 3 (units 9-11, SPEC §8), starting with unit 9 (monitoring):** `/metrics`,
-Prometheus + Grafana, a dashboard (calls per tier, latency, errors), an alert on stalled
-polling; done when stopping the bot fires the alert. Branch `unit-9-monitoring` exists (from
-`main` after PR #15, carrying this STATUS update). Plan first (discuss, then write the plan into SPEC and DECISIONS), pin new images with
-`pin-versions`, close with `finish-unit`. Unit 11 ends cycle 3 (hardening pass, doc roll-up).
+**Next: unit 10 (public demo):** Pages replay of seeded conversations, deployed from CI. Unit 11
+ends cycle 3 (hardening pass, doc roll-up, go public).
 
 ## Cycle 2 in one paragraph
 Practice (unit 5) serves grammar and translate prompts, grades them with `gemma4:e4b` (chosen in
@@ -34,8 +31,12 @@ correction, and a mistake repeated twice steers at most one prompt in three (�
 - **Practice is shaped by use:** the user tweaks prompts, mix and grading as real use shows what
   to change; record each change in DECISIONS.
 - **Hardening proposals, not done:** retention for checkpoints, Phoenix traces and
-  `krdict_cache` (all small; revisit at unit 9). Backups sit on the same disk as the database;
+  `krdict_cache` (all small; revisit at the unit 11 hardening pass). Backups sit on the same disk as the database;
   copying them off the machine is the user's call.
+- **Shutdown noise (found in unit 9, for the unit 11 hardening pass):** each bot stop logs a
+  psycopg pool `PythonFinalizationError` and two "Task was destroyed but it is pending" lines
+  (the `forever` loops). Harmless at exit; fix by cancelling the loops and closing the pool in a
+  `post_stop` hook.
 - **Skill proposal, on hold:** `capture-smoke` (scratch-DB traced capture).
 
 ## Facts
@@ -47,6 +48,9 @@ correction, and a mistake repeated twice steers at most one prompt in three (�
   from container start to `./backups`, newest 14; restore in README). **Rebuild with plain
   `docker compose up -d --build`**: naming only `bot` leaves `mcp` on old code. Rebuilds leave
   dangling images: `docker image prune -f --filter label=com.docker.compose.project=mbxchat`.
+- Monitoring (SPEC §7g): `prometheus` (`127.0.0.1:9090`, 30 days), `grafana` (`127.0.0.1:3005`,
+  no login, dashboard provisioned from `monitoring/grafana/`), `alertmanager` (network only;
+  `BotDown` to the allowed chat). Rule tests: `monitoring/alerts_test.yml` via `promtool` in CI.
 - Config in `.env`: `KRDICT_API_KEY` (set), `MBXREAD_URL=http://host.docker.internal:8002`
   (set), `CAPTURE_MODE` (unset = agent), `ANKI_WORD_DECK` (unset = `MbxChat::Words`).
 - Practice (SPEC §7d, §7f): `/practice`, `/stop`, `/pause`, `/weak`; pings in `PRACTICE_TZ`.
@@ -67,7 +71,7 @@ correction, and a mistake repeated twice steers at most one prompt in three (�
 - Evals: on the host (`requirements-eval.txt`, `PYTHONUTF8=1` when output goes to a file):
   `evals.grader_eval`, `evals.capture_side_by_side`, `evals.tool_calling`; needing `mcp`: the
   `eval-in-container` skill (`evals.capture_ab`). Results in `evals/results/`.
-- Tests: 142 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 147 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model, krdict HTTP and MbxRead faked.
 - Content: one `item` table (kinds grammar, sentence, word, term). Public pools (`data/`) are
   upserted at every bot start; MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002

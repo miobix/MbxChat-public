@@ -17,7 +17,7 @@ from telegram.ext import (
     filters,
 )
 
-from mbxchat import anki, capture, config, grammar, practice
+from mbxchat import anki, capture, config, grammar, metrics, practice
 from mbxchat.ui import Progress, copy_button, correction, esc, fold, keyboard, spoiler, word_diff
 
 log = logging.getLogger(__name__)
@@ -602,6 +602,7 @@ async def report_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
         log.warning("network error (Telegram retries on its own): %s", err)
         return
     log.error("unhandled error", exc_info=err)
+    metrics.ERRORS.inc()
     text = f"⚠️ Something failed: <code>{esc(type(err).__name__)}: {esc(str(err)[:200])}</code>"
     try:
         await context.bot.send_message(config.TELEGRAM_ALLOWED_USER_ID, text, parse_mode=ParseMode.HTML)
@@ -619,7 +620,10 @@ async def post_init(app: Application) -> None:
 
 
 def build_app(token: str, graph=None) -> Application:
-    app = Application.builder().token(token).post_init(post_init).build()
+    app = (
+        Application.builder().token(token).post_init(post_init)
+        .get_updates_request(metrics.PollRequest(connection_pool_size=1)).build()
+    )
     app.bot_data["graph"] = graph
     app.add_handler(TypeHandler(Update, gate), group=-1)
     private = filters.ChatType.PRIVATE
