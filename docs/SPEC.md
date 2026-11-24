@@ -426,4 +426,6 @@ At the end of each cycle (after units 4, 8 and 11): hardening pass and doc roll-
 - **Agent vs workflow (unit 7):** same inputs, compare quality, latency and number of model calls.
   Inputs: the 10 capture side-by-side prompts plus word prompts, judged side by side by the user;
   tool-calling mechanics checked by `evals/tool_calling.py`.
-- Datasets and experiment runs live in Phoenix; the labeled files live in the repo.
+- Datasets and experiment runs live in Phoenix; the labeled files live in the repo. Items marked
+  `check: pending` (written, not yet proofread) run only with `--with-pending`, into separate
+  result files.

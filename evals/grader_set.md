@@ -633,3 +633,171 @@ Anything after the keyword is free text. Unchecked items are not used by the eva
 - errors: 찿고 → 찾고: spelling
 - verdict: minor
 - check: ok
+
+## Required grammar, unit 11 attempt (pending proofread)
+
+Answers that read fine but skip the form the task asked for, and controls that use it (some
+contracted). Written 2026-11-24; used only with `--with-pending` until proofread.
+
+### g67 · missing grammar
+- task: grammar
+- prompt: -기
+- word: 배우다 (to learn)
+- answer: 한국어를 배우는 것이 재미있어요.
+- errors: -기 not used (는 것 instead) → 한국어 배우기가 재미있어요
+- verdict: wrong
+- check: pending
+
+### g68 · missing grammar
+- task: grammar
+- prompt: -듯(이)
+- word: 흘리다 (to shed)
+- answer: 땀을 비처럼 흘렸어요.
+- errors: -듯이 not used (처럼 instead) → 땀을 비 오듯이 흘렸어요
+- verdict: wrong
+- check: pending
+
+### g69 · missing grammar
+- task: grammar
+- prompt: -는 바람에
+- word: 늦잠을 자다 (to oversleep)
+- answer: 늦잠을 자서 지각했어요.
+- errors: -는 바람에 not used (-아서 instead) → 늦잠을 자는 바람에 지각했어요
+- verdict: wrong
+- check: pending
+
+### g70 · missing grammar
+- task: grammar
+- prompt: -기로 하다
+- word: 끊다 (to quit)
+- answer: 다음 달부터 담배를 끊을 거예요.
+- errors: -기로 하다 not used → 다음 달부터 담배를 끊기로 했어요
+- verdict: wrong
+- check: pending
+
+### g71 · missing grammar
+- task: grammar
+- prompt: -(으)ㄴ 지
+- word: 살다 (to live)
+- answer: 서울에서 3년 동안 살았어요.
+- errors: -(으)ㄴ 지 not used → 서울에 산 지 3년 됐어요
+- verdict: wrong
+- check: pending
+
+### g72 · missing grammar
+- task: grammar
+- prompt: -아/어 놓다
+- word: 예약하다 (to book)
+- answer: 식당을 미리 예약했어요.
+- errors: -아/어 놓다 not used → 식당을 미리 예약해 놨어요
+- verdict: wrong
+- check: pending
+
+### g73 · missing grammar
+- task: grammar
+- prompt: -(으)ㄹ까 보다
+- word: 쉬다 (to rest)
+- answer: 오늘은 집에서 쉬고 싶어요.
+- errors: -(으)ㄹ까 보다 not used → 오늘은 집에서 쉴까 봐요
+- verdict: wrong
+- check: pending
+
+### g74 · missing grammar
+- task: grammar
+- prompt: -더니
+- word: 공부하다 (to study)
+- answer: 동생이 열심히 공부해서 시험에 붙었어요.
+- errors: -더니 not used (-아서 instead) → 동생이 열심히 공부하더니 시험에 붙었어요
+- verdict: wrong
+- check: pending
+
+### g75 · missing grammar
+- task: grammar
+- prompt: -(으)ㄹ 뻔하다
+- word: 넘어지다 (to fall over)
+- answer: 길에서 거의 넘어졌어요.
+- errors: -(으)ㄹ 뻔하다 not used → 길에서 넘어질 뻔했어요
+- verdict: wrong
+- check: pending
+
+### g76 · missing grammar
+- task: grammar
+- prompt: -도록
+- word: 잊다 (to forget)
+- answer: 잊지 않게 메모해 두세요.
+- errors: -도록 not used (-게 instead) → 잊지 않도록 메모해 두세요
+- verdict: wrong
+- check: pending
+
+### g77 · missing grammar
+- task: grammar
+- prompt: -는 대신(에)
+- word: 보다 (to watch)
+- answer: 오늘은 영화 말고 공원에 가요.
+- errors: -는 대신 not used (말고 instead) → 오늘은 영화를 보는 대신 공원에 가요
+- verdict: wrong
+- check: pending
+
+### g78 · missing grammar
+- task: grammar
+- prompt: -(으)ㄹ수록
+- word: 먹다 (to eat)
+- answer: 이 과자는 정말 맛있어서 계속 먹고 싶어요.
+- errors: -(으)ㄹ수록 not used → 이 과자는 먹을수록 맛있어요
+- verdict: wrong
+- check: pending
+
+### g79 · correct
+- task: grammar
+- prompt: -아/어 놓다
+- word: 사다 (to buy)
+- answer: 우유를 미리 사 놨어요.
+- errors: none
+- verdict: correct
+- check: pending
+
+### g80 · correct
+- task: grammar
+- prompt: -기로 하다
+- word: 만나다 (to meet)
+- answer: 우리 내일 3시에 만나기로 했잖아.
+- errors: none
+- verdict: correct
+- check: pending
+
+### g81 · correct
+- task: grammar
+- prompt: -(으)ㄹ까 보다
+- word: 자르다 (to cut)
+- answer: 머리를 짧게 자를까 봐요.
+- errors: none
+- verdict: correct
+- check: pending
+
+### g82 · correct
+- task: grammar
+- prompt: -는 바람에
+- word: 막히다 (to be jammed)
+- answer: 길이 막히는 바람에 늦었어요.
+- errors: none
+- verdict: correct
+- check: pending
+
+### g83 · correct
+- task: grammar
+- prompt: -(으)ㄴ 지
+- word: 오다 (to come)
+- answer: 한국에 온 지 벌써 2년이 됐어요.
+- errors: none
+- verdict: correct
+- check: pending
+
+### g84 · correct
+- task: grammar
+- prompt: -(으)ㄹ 뻔하다
+- word: 놓치다 (to miss)
+- answer: 버스를 놓칠 뻔했어요.
+- errors: none
+- verdict: correct
+- check: pending
+

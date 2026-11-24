@@ -1,6 +1,7 @@
 """Grader eval (SPEC §9): the proofread set against Ollama models, each run a Phoenix experiment.
 
-Host only, eval deps installed: .venv/Scripts/python -m evals.grader_eval MODEL [MODEL ...]
+Host only, eval deps installed: .venv/Scripts/python -m evals.grader_eval [--with-pending] MODEL [MODEL ...]
+--with-pending adds items marked `check: pending` (not yet proofread); results go to separate files.
 MODEL is an Ollama model, `dadeum`, or `<ollama model>+dadeum` (dadeum's edit as a hint).
 """
 import hashlib
@@ -18,13 +19,13 @@ PHOENIX = "http://127.0.0.1:6006"
 DADEUM = ("onelastkissforme/dadeum-gec-base", "d2af339da05d89750c38db6331b3ddbd3b3d5219")
 
 
-def parse(text: str) -> list[dict]:
-    """Checked items only (`check: ok` or `check: fix ...`)."""
+def parse(text: str, pending: bool = False) -> list[dict]:
+    """Checked items only (`check: ok` or `check: fix ...`), plus `check: pending` if asked."""
     items = []
     for block in re.split(r"^### ", text, flags=re.M)[1:]:
         head, *lines = block.strip().splitlines()
         f = {m[1]: m[2].strip() for m in (re.match(r"- (\w+): ?(.*)", ln) for ln in lines) if m}
-        if f.get("check", "").startswith(("ok", "fix")):
+        if f.get("check", "").startswith(("ok", "fix") + (("pending",) if pending else ())):
             items.append({"id": head.split()[0], "group": head.split("·")[-1].strip()} | f)
     return items
 
@@ -90,7 +91,7 @@ def dadeum():
     return fix
 
 
-def run(model: str, items: list[dict], client, dataset) -> dict:
+def run(model: str, items: list[dict], client, dataset, tag: str = "") -> dict:
     from phoenix.client.experiments import run_experiment
 
     by_id = {i["id"]: i for i in items}
@@ -130,7 +131,7 @@ def run(model: str, items: list[dict], client, dataset) -> dict:
                    experiment_name=f"grader {model}", experiment_metadata={"model": model},
                    client=client, timeout=600, retries=0, print_summary=False)
     ordered = [outs.get(i["id"], {"error": "not run"}) for i in items]
-    slug = re.sub(r"[^\w.-]+", "_", model)
+    slug = re.sub(r"[^\w.-]+", "_", model) + tag
     (HERE / "results").mkdir(exist_ok=True)
     (HERE / "results" / f"grader-{slug}.json").write_text(
         json.dumps([{"id": i["id"]} | o for i, o in zip(items, ordered)], ensure_ascii=False, indent=1),
@@ -141,8 +142,10 @@ def run(model: str, items: list[dict], client, dataset) -> dict:
 def main(models: list[str]) -> None:
     from phoenix.client import Client
 
+    pending = "--with-pending" in models
+    models = [m for m in models if m != "--with-pending"]
     text = (HERE / "grader_set.md").read_text(encoding="utf-8")
-    items = parse(text)
+    items = parse(text, pending)
     client = Client(base_url=PHOENIX)
     name = f"grader_set-{hashlib.sha256(json.dumps(items).encode()).hexdigest()[:8]}"
     try:
@@ -152,7 +155,7 @@ def main(models: list[str]) -> None:
             name=name, inputs=[{k: v for k, v in i.items() if k not in ("verdict", "errors", "check")} for i in items],
             outputs=[{"verdict": i["verdict"], "errors": i["errors"]} for i in items])
     for m in models:
-        line = json.dumps({"date": time.strftime("%Y-%m-%d"), "set": name} | run(m, items, client, dataset),
+        line = json.dumps({"date": time.strftime("%Y-%m-%d"), "set": name} | run(m, items, client, dataset, "-pending" * pending),
                           ensure_ascii=False)
         print(line, flush=True)
         with (HERE / "results" / "grader_summary.jsonl").open("a", encoding="utf-8") as f:

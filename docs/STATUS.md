@@ -1,7 +1,7 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
 **Phase:** cycle 3 (units 9-11, SPEC §8). Unit 9 (monitoring) merged (PR #17). **Unit 10 (recorded
-demo, SPEC §7h) is done on branch `unit-10-demo`, PR open, waiting for the user's merge.** The
+demo, SPEC §7h) merged (PR #18).** The
 demo is built in CI; it deploys to Pages only once the repo is public (DECISIONS "2026-11-24
 Unit 10: recorded demo").
 
@@ -10,10 +10,10 @@ Unit 10: recorded demo").
 Source to "GitHub Actions" and check the first deploy, link the demo; then the hardening pass and
 doc roll-up.
 
-**Open, the user's call:** the grader misses answers that skip the required grammar (seen twice
-in the demo read-through). At most one attempt: labeled items for it and an eval run; if the eval
-shows no gain, stop and list it under known limitations (DECISIONS "Unit 10: demo pool, grader
-note, generated prompts").
+**Grader attempt done and stopped (2026-11-24):** a required-grammar check failed its bar and was
+reverted; it's a known limitation now (DECISIONS "Unit 11: the one grader attempt"). **For the
+user:** proofread g67-g84 at the end of `evals/grader_set.md` (`check: ok / fix / drop`); until
+then they run only with `--with-pending`.
 
 ## Cycle 2 in one paragraph
 Practice (unit 5) serves grammar and translate prompts, grades them with `gemma4:e4b` (chosen in
@@ -35,8 +35,10 @@ correction, and a mistake repeated twice steers at most one prompt in three (�
 - **README for unit 11 must have a "Known problems" section** (user): each known weakness of the
   pipelines, and why it cannot or did not change now. From unit 10 so far: the capture agent
   sometimes runs out of steps (2 of 6 sentence captures in one recording run, 0 of 12 in the
-  next); the grader misses some errors (graded a sentence that never used the required -기 as
-  correct, and a broken -(으)ㄹ 것 sentence too) and flags some correct answers (false alarms 2 of
+  next); the grader is soft on missing required grammar (a fine sentence with a near-synonym form
+  usually gets `minor`, sometimes `correct`, instead of `wrong`: 11 of 12 labeled items not `wrong`;
+  a focused check call didn't help, DECISIONS "Unit 11: the one grader attempt") and passed a broken
+  -(으)ㄹ 것 sentence and flags some correct answers (false alarms 2 of
   18 on the eval set); the grader's corrections can rewrite toward the reference (the override now
   drops the stale note, but the "Nearly" stays); capture's casual line is not always 반말 (4 of 12 in the pool recording kept 요, mostly where the situation is a client, customer or lead). Why not
   fixed: the grader prompt was retried twice and the eval said no (DECISIONS "Unit 10"); bigger
