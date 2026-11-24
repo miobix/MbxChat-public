@@ -1,11 +1,11 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** cycle 3 (units 9-11, SPEC §8). Units 9 and 10 merged (PRs #17, #18). **Unit 11 (go
-public) on branch `unit-11-go-public`:** sweep done (DECISIONS "Unit 11: public repo plan"),
-README + FEATURES written, the clean copy is pushed to `miobix/MbxChat-public` once its final
-verification is green.
+**Phase:** cycle 3 (units 9-11, SPEC §8). Unit 11 (go public) shipped this repository:
+README, FEATURES, the recorded demo live at https://miobix.github.io/MbxChat-public/, and
+`docs/PUBLIC_COPY.md`. **Development happens here from now on** (DECISIONS "Development moves
+to the public repository").
 
-**Next:** the cycle 3 hardening pass and doc roll-up (`hardening-pass`). Public copy updates: rebuild with the kit in `personal_notes/public_copy/` (untracked).
+**Next:** the cycle 3 hardening pass and doc roll-up (`hardening-pass`).
 
 **For the user, later:** retake `docs/img/grafana.png` after a few days of real use (the
 current one is from a fresh restart: model panels empty). Proofread g67-g84 in

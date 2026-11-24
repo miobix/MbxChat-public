@@ -275,3 +275,8 @@ Checked, evidence first:
 
 ## Public copy
 - **This repository was created from a private one with git-filter-repo.** Rewritten: test fixtures that came from real practice use (replaced with synthetic sentences that keep the same mistake), the author display name on merge commits, a few doc lines (an early tagline, two mentions of steps outside the project, a local path), and merge messages (no links to unrelated pull requests). Nothing else changed; every commit is kept. What changed, measured commit by commit, and the commit map: `docs/PUBLIC_COPY.md`.
+
+## 2026-11-24 Development moves to the public repository
+- **From now on, work happens here** (user): branches and pull requests on `miobix/MbxChat-public`, as with MbxRead. The private repository is kept read-only, with its original history and pull requests; `docs/PUBLIC_COPY.md` maps its commits to these. Rebuilding this copy from the private one on every change would force-push and invalidate that map; appending filtered commits would be a manual step after every merge.
+- **Compose project pinned to `name: mbxchat`:** compose names volumes after the project, which defaults to the folder name; a checkout called `MbxChat-public` would start with an empty database. With the name pinned, any checkout uses the existing `mbxchat_*` volumes.
+- **Image:** CI here pushes `ghcr.io/miobix/mbxchat-public`. The first run failed pushing `mbxchat`, a package owned by the private repository that this repository's token can't write.
