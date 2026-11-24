@@ -19,6 +19,7 @@ WORDS = [
     ("how do you say 'commute' as a noun", ""),
     ("Korean for receipt?", ""),
     ("procrastinate", ""),
+    ("감소화", ""),
 ]
 COUNT = {"model": 0, "krdict": 0}
 

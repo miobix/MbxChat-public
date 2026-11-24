@@ -95,7 +95,7 @@ def test_a_word_nowhere_keeps_the_model_examples_marked(run, monkeypatch):
 
 def test_an_answer_in_text_is_nudged_then_an_unfinished_agent_fails(run):
     state, llm = run([AIMessage("최적화"), _call("submit_word", korean="최적화", english="opt", examples=[])])
-    assert state["kind"] == "word" and "Call submit_word or submit_sentence now" in llm.seen[1][-1].content
+    assert state["kind"] == "word" and "Call submit_word or submit_sentence" in llm.seen[1][-1].content
     with pytest.raises(capture.CaptureError, match="did not finish"):
         run([])
 

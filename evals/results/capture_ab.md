@@ -4,75 +4,74 @@ Judge each pair: natural? right register? useful chunks or word card? Write your
 
 ## I'm running late, start without me // to a friend
 
-### workflow (13.5 s, 3 model calls, 0 krdict)
+### workflow (6.2 s, 3 model calls, 0 krdict)
+- **casual:** 나 늦으니까 너희들 먼저 시작해.
+- **polite:** 제가 늦을 것 같아요. 먼저 시작하셔도 괜찮아요.
+- chunk: 먼저 시작하다 (to start first, collocation)
+- chunk: 먼저 시작하셔도 괜찮아요 (It's okay if you start first, grammar)
+
+### agent (3.6 s, 4 model calls, 0 tool calls, 0 krdict)
 - **casual:** 나 늦으니까 너희 먼저 시작해.
 - **polite:** 제가 늦을 것 같으니, 먼저 시작하셔도 괜찮아요.
 - chunk: 먼저 시작하다 (to start first, collocation)
-- chunk: 늦을 것 같다 (I think I will be late, grammar)
-
-### agent (4.8 s, 4 model calls, 0 tool calls, 0 krdict)
-- **casual:** 나 늦으니까 너희들 먼저 시작해.
-- **polite:** 제가 늦을 것 같으니, 먼저 시작하셔도 괜찮아요.
-- chunk: 먼저 시작하다 (to start first, collocation)
-- chunk: 늦을 것 같다 (I think I will be late, grammar)
+- chunk: 늦을 것 같다 (to be going to be late, grammar)
 
 **pick:**
 
 ## Could you check the report before the meeting tomorrow? // to my boss
 
-### workflow (4.6 s, 3 model calls, 0 krdict)
-- **casual:** 내일 회의 전에 보고서 좀 봐줄 수 있어요?
+### workflow (4.4 s, 3 model calls, 0 krdict)
+- **casual:** 내일 회의 전에 보고서 좀 봐주세요.
 - **polite:** 내일 회의 전에 보고서 검토해 주실 수 있을까요?
 - chunk: 회의 전에 (before the meeting, collocation)
-- chunk: 보고서 검토하다 (to review a report, collocation)
+- chunk: 검토해 주실 수 있을까요? (Could you review (it)?, grammar)
 
-### agent (4.6 s, 4 model calls, 0 tool calls, 0 krdict)
+### agent (5.2 s, 4 model calls, 0 tool calls, 0 krdict)
 - **casual:** 내일 회의 전에 보고서 좀 봐줄 수 있어요?
-- **polite:** 내일 회의 전에 보고서 검토해 주실 수 있을까요?
+- **polite:** 내일 회의 전에 보고서 검토해 주실 수 있으실까요?
 - chunk: 회의 전에 (before the meeting, collocation)
-- chunk: 보고서 검토하다 (to review a report, collocation)
+- chunk: 보고서 검토해 주실 수 있으실까요? (Could you review the report?, grammar)
 
 **pick:**
 
 ## I've been meaning to call you, sorry it took so long // to my aunt
 
-### workflow (5.5 s, 3 model calls, 0 krdict)
-- **casual:** 언니, 전화하려고 했는데 너무 늦었네. 미안해.
-- **polite:** 이모, 전화드리려고 했는데 너무 늦었네요. 죄송해요.
-- chunk: 전화드리려고 하다 (to intend to call (honorific), collocation)
-- chunk: 전화하려고 하다 (to intend to call, collocation)
-
-### agent (5.1 s, 4 model calls, 0 tool calls, 0 krdict)
+### workflow (4.7 s, 3 model calls, 0 krdict)
 - **casual:** 언니, 전화하려고 했는데 너무 늦었네. 미안해.
 - **polite:** 이모, 전화드리려고 했는데 너무 늦었네요. 죄송해요.
 - chunk: 전화드리다 (to call (honorific), collocation)
-- chunk: 전화하려고 하다 (to be meaning to call, grammar)
+- chunk: 전화하려고 하다 (to mean to call/to intend to call, grammar)
+
+### agent (5.0 s, 4 model calls, 0 tool calls, 0 krdict)
+- **casual:** 언니/이모, 연락하려 했는데 너무 늦었네. 미안해.
+- **polite:** 이모/고모, 연락드리려고 했는데 너무 늦었네요. 죄송해요.
+- chunk: 연락드리려고 하다 (to intend to contact (polite), collocation)
+- chunk: 연락하려 하다 (to intend to contact (casual), collocation)
 
 **pick:**
 
 ## This is way too spicy for me // at dinner with friends
 
-### workflow (2.6 s, 3 model calls, 0 krdict)
-- **casual:** 이거 너무 매운데.
-- **polite:** 이거 너무 매운데요.
+### workflow (3.1 s, 3 model calls, 0 krdict)
+- **casual:** 나 이거 너무 매운데.
+- **polite:** 저 이거 너무 매운데요.
 - chunk: 너무 매운데 (It's too spicy, collocation)
 
-### agent (3.6 s, 4 model calls, 0 tool calls, 0 krdict)
-- **casual:** 나 이거 너무 매워.
+### agent (3.5 s, 5 model calls, 0 tool calls, 0 krdict)
+- **casual:** 나 이거 너무 매운데.
 - **polite:** 저 이거 너무 매운데요.
-- chunk: 너무 매워 (too spicy, collocation)
-- chunk: 너무 매운데요 (it's too spicy (polite), collocation)
+- chunk: 너무 매운데 (It's too spicy, collocation)
 
 **pick:**
 
 ## Is it okay if I pay by card? // to a shop clerk
 
-### workflow (3.3 s, 3 model calls, 0 krdict)
+### workflow (3.1 s, 3 model calls, 0 krdict)
 - **casual:** 카드 돼요?
 - **polite:** 카드 결제 가능한가요?
-- chunk: 카드 결제 가능한가요? (Is card payment possible?, grammar)
+- chunk: 카드 결제 (card payment, collocation)
 
-### agent (3.6 s, 4 model calls, 0 tool calls, 0 krdict)
+### agent (3.2 s, 4 model calls, 0 tool calls, 0 krdict)
 - **casual:** 카드 돼요?
 - **polite:** 카드 결제 가능한가요?
 - chunk: 카드 결제 (card payment, collocation)
@@ -81,87 +80,86 @@ Judge each pair: natural? right register? useful chunks or word card? Write your
 
 ## I couldn't sleep at all because of the noise upstairs // to a coworker
 
-### workflow (4.0 s, 3 model calls, 0 krdict)
+### workflow (3.5 s, 3 model calls, 0 krdict)
 - **casual:** 위층에서 소음 때문에 잠을 하나도 못 잤어.
-- **polite:** 위층에서 소음이 나서 잠을 전혀 못 잤어요.
+- **polite:** 위층에서 소음 때문에 잠을 전혀 못 잤어요.
+- chunk: 잠을 하나도 못 자다 (to not be able to sleep at all, collocation)
 - chunk: 소음 때문에 (because of the noise, collocation)
-- chunk: 잠을 하나도 못 자다 (not be able to sleep at all, expression)
 
-### agent (4.1 s, 4 model calls, 0 tool calls, 0 krdict)
+### agent (6.7 s, 4 model calls, 0 tool calls, 0 krdict)
 - **casual:** 위층에서 소음 때문에 잠을 하나도 못 잤어.
 - **polite:** 위층에서 소음이 나서 잠을 전혀 못 잤어요.
-- chunk: 소음 때문에 (because of the noise, collocation)
-- chunk: 잠을 하나도 못 자다 (not be able to sleep at all, expression)
+- chunk: 잠을 하나도 못 자다 (to not be able to sleep at all, collocation)
+- chunk: 잠을 전혀 못 자다 (to not be able to sleep at all, collocation)
 
 **pick:**
 
 ## Let's grab a coffee sometime next week // to a new acquaintance
 
-### workflow (3.0 s, 3 model calls, 0 krdict)
+### workflow (2.8 s, 3 model calls, 0 krdict)
 - **casual:** 다음 주에 커피 한잔할래?
 - **polite:** 다음 주에 커피 한잔 같이 하실래요?
 - chunk: 커피 한잔 하다 (to have a cup of coffee, collocation)
 
-### agent (3.2 s, 4 model calls, 0 tool calls, 0 krdict)
-- **casual:** 다음 주에 커피 한잔 할래?
-- **polite:** 다음 주에 커피 한잔 하실래요?
+### agent (3.9 s, 4 model calls, 0 tool calls, 0 krdict)
+- **casual:** 다음 주에 커피 한잔할래?
+- **polite:** 다음 주에 커피 한잔 같이 하실래요?
 - chunk: 커피 한잔 하다 (to have a cup of coffee, collocation)
 
 **pick:**
 
 ## The package was supposed to arrive yesterday // to customer service
 
-### workflow (3.6 s, 3 model calls, 0 krdict)
-- **casual:** 어제 도착하기로 했는데, 아직 안 왔어요.
-- **polite:** 어제 도착 예정이었는데, 아직 도착하지 않았습니다.
-- chunk: 도착 예정이었는데 (was scheduled to arrive, collocation)
-
-### agent (3.5 s, 4 model calls, 0 tool calls, 0 krdict)
+### workflow (3.0 s, 3 model calls, 0 krdict)
 - **casual:** 어제 오기로 한 택배가 아직 안 왔어요.
 - **polite:** 어제 도착 예정이었던 소포가 아직 도착하지 않았습니다.
 - chunk: 도착 예정이었던 (scheduled to arrive, collocation)
+
+### agent (4.1 s, 4 model calls, 0 tool calls, 0 krdict)
+- **casual:** 어제 도착하기로 했는데, 아직 안 왔어요.
+- **polite:** 어제 도착 예정이었는데, 아직 도착하지 않았습니다.
+- chunk: 도착 예정이었는데 (was scheduled to arrive, collocation)
 
 **pick:**
 
 ## I'm not sure I can make it, I'll let you know by tonight // to a friend
 
-### workflow (4.3 s, 3 model calls, 0 krdict)
+### workflow (4.7 s, 3 model calls, 0 krdict)
+- **casual:** 나 오늘 갈 수 있을지 모르겠어. 오늘 밤에 알려줄게.
+- **polite:** 제가 갈 수 있을지 잘 모르겠어요. 오늘 밤에 다시 연락드릴게요.
+- chunk: 갈 수 있을지 모르겠어요 (I'm not sure if I can go, grammar)
+- chunk: 오늘 밤에 알려줄게 (I'll let you know tonight, collocation)
+
+### agent (6.5 s, 6 model calls, 0 tool calls, 0 krdict)
 - **casual:** 나 오늘 갈 수 있을지 모르겠어. 오늘 밤에 알려줄게.
 - **polite:** 제가 갈 수 있을지 잘 모르겠어요. 오늘 밤에 다시 연락드릴게요.
 - chunk: 갈 수 있을지 모르겠어요 (I'm not sure if I can go, grammar)
 - chunk: 오늘 밤에 알려줄게/연락드릴게요 (I'll let you know tonight, collocation)
 
-### agent (5.5 s, 4 model calls, 0 tool calls, 0 krdict)
-- **casual:** 나 오늘 갈 수 있을지 모르겠어. 오늘 밤에 알려줄게.
-- **polite:** 제가 갈 수 있을지 잘 모르겠어요. 오늘 밤에 다시 알려드릴게요.
-- chunk: 갈 수 있을지 모르겠어/잘 모르겠어요 (I'm not sure if I can make it, grammar)
-- chunk: 오늘 밤에 알려줄게/다시 알려드릴게요 (I'll let you know by tonight, collocation)
-
 **pick:**
 
 ## Thank you for taking care of me while I was sick // to my mother-in-law
 
-### workflow (4.0 s, 3 model calls, 0 krdict)
-- **casual:** 아프 때 잘 돌봐주셔서 정말 감사해요.
-- **polite:** 아플 때 저를 잘 보살펴 주셔서 정말 감사드립니다.
-- chunk: 돌봐주셔서 (to take care of (someone), collocation)
-- chunk: 보살펴 주셔서 (to look after/care for (someone), collocation)
-
-### agent (4.2 s, 4 model calls, 0 tool calls, 0 krdict)
+### workflow (3.1 s, 3 model calls, 0 krdict)
 - **casual:** 아프기만 했을 때 잘 돌봐주셔서 정말 감사해요.
 - **polite:** 제가 아플 때 잘 보살펴 주셔서 정말 감사드립니다.
-- chunk: 보살피다 (to take care of, collocation)
+- chunk: 보살피다 (to take care of (someone), collocation)
+
+### agent (3.5 s, 4 model calls, 0 tool calls, 0 krdict)
+- **casual:** 아프기만 했는데 잘 돌봐주셔서 정말 감사해요.
+- **polite:** 제가 아플 때 잘 돌봐주셔서 정말 감사드립니다.
+- chunk: 돌봐주셔서 (to take care of (someone), collocation)
 
 **pick:**
 
 ## the word for optimization, a coworker said it
 
-### workflow (3.5 s, 3 model calls, 0 krdict)
+### workflow (4.2 s, 3 model calls, 0 krdict)
 - **casual:** 최적화
 - **polite:** 최적화
 - chunk: 최적화 (optimization, collocation)
 
-### agent (0.8 s, 2 model calls, 1 tool calls, 0 krdict)
+### agent (0.9 s, 2 model calls, 1 tool calls, 0 krdict)
 - **word:** 최적화 · optimization
 - dictionary: root 최적: the most suitable; being optimal
 - example (krdict): 우리는 문제를 해결할 수 있는 최적의 방법을 찾기 위해 회의를 계속했다.
@@ -172,12 +170,12 @@ Judge each pair: natural? right register? useful chunks or word card? Write your
 
 ## word: deadline
 
-### workflow (2.8 s, 3 model calls, 0 krdict)
-- **casual:** 마감일
-- **polite:** 마감일
+### workflow (2.9 s, 3 model calls, 0 krdict)
+- **casual:** 마감일이 언제야?
+- **polite:** 마감일이 언제인지 여쭤봐도 될까요?
 - chunk: 마감일 (deadline, collocation)
 
-### agent (1.0 s, 2 model calls, 1 tool calls, 0 krdict)
+### agent (0.8 s, 2 model calls, 1 tool calls, 0 krdict)
 - **word:** 마감일 · deadline
 - dictionary: deadline
 - example (krdict): 마감일이 다가오다.
@@ -188,11 +186,11 @@ Judge each pair: natural? right register? useful chunks or word card? Write your
 
 ## how do you say 'commute' as a noun
 
-### workflow (4.0 s, 3 model calls, 0 krdict)
+### workflow (4.5 s, 3 model calls, 0 krdict)
 - **casual:** 출퇴근
-- **polite:** 출퇴근길/출퇴근 시간
-- chunk: 출퇴근길 (commute (noun), collocation)
-- chunk: 출퇴근 시간 (commute time (noun), collocation)
+- **polite:** 출퇴근길 (or 출퇴근 시간)
+- chunk: 출퇴근길 (commute (as a noun, referring to the route/journey), collocation)
+- chunk: 출퇴근 시간 (commute time, collocation)
 
 ### agent (0.8 s, 2 model calls, 1 tool calls, 0 krdict)
 - **word:** 통근 · commuting
@@ -205,12 +203,12 @@ Judge each pair: natural? right register? useful chunks or word card? Write your
 
 ## Korean for receipt?
 
-### workflow (2.7 s, 3 model calls, 0 krdict)
+### workflow (3.0 s, 3 model calls, 0 krdict)
 - **casual:** 영수증
 - **polite:** 영수증입니다.
 - chunk: 영수증 (receipt, collocation)
 
-### agent (0.8 s, 2 model calls, 1 tool calls, 0 krdict)
+### agent (0.7 s, 2 model calls, 1 tool calls, 0 krdict)
 - **word:** 영수증 · receipt
 - dictionary: receipt | cash receipt
 - example (krdict): 아내는 장을 볼 때 영수증을 꼼꼼히 챙기곤 한다.
@@ -221,14 +219,30 @@ Judge each pair: natural? right register? useful chunks or word card? Write your
 
 ## procrastinate
 
-### workflow (3.4 s, 3 model calls, 0 krdict)
+### workflow (3.5 s, 3 model calls, 0 krdict)
 - **casual:** 나 계속 미루고 있어.
 - **polite:** 제가 계속 미루고 있는 것 같아요.
 - chunk: 미루다 (to postpone; to put off, collocation)
 
 ### agent (1.0 s, 2 model calls, 1 tool calls, 0 krdict)
-- **word:** 미루다 · procrastinate
+- **word:** 미루다 · procrastinate; delay; put off
 - dictionary: delay; put off; postpone
 - example (library): 제 할일을 나중으로 미루는 게 괜찮을 때도 있지만, 바오바브나무의 경우엔 큰 사고야.
+
+**pick:**
+
+## 감소화
+
+### workflow (2.9 s, 3 model calls, 0 krdict)
+- **casual:** 이거 좀 줄여줘.
+- **polite:** 이거 좀 줄여주시겠어요?
+- chunk: 줄여줘 (reduce (casual), collocation)
+
+### agent (1.9 s, 4 model calls, 2 tool calls, 1 krdict)
+- **word:** 감소화 · reduction/diminution (uncommon/technical)
+- dictionary: root 감소: reduction | be reduced | reduce
+- example (krdict): 매장 직원들의 불친절한 서비스는 매출의 감소로 이어졌다.
+- example (krdict): 일부 국가에서는 낮은 출산율로 인해 인구 감소 현상을 보이고 있다.
+- example (krdict): 꾸준히 한다면 분명 체중 감소 효과가 있을 거예요.
 
 **pick:**

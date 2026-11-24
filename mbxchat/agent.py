@@ -26,10 +26,12 @@ SYSTEM = (
     "You help an intermediate learner of Korean capture something they want to say.\n"
     "- If they ask for one word or term (\"the word for X\", \"Korean for X?\", a single English word), "
     "find the Korean word and call submit_word.\n"
+    "- If they send a single Korean word they heard, call submit_word with that word as given (dictionary "
+    "form if it is conjugated) and your best English meaning, even if the dictionary does not list it.\n"
     "- Otherwise write the sentence in Korean, casual (반말, to a close friend) and polite (해요체), "
     "fitting the situation if one is given, and call submit_sentence.\n"
     "You may check a Korean word with the tools first (always in Korean, dictionary form). "
-    "Always finish with exactly one submit tool."
+    "Never ask the learner anything: they cannot reply. Always finish with exactly one submit tool."
 )
 
 
@@ -84,8 +86,8 @@ async def _run(meaning: str) -> dict:
         msgs.append(reply)
         wanted = reply.tool_calls or [c for c in [text_call(reply.content, by_name)] if c]
         if not wanted:
-            msgs.append(HumanMessage(f"Call submit_word or submit_sentence now, as a tool call, with your "
-                                     f"Korean for: {meaning}"))
+            msgs.append(HumanMessage(f"No questions: the learner cannot reply. Call submit_word or submit_sentence "
+                                     f"now, as a tool call, with your best answer for: {meaning}"))
             continue
         for c in wanted:
             if c["name"] in ("submit_word", "submit_sentence"):
