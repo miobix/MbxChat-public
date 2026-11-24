@@ -149,6 +149,8 @@ docker compose up -d --wait db              # tests use it (127.0.0.1:5434)
 - The demo is rerecorded with `demo/record.py`; see SPEC §7h.
 - Contributor docs live in `docs/`: start with `STATUS.md`. `SPEC.md` is the contract,
   `DECISIONS.md` the log of what was decided and why, `DATA.md` the sources and licences.
+- This repository is a sanitized public copy of a private one; what was rewritten, and the
+  evidence that nothing else was: [docs/PUBLIC_COPY.md](docs/PUBLIC_COPY.md).
 
 ## Layout
 

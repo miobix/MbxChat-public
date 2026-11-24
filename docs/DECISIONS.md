@@ -272,3 +272,6 @@ Checked, evidence first:
 - **Voice is stated as out of scope** in the README (user).
 - **`.env.example`** lost its unit numbers and now describes Ollama on the host rather than one particular setup.
 - **SPEC §8 unit 11** changed from "flip the repo public" to a sanitized public copy, as planned in "Unit 11: public repo plan": rewriting this repo's history in place would break its PR links.
+
+## Public copy
+- **This repository was created from a private one with git-filter-repo.** Rewritten: test fixtures that came from real practice use (replaced with synthetic sentences that keep the same mistake), the author display name on merge commits, a few doc lines (an early tagline, two mentions of steps outside the project, a local path), and merge messages (no links to unrelated pull requests). Nothing else changed; every commit is kept. What changed, measured commit by commit, and the commit map: `docs/PUBLIC_COPY.md`.
