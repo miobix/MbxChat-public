@@ -619,9 +619,16 @@ async def post_init(app: Application) -> None:
     ]
 
 
+async def post_stop(app: Application) -> None:
+    loops = app.bot_data.pop("loops", [])
+    for task in loops:
+        task.cancel()
+    await asyncio.gather(*loops, return_exceptions=True)
+
+
 def build_app(token: str, graph=None) -> Application:
     app = (
-        Application.builder().token(token).post_init(post_init)
+        Application.builder().token(token).post_init(post_init).post_stop(post_stop)
         .get_updates_request(metrics.PollRequest(connection_pool_size=1)).build()
     )
     app.bot_data["graph"] = graph
