@@ -21,6 +21,8 @@ session, if present.
   (e.g. `evals/capture_ab.py`).
 - `lockfile-recompile`: recompile all three lockfiles in order, keep the `pywin32` marker, read
   the diff. Reach for it after any change to a `requirements*.in` file.
+- `record-demo`: rerecord the demo from the real handlers, read every kept run, drop bad ones
+  with a reason, preview, test. Reach for it after any change to what the bot sends.
 - Cycle boundaries (units 4, 8, 11) also use the user-level `hardening-pass` skill.
 
 ## Rules
