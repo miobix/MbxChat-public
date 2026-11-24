@@ -6,8 +6,8 @@
 
 **Next: cycle 3 (units 9-11, SPEC §8), starting with unit 9 (monitoring):** `/metrics`,
 Prometheus + Grafana, a dashboard (calls per tier, latency, errors), an alert on stalled
-polling; done when stopping the bot fires the alert. Branch `unit-9-monitoring` from a fresh
-`main`. Plan first (discuss, then write the plan into SPEC and DECISIONS), pin new images with
+polling; done when stopping the bot fires the alert. Branch `unit-9-monitoring` exists (from
+`main` after PR #15, carrying this STATUS update). Plan first (discuss, then write the plan into SPEC and DECISIONS), pin new images with
 `pin-versions`, close with `finish-unit`. Unit 11 ends cycle 3 (hardening pass, doc roll-up).
 
 ## Cycle 2 in one paragraph

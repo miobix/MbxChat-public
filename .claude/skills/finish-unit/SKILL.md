@@ -36,7 +36,8 @@ job results. If a phone check is still pending, say exactly what the user should
 ## After the user's check or merge
 
 - Check the PR state first (`gh pr view <n> --json state`): the user merges fast. If merged, any
-  follow-up (a verification note, a fix) goes on a new branch from a fresh `main`, not the old one.
+  code fix goes on a new branch from a fresh `main`, not the old one. Docs-only upkeep (STATUS after the
+  merge, a verification note) never gets its own PR: it is the first commit on the next unit's branch.
 - Next unit: `git checkout main && git pull && git checkout -b unit-<n>-<slug>`.
 - Units 4, 8 and 11 end a cycle: run the `hardening-pass` skill and roll up the docs.
 - Then do whatever `personal_notes/` asks at the end of a unit, if present.
