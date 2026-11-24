@@ -1,3 +1,6 @@
+# Fixed project name: volumes are mbxchat_*, whatever the checkout folder is called.
+name: mbxchat
+
 # Docker never rotates json-file logs by default.
 x-logging: &logging
   driver: json-file
