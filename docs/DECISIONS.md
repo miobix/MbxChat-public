@@ -265,3 +265,10 @@ Checked, evidence first:
 - **Plan (user):** a new public repo `MbxChat-public`, made from a filter-repo clone; this repo stays as is. Replaced in all history: the fixtures with synthetic sentences that keep the same slip (so the tests still test the same thing), that tagline with "Built in public", the local path with "the MbxRead checkout"; the SPEC sentence removed; the merge-commit author mapped to `miobix` and the noreply address. The same fixture changes land here too, so both repos match from now on.
 - **Kept (user):** the timezone fixtures and quoted mistake fragments; they say nothing beyond what the app already implies.
 - **Grader and model work waits for more real-use data** (user); going public does not.
+
+## 2026-11-24 Unit 11: README, FEATURES, public copy
+- **Docs in MbxRead-public's shape** (user): README with what it is, the two links (explainer, recorded demo), quick start, configuration, optional parts, hardware (the CPU vs GPU table), **Known problems** (each with a technical reason, user), backups, development, layout, licence; `docs/FEATURES.md` with mermaid diagrams (capture agent, practice and memory, architecture), screen captures from the recorded demo (synthetic data only), the model table and the monitoring design; MIT `LICENSE`. Phone screenshots and Phoenix traces were not used: they show real captures and answers.
+- **Grafana capture is a placeholder:** taken right after the day's restarts, the model panels say "No data". Retake after some real use (STATUS).
+- **Voice is stated as out of scope** in the README (user).
+- **`.env.example`** lost its unit numbers and now describes Ollama on the host rather than one particular setup.
+- **SPEC §8 unit 11** changed from "flip the repo public" to a sanitized public copy, as planned in "Unit 11: public repo plan": rewriting this repo's history in place would break its PR links.

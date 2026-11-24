@@ -1,24 +1,17 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** cycle 3 (units 9-11, SPEC §8). Unit 9 (monitoring) merged (PR #17). **Unit 10 (recorded
-demo, SPEC §7h) merged (PR #18).** The
-demo is built in CI; it deploys to Pages only once the repo is public (DECISIONS "2026-11-24
-Unit 10: recorded demo").
+**Phase:** cycle 3 (units 9-11, SPEC §8). Units 9 and 10 merged (PRs #17, #18). **Unit 11 (go
+public) on branch `unit-11-go-public`:** sweep done (DECISIONS "Unit 11: public repo plan"),
+README + FEATURES written, the clean copy is pushed to `miobix/MbxChat-public` once its final
+verification is green.
 
-**Next: unit 11 (go public), the last unit; it closes cycle 3:** history and content sweep
-(`publish-sanitized-repo`), README + FEATURES, flip the repo public, set Settings → Pages →
-Source to "GitHub Actions" and check the first deploy, link the demo; then the hardening pass and
-doc roll-up.
+**Next:** the cycle 3 hardening pass and doc roll-up (`hardening-pass`). Public copy updates: rebuild with the kit in `personal_notes/public_copy/` (untracked).
 
-**On hold until there is more real-use data (user):** grader and model work. Going public goes on.
+**For the user, later:** retake `docs/img/grafana.png` after a few days of real use (the
+current one is from a fresh restart: model panels empty). Proofread g67-g84 in
+`evals/grader_set.md`.
 
-**History sweep in progress:** plan in DECISIONS "Unit 11: public repo plan"; the clean copy is
-verified locally before anything is pushed, and the push waits for the user's OK.
-
-**Grader attempt done and stopped (2026-11-24):** a required-grammar check failed its bar and was
-reverted; it's a known limitation now (DECISIONS "Unit 11: the one grader attempt"). **For the
-user:** proofread g67-g84 at the end of `evals/grader_set.md` (`check: ok / fix / drop`); until
-then they run only with `--with-pending`.
+**On hold until there is more real-use data (user):** grader and model work.
 
 ## Cycle 2 in one paragraph
 Practice (unit 5) serves grammar and translate prompts, grades them with `gemma4:e4b` (chosen in
@@ -34,20 +27,6 @@ correction, and a mistake repeated twice steers at most one prompt in three (�
   drill once there are a few hundred graded answers.
 - **Long multi-clause sentences** (conditionals, counterfactuals) are what writing practice
   should push toward; a candidate for generated prompts once memory has data.
-- **README note for unit 11:** MbxRead material is used when `MBXREAD_URL` is set and ignored
-  when not; the author shares MbxRead's Ollama. CPU vs GPU numbers: DECISIONS 2026-11-24
-  "Unit 7 wrap-up".
-- **README for unit 11 must have a "Known problems" section** (user): each known weakness of the
-  pipelines, and why it cannot or did not change now. From unit 10 so far: the capture agent
-  sometimes runs out of steps (2 of 6 sentence captures in one recording run, 0 of 12 in the
-  next); the grader is soft on missing required grammar (a fine sentence with a near-synonym form
-  usually gets `minor`, sometimes `correct`, instead of `wrong`: 11 of 12 labeled items not `wrong`;
-  a focused check call didn't help, DECISIONS "Unit 11: the one grader attempt") and passed a broken
-  -(으)ㄹ 것 sentence and flags some correct answers (false alarms 2 of
-  18 on the eval set); the grader's corrections can rewrite toward the reference (the override now
-  drops the stale note, but the "Nearly" stays); capture's casual line is not always 반말 (4 of 12 in the pool recording kept 요, mostly where the situation is a client, customer or lead). Why not
-  fixed: the grader prompt was retried twice and the eval said no (DECISIONS "Unit 10"); bigger
-  models need hardware this host doesn't have (SPEC §6). Also a scope line: Telegram allows voice messages, but audio ingestion is not part of the project (SPEC §1). Each reason must be technical: what was tried, what the evidence showed, or which constraint blocks it. Add anything the unit 11 pass finds.
 - **Open question (user): spacing slips.** `grade()` compares with spaces stripped, so a
   spacing-only fix keeps the verdict `correct`. Spacing slips are now recorded in `mistake`.
 - **Later, not now (user):** move the benchmark core (grader set + harness + results log) into

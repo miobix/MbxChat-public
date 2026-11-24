@@ -412,7 +412,7 @@ Each unit is a branch and a PR, ends green in CI, and updates the docs.
 | 8 | **Learner memory:** weak points across sessions steer drills (Postgres first; Graphiti/Zep evaluated); the agent choosing the next drill is considered here, once practice data exists (moved from unit 7) | a repeated mistake visibly changes what practice serves |
 | 9 | **Monitoring:** `/metrics`, Prometheus + Grafana, dashboard (calls per tier, latency, errors), alert on stalled polling | stop the bot, the alert fires |
 | 10 | **Public demo:** Pages replay of seeded conversations; notes which features are not live (MbxRead examples, Anki) | demo built in CI; the deploy job runs once the repo is public (unit 11), since GitHub Free serves Pages from public repos only |
-| 11 | **Go public:** history and content sweep, README + FEATURES, flip the repo public | sweep finds nothing personal; repo public; demo linked |
+| 11 | **Go public:** history and content sweep, README + FEATURES, a sanitized public copy (`miobix/MbxChat-public`, made with filter-repo; this repo stays private) | sweep finds nothing personal; public repo live; demo deployed and linked |
 
 At the end of each cycle (after units 4, 8 and 11): hardening pass and doc roll-up.
 
