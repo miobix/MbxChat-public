@@ -1,8 +1,14 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** cycle 2 (units 5-8) closed with unit 8 (learner memory, SPEC §7f) on `unit-8-memory`,
-PR pending. Next: unit 9 (monitoring, SPEC §8) from a fresh `main`. Decisions: DECISIONS
-"2026-11-24 Unit 8 plan", "2026-11-24 Unit 8: learner memory", "2026-11-24 Hardening pass, cycle 2".
+**Phase:** cycle 2 (units 5-8) closed: unit 8 (learner memory, SPEC §7f) merged (PR #15,
+2026-11-24) with the cycle's hardening pass. Decisions: DECISIONS "2026-11-24 Unit 8 plan",
+"2026-11-24 Unit 8: learner memory", "2026-11-24 Hardening pass, cycle 2".
+
+**Next: cycle 3 (units 9-11, SPEC §8), starting with unit 9 (monitoring):** `/metrics`,
+Prometheus + Grafana, a dashboard (calls per tier, latency, errors), an alert on stalled
+polling; done when stopping the bot fires the alert. Branch `unit-9-monitoring` from a fresh
+`main`. Plan first (discuss, then write the plan into SPEC and DECISIONS), pin new images with
+`pin-versions`, close with `finish-unit`. Unit 11 ends cycle 3 (hardening pass, doc roll-up).
 
 ## Cycle 2 in one paragraph
 Practice (unit 5) serves grammar and translate prompts, grades them with `gemma4:e4b` (chosen in
