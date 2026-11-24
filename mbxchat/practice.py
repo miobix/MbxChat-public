@@ -88,7 +88,8 @@ class Generated(BaseModel):
 
 GENERATE_SYSTEM = (
     "You write translation drills for a Korean learner. Write one short, everyday English sentence whose "
-    "natural Korean translation needs the given grammar point and the given word. Never write Korean."
+    "natural Korean translation needs the given grammar point and the given word, if one is given. Never "
+    "write Korean."
 )
 
 
@@ -144,7 +145,7 @@ def _translate_prompt(conn, s: int) -> dict | None:
         return None
     p = _grammar_prompt(conn, g)
     try:
-        gen = ask(Generated, GENERATE_SYSTEM, f"Grammar point: {p['en']}\nWord: {p['word'] or 'any'}")
+        gen = ask(Generated, GENERATE_SYSTEM, f"Grammar point: {p['en']}" + (f"\nWord: {p['word']}" if p["word"] else ""))
         return p | {"kind": "translate", "en": gen.en, "register": gen.formality, "word": None}
     except Exception:
         log.warning("generating a translate prompt failed; serving the grammar point instead", exc_info=True)
@@ -259,7 +260,8 @@ def grade(p: dict, answer: str, model: str | None = None) -> Grade:
     g = ask(Grade, GRADER_SYSTEM, "\n".join(lines), model or config.GRADER_MODEL)
     g.issues = [i for i in g.issues if "→" in i]
     if g.verdict == "correct" and (g.issues or bare(g.corrected) != bare(answer)):
-        g.verdict = "minor"  # gemma sometimes fixes the sentence and still says correct
+        # gemma sometimes fixes the sentence and still says correct; its note was written for "correct"
+        g.verdict, g.note = "minor", ""
     return g
 
 

@@ -221,7 +221,7 @@ def _prompt_html(p: dict) -> str:
         return text + (f" using <b>{esc(p['word'])}</b>" if p["word"] else "")
     lines = [f"{focus}✍️ <b>In Korean:</b> {esc(p['en'])}"]
     lines += [f"📍 {esc(p['situation'])}"] * bool(p["situation"])
-    lines += [f"<i>{esc(p['register'])}</i>"] * bool(p["register"])
+    lines += [f"<i>{esc(p['register'].replace('_', ' '))}</i>"] * bool(p["register"])
     return "\n".join(lines)
 
 

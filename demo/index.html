@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MbxChat recorded demo</title>
+<meta name="description" content="Replays of recorded MbxChat conversations: a Telegram bot for practising written Korean.">
+<style>
+:root {
+  --bg: #e7ebf0; --chat: #c9d8e6; --bot: #ffffff; --user: #e1fec6; --ink: #1b1f23; --muted: #6b7680;
+  --btn: rgba(255, 255, 255, .55); --btn-ink: #1d5c8c; --accent: #2b8bd1; --note: #fff8e1; --note-ink: #5d4b10;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0e1621; --chat: #17212b; --bot: #182533; --user: #2b5278; --ink: #e8eef4; --muted: #8b9aa8;
+          --btn: rgba(255, 255, 255, .08); --btn-ink: #8cc8f5; --accent: #5eb5f7; --note: #2a2414; --note-ink: #e6d39a; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.4 system-ui, -apple-system, "Segoe UI", "Noto Sans KR", sans-serif; }
+main { max-width: 560px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 20px; margin: 0 0 4px; }
+.lead { color: var(--muted); margin: 0 0 12px; font-size: 14px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+nav button, .controls button { border: 0; border-radius: 16px; padding: 6px 12px; font: inherit; font-size: 14px; cursor: pointer;
+  background: var(--btn); color: var(--btn-ink); }
+nav button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chips button { border: 1px solid var(--accent); background: transparent; color: var(--btn-ink); border-radius: 14px;
+  padding: 5px 10px; font: inherit; font-size: 13px; cursor: pointer; text-align: left; }
+.chips button:disabled { opacity: .35; cursor: default; text-decoration: line-through; }
+.chips button.playing { background: var(--accent); color: #fff; opacity: 1; text-decoration: none; }
+.hint { color: var(--muted); font-size: 13px; margin: 0 0 6px; }
+.note { background: var(--note); color: var(--note-ink); border-radius: 10px; padding: 8px 12px; font-size: 13px; margin-bottom: 10px; }
+.chat { background: var(--chat); border-radius: 14px; padding: 12px 10px; min-height: 420px; display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden; }
+.row { display: flex; flex-direction: column; max-width: 88%; }
+.row.user { align-self: flex-end; align-items: flex-end; }
+.bubble { background: var(--bot); border-radius: 12px 12px 12px 4px; padding: 7px 10px; white-space: pre-wrap; overflow-wrap: anywhere; position: relative; }
+.user .bubble { background: var(--user); border-radius: 12px 12px 4px 12px; }
+.quote { border-left: 3px solid var(--accent); padding-left: 6px; margin-bottom: 4px; font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bubble code { font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+.bubble blockquote { margin: 4px 0 0; border-left: 3px solid var(--accent); padding: 2px 8px; max-height: 3.2em; overflow: hidden; cursor: pointer; }
+.bubble blockquote.open { max-height: none; }
+.spoiler { background: var(--muted); color: transparent; border-radius: 3px; cursor: pointer; transition: color .2s, background .2s; }
+.spoiler.shown { background: transparent; color: inherit; }
+.keys { display: grid; gap: 4px; margin-top: 4px; width: 100%; }
+.keys div { display: flex; gap: 4px; }
+.keys span { flex: 1; text-align: center; background: var(--btn); color: var(--btn-ink); border-radius: 8px; padding: 6px 8px; font-size: 14px; }
+.keys span.tapped { background: var(--accent); color: #fff; }
+.reaction { position: absolute; bottom: -10px; left: -6px; background: var(--bot); border-radius: 10px; padding: 0 4px; font-size: 13px; }
+.toast { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, .7); color: #fff; padding: 6px 14px; border-radius: 16px; font-size: 14px; }
+.controls { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+.controls button { white-space: nowrap; }
+.controls small { color: var(--muted); margin-left: auto; }
+footer { color: var(--muted); font-size: 13px; margin-top: 16px; }
+footer ul { padding-left: 18px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>MbxChat <small style="font-weight:400;color:var(--muted)">recorded demo</small></h1>
+  <p class="lead">A Telegram bot for practising written Korean, built as a LangGraph agent. These are replays of
+    conversations recorded from the real bot code. Nothing here calls a model.</p>
+  <nav id="scenes"></nav>
+  <div class="note" id="note"></div>
+  <p class="hint">Pick an input. Each one plays once; ↻ Reset brings them back.</p>
+  <div class="chips" id="chips"></div>
+  <div class="chat" id="chat" aria-live="polite"></div>
+  <div class="controls">
+    <button id="replay">↻ Reset</button><button id="end">⏭ Skip to end</button><small id="meta"></small>
+  </div>
+  <footer>
+    <p>What a replay leaves out:</p>
+    <ul>
+      <li>your own input: every message and tap was scripted, and every reply was recorded once from the local model named above,</li>
+      <li>example sentences from the user's MbxRead reading library (off when recording),</li>
+      <li>Anki: cards were queued because Anki was closed,</li>
+      <li>the runs that failed: each input was recorded once and kept only if it passed automatic checks (no
+        error, the word found in krdict, a planted slip caught, a clean answer not flagged, no note praising an
+        answer it marked down) and a read-through for wrong Korean or contradictions. The others are not
+        shown; how many is in the line under the chat.</li>
+    </ul>
+  </footer>
+</main>
+<script>
+const ALLOWED = new Set(["B", "STRONG", "I", "EM", "S", "DEL", "U", "CODE", "PRE", "BLOCKQUOTE", "TG-SPOILER"]);
+
+function render(html) {
+  const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
+  const clean = (node) => {
+    const out = document.createDocumentFragment();
+    for (const child of node.childNodes) {
+      if (child.nodeType === Node.TEXT_NODE) { out.append(child.textContent); continue; }
+      if (child.nodeType !== Node.ELEMENT_NODE) continue;
+      if (!ALLOWED.has(child.tagName)) { out.append(clean(child)); continue; }
+      const el = document.createElement(child.tagName === "TG-SPOILER" ? "span" : child.tagName.toLowerCase());
+      if (child.tagName === "TG-SPOILER") { el.className = "spoiler"; el.onclick = () => el.classList.add("shown"); }
+      if (child.tagName === "BLOCKQUOTE") el.onclick = () => el.classList.toggle("open");
+      el.append(clean(child));
+      out.append(el);
+    }
+    return out;
+  };
+  return clean(doc.body.firstChild);
+}
+
+const chat = document.getElementById("chat");
+let data, timers = [], rows = {};
+
+function keys(buttons) {
+  const box = document.createElement("div");
+  box.className = "keys";
+  for (const row of buttons || []) {
+    const r = document.createElement("div");
+    for (const label of row) { const s = document.createElement("span"); s.textContent = label; r.append(s); }
+    box.append(r);
+  }
+  return box;
+}
+
+function bubble(id, who, content, replyTo) {
+  const row = document.createElement("div");
+  row.className = `row ${who}`;
+  const b = document.createElement("div");
+  b.className = "bubble";
+  if (replyTo && rows[replyTo]) {
+    const q = document.createElement("div");
+    q.className = "quote";
+    q.textContent = rows[replyTo].querySelector(".body").textContent;
+    b.append(q);
+  }
+  const body = document.createElement("div");
+  body.className = "body";
+  body.append(content);
+  b.append(body);
+  row.append(b);
+  rows[id] = row;
+  chat.append(row);
+  return row;
+}
+
+function apply(e) {
+  const row = rows[e.id];
+  switch (e.op) {
+    case "user": bubble(e.id, "user", e.text); break;
+    case "send": bubble(e.id, "bot", render(e.html), e.reply_to).append(keys(e.buttons)); break;
+    case "edit": {
+      const body = row.querySelector(".body");
+      body.replaceChildren(render(e.html));
+      row.querySelector(".keys")?.remove();
+      row.append(keys(e.buttons));
+      break;
+    }
+    case "edit_buttons": row.querySelector(".keys")?.replaceWith(keys(e.buttons)); break;
+    case "delete": row?.remove(); break;
+    case "tap":
+      for (const s of row.querySelectorAll(".keys span")) if (s.textContent === e.label) s.classList.add("tapped");
+      break;
+    case "react": {
+      const r = document.createElement("span");
+      r.className = "reaction"; r.textContent = e.emoji;
+      row.querySelector(".bubble").append(r);
+      break;
+    }
+    case "toast": {
+      const t = document.createElement("div");
+      t.className = "toast"; t.textContent = e.text;
+      chat.append(t);
+      setTimeout(() => t.remove(), 1200);
+      break;
+    }
+  }
+}
+
+// Recorded gaps are kept in order but squeezed: a 16 s cold model start plays as about 2 s.
+function delay(prev, e) {
+  const gap = prev ? e.t - prev.t : 0;
+  const base = e.op === "user" ? 900 : e.op === "tap" ? 700 : 350;
+  return base + Math.min(gap * 250, 1800);
+}
+
+let group = 0, current = null, used = {};
+
+function play(items, all) {
+  timers.forEach(clearTimeout);
+  timers = []; rows = {};
+  chat.replaceChildren();
+  let at = 0, prev = null;
+  for (const e of items.events) {
+    if (all) { apply(e); continue; }
+    at += delay(prev, e);
+    prev = e;
+    timers.push(setTimeout(() => apply(e), at));
+  }
+}
+
+function chips() {
+  const g = data.groups[group];
+  const box = document.getElementById("chips");
+  box.replaceChildren();
+  g.items.forEach((it, i) => {
+    const b = document.createElement("button");
+    b.textContent = it.label;
+    const key = `${group}:${i}`;
+    b.disabled = !!used[key] && current !== key;
+    if (current === key) b.className = "playing";
+    b.onclick = () => {
+      if (current) used[current] = true;
+      current = key;
+      chips();
+      play(it, matchMedia("(prefers-reduced-motion: reduce)").matches);
+    };
+    box.append(b);
+  });
+}
+
+function pick(i) {
+  group = i;
+  if (current) used[current] = true;
+  current = null;
+  timers.forEach(clearTimeout);
+  chat.replaceChildren();
+  document.querySelectorAll("nav button").forEach((b, j) => b.setAttribute("aria-pressed", String(j === i)));
+  document.getElementById("note").textContent = data.groups[i].note;
+  chips();
+  const first = data.groups[i].items.findIndex((_, k) => !used[`${i}:${k}`]);
+  if (first >= 0) document.getElementById("chips").children[first].click();
+  else chat.textContent = "All inputs here have played. ↻ Reset to see them again.";
+}
+
+fetch("conversations.json").then((r) => r.json()).then((d) => {
+  data = d;
+  const nav = document.getElementById("scenes");
+  d.groups.forEach((g, i) => {
+    const b = document.createElement("button");
+    b.textContent = g.title;
+    b.onclick = () => { history.replaceState(null, "", `#${i}`); pick(i); };
+    nav.append(b);
+  });
+  const total = d.kept + d.dropped.length;
+  document.getElementById("meta").textContent =
+    `Recorded ${d.recorded} · ${d.model} · ${d.kept} of ${total} runs kept after checks and a read-through`;
+  document.getElementById("replay").onclick = () => { used = {}; current = null; pick(group); };
+  document.getElementById("end").onclick = () => {
+    const [g, i] = (current || "").split(":").map(Number);
+    if (current) play(data.groups[g].items[i], true);
+  };
+  pick(Math.min(Number(location.hash.slice(1)) || 0, d.groups.length - 1));
+}).catch(() => { chat.textContent = "Could not load conversations.json (open this page through a web server)."; });
+</script>
+</body>
+</html>

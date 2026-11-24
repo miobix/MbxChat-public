@@ -24,8 +24,10 @@ def test_ladder_climbs_holds_and_restarts():
 
 def test_a_correct_verdict_with_a_fix_becomes_minor(monkeypatch):
     p = {"kind": "translate", "en": "x", "situation": "", "register": "", "reference": None, "word": None}
-    monkeypatch.setattr(practice, "ask", lambda *a: GOOD.model_copy(update={"corrected": "회의가 연기됐어요."}))
-    assert practice.grade(p, "회의를 미뤄요").verdict == "minor"
+    praised = {"corrected": "회의가 연기됐어요.", "note": "Your answer is correct!"}
+    monkeypatch.setattr(practice, "ask", lambda *a: GOOD.model_copy(update=praised))
+    g = practice.grade(p, "회의를 미뤄요")
+    assert (g.verdict, g.note) == ("minor", "")  # the note was written for "correct"
     monkeypatch.setattr(practice, "ask", lambda *a: GOOD.model_copy())
     assert practice.grade(p, "회의를 미뤄요").verdict == "correct"  # punctuation alone is no fix
 
@@ -79,13 +81,16 @@ def test_pool_sentences_run_out_into_generated_prompts(pool, db_url, monkeypatch
     with psycopg.connect(db_url) as conn:
         conn.execute("DELETE FROM item WHERE kind = 'sentence' AND id <> (SELECT min(id) FROM item WHERE kind = 'sentence')")
     gen = practice.Generated(en="I only have ten minutes.", formality="friend")
-    monkeypatch.setattr(practice, "ask", lambda schema, *a: gen if schema is practice.Generated else GOOD)
+    asked = []
+    monkeypatch.setattr(practice, "ask", lambda schema, system, user, *a: asked.append(user) or (
+        gen if schema is practice.Generated else GOOD))
     s = practice.open_session()
     kinds = [practice.next_prompt(s) for _ in range(4)]
     pool_sentence, generated = kinds[1], kinds[3]
     assert pool_sentence["reference"] and generated["reference"] is None
     assert (generated["en"], generated["register"]) == ("I only have ten minutes.", "friend")
     assert generated["source"] == "item" and generated["ref"] == generated["grammar_id"]
+    assert "Word:" not in asked[-1]  # no learning terms in this database: no word line (it once said "any")
 
 
 def test_a_failed_generation_serves_the_grammar_point(pool, db_url, monkeypatch):
@@ -329,3 +334,8 @@ def test_a_routing_failure_falls_back_to_grading(pool, monkeypatch):
     msg = _message("hmm")
     asyncio.run(bot.free_text(MagicMock(message=msg), context))
     assert context.bot.send_message.return_value.edit_text.await_args.args[0].startswith("<b>")  # graded
+
+
+def test_a_register_reads_as_words():
+    p = {"kind": "translate", "en": "x", "situation": "", "register": "office_speech", "reference": None, "word": None}
+    assert "<i>office speech</i>" in bot._prompt_html(p)
