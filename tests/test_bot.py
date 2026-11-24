@@ -119,6 +119,18 @@ def test_menu_is_cleared_globally_and_set_for_the_allowed_chat_only():
     assert call.kwargs["scope"] == BotCommandScopeChat(ALLOWED)
 
 
+def test_post_stop_cancels_the_background_loops():
+    async def go():
+        app = MagicMock()
+        task = asyncio.create_task(bot.forever("x", 3600, AsyncMock()))
+        app.bot_data = {"loops": [task]}
+        await bot.post_stop(app)
+        return task, app.bot_data
+
+    task, data = run(go())
+    assert task.cancelled() and "loops" not in data
+
+
 def test_build_app_registers_handlers_without_network():
     app = bot.build_app("123:fake")
     assert [type(h).__name__ for h in app.handlers[-1]] == ["TypeHandler"]  # gate runs first

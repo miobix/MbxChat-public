@@ -30,8 +30,12 @@ def main() -> None:
         from phoenix.otel import register
 
         register(project_name="mbxchat", auto_instrument=True, batch=True)
-    graph = capture.build(db.checkpointer())
-    build_app(config.TELEGRAM_BOT_TOKEN, graph).run_polling(allowed_updates=[Update.MESSAGE, Update.CALLBACK_QUERY])
+    saver = db.checkpointer()
+    try:
+        build_app(config.TELEGRAM_BOT_TOKEN, capture.build(saver)).run_polling(
+            allowed_updates=[Update.MESSAGE, Update.CALLBACK_QUERY])
+    finally:
+        saver.conn.close()
 
 
 if __name__ == "__main__":
