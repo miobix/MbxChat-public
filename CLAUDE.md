@@ -15,6 +15,9 @@ session, if present.
 ## Skills (`.claude/skills/`)
 - `finish-unit`: tests, docs, commit, PR, CI watch and report; after a merge, the next branch
   from a fresh `main`. Reach for it whenever a unit's code is done or the user reports a merge.
+- `eval-in-container`: run an eval in a one-off container of the bot's image with `evals/`
+  mounted. Reach for it when an eval needs the `mcp` tool server or the bot's exact runtime
+  (e.g. `evals/capture_ab.py`).
 - Cycle boundaries (units 4, 8, 11) also use the user-level `hardening-pass` skill.
 
 ## Rules

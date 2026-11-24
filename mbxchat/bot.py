@@ -59,7 +59,7 @@ async def free_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
     session = await asyncio.to_thread(practice.current_session)
     if session and (p := await asyncio.to_thread(practice.waiting, session)):
-        await _answer(context, update.message, p)
+        await _route(context, update.message, p)
         return
     rows = [[("➕ Capture", "cap:yes"), ("✖ No", "cap:no")]]
     if not session and (late := await asyncio.to_thread(practice.waiting, None)):
@@ -90,6 +90,7 @@ async def on_capture(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 # Label shown once the key node has finished, i.e. what runs next.
 NEXT_STEP = {
+    "agent": "Checking words in krdict and your library…",
     "draft": "Checking words in krdict and your library…",
     "lookup": "Critic reviewing…",
     "critic": "Picking chunks…",
@@ -108,14 +109,33 @@ async def _run(context, chat_id: int, capture_id: int, graph_input, progress: Pr
     state = await asyncio.to_thread(graph.get_state, cfg)
     if progress:
         await progress.done(_summary(state.values))
-    if state.interrupts:
+    if state.interrupts and "word" in state.interrupts[0].value:
+        await _send_word_card(context.bot, chat_id, capture_id, state.interrupts[0].value["word"])
+    elif state.interrupts:
         await _send_card(context.bot, chat_id, capture_id, state.interrupts[0].value, len(state.values["chunks"]))
+    elif progress is None and state.values.get("kind") == "word":
+        if state.values.get("saved"):
+            await context.bot.send_message(chat_id, await _word_to_anki(capture_id))
     elif progress is None:
         n = state.values.get("saved", 0)
         text = f"Done: {n} chunk{'' if n == 1 else 's'} saved."
         if n:
             text += " " + await _to_anki()
         await context.bot.send_message(chat_id, text)
+
+
+async def _word_to_anki(capture_id: int) -> str:
+    try:
+        await asyncio.to_thread(anki.push)
+    except anki.Closed:
+        pass
+    deck = config.ANKI_WORD_DECK
+    return {
+        "in": f"In Anki, deck {deck}.",
+        "duplicate": f"Already in {deck}: nothing added.",
+        "queued": "Anki is closed: the card is queued, sent once it opens.",
+        "refused": "Anki refused the card: see /queue.",
+    }[await asyncio.to_thread(anki.word_outcome, capture_id)]
 
 
 async def _to_anki() -> str:
@@ -234,6 +254,45 @@ async def _answer(context, message, p: dict, late: bool = False) -> None:
         await _send_prompt(context.bot, message.chat_id, session)
 
 
+ROUTE_TEXT = {"capture": "Looks like something to capture.", "question": "Looks like a question."}
+
+
+async def _route(context, message, p: dict) -> None:
+    """Grade an answer; offer capture or an explanation for anything else, never run unasked."""
+    try:
+        kind = await asyncio.to_thread(practice.route, p, message.text)
+    except Exception:
+        log.exception("routing failed; grading as an answer")
+        kind = "answer"
+    if kind == "answer":
+        await _answer(context, message, p)
+        return
+    # The guess only orders the buttons: a wrong one costs a tap, never a wrong action.
+    capture_, ask = ("➕ Capture", "cap:yes"), ("💬 Answer it", f"ask:{p['id']}")
+    first = [capture_, ask] if kind == "capture" else [ask, capture_]
+    rows = [first, [("✍️ Grade it as my answer", f"late:{p['id']}")]]
+    await message.reply_html(ROUTE_TEXT[kind], reply_markup=keyboard(*rows), do_quote=True)
+
+
+async def on_ask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    p = await asyncio.to_thread(practice.get_prompt, int(query.data.removeprefix("ask:")))
+    original = query.message.reply_to_message
+    if p is None or original is None:
+        await query.answer("Already handled")
+        await query.message.delete()
+        return
+    await query.answer()
+    await query.edit_message_text("💬 Thinking…")
+    try:
+        text = await asyncio.to_thread(practice.explain, p, original.text)
+    except Exception as e:
+        log.exception("explaining failed")
+        text = f"⚠️ Could not answer: {type(e).__name__}: {str(e)[:200]}"
+    waiting = "" if p["answered_at"] or p["skipped"] else "\n\n<i>The prompt above is still waiting for your answer.</i>"
+    await query.edit_message_text(esc(text) + waiting, parse_mode=ParseMode.HTML)
+
+
 async def practice_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     session = await asyncio.to_thread(practice.open_session)
     await _send_prompt(context.bot, update.message.chat_id, session)
@@ -299,12 +358,33 @@ async def on_late(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await _answer(context, original, p, late=True)
 
 
+EXAMPLE_SOURCE = {"library": "from your library", "krdict": "from krdict", "model": "model-written, unchecked"}
+
+
+def _word_summary(v: dict) -> str:
+    w = v["word"]
+    lines = [f"<b>{esc(w['korean'])}</b> · {esc(w['english'])}"]
+    if w["entries"]:
+        gloss = " | ".join(g for e in w["entries"] for g in e["glosses"][:1]) or "?"
+        where = f"not in the learners' dictionary; root <b>{esc(w['root'])}</b>" if w["root"] else "krdict"
+        lines.append(f"📖 {where}: {esc(gloss)}")
+    else:
+        lines.append("📖 not in the learners' dictionary")
+    if w["examples"]:
+        lines.append(f"<i>Examples, {EXAMPLE_SOURCE[w['source']]}:</i>")
+        lines += [f"• {esc(e)}" for e in w["examples"]]
+    lines += [f"⚠️ {esc(n)}" for n in v["findings"]["notes"]]
+    return "\n".join(lines)
+
+
 def _summary(v: dict) -> str:
+    if v.get("kind") == "word":
+        return _word_summary(v)
     r, d = v["review"], v["draft"]
     lines = [f"<b>Polite:</b> {esc(r['polite'])}", f"<b>Casual:</b> {esc(r['casual'])}", f"<i>{esc(d['note'])}</i>"]
     if r["issues"]:
         lines.append(fold("<b>Critic fixed:</b>\n" + "\n".join(f"• {esc(i)}" for i in r["issues"])))
-    lines += [f"⚠️ {esc(n)}" for n in v["findings"]["notes"]]
+    lines += [f"⚠️ {esc(n)}" for n in v.get("agent_notes", []) + v["findings"]["notes"]]
     n = len(v["chunks"])
     lines.append(f"{n} chunk{'' if n == 1 else 's'} to review below." if n else "No chunks worth a card this time.")
     return "\n".join(lines)
@@ -322,11 +402,34 @@ async def _send_card(bot, chat_id: int, capture_id: int, value: dict, total: int
     )
 
 
+async def _send_word_card(bot, chat_id: int, capture_id: int, w: dict) -> None:
+    await bot.send_message(
+        chat_id, f"Save <b>{esc(w['korean'])}</b> · {esc(w['english'])} as a card?", parse_mode=ParseMode.HTML,
+        reply_markup=keyboard([("✅ Approve", f"wd:{capture_id}:ok"), ("⏭ Skip", f"wd:{capture_id}:sk")]),
+    )
+
+
+async def on_word(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    _, capture_id, action = query.data.split(":")
+    graph = context.application.bot_data["graph"]
+    state = await asyncio.to_thread(graph.get_state, {"configurable": {"thread_id": capture_id}})
+    if not (state.interrupts and "word" in state.interrupts[0].value):
+        await query.answer("Already handled")
+        await query.edit_message_reply_markup(None)
+        return
+    w = state.interrupts[0].value["word"]
+    await query.answer("Saved" if action == "ok" else None)
+    outcome = f"✅ <b>{esc(w['korean'])}</b>  {esc(w['english'])}" if action == "ok" else f"⏭ <s>{esc(w['korean'])}</s>"
+    await query.edit_message_text(outcome, parse_mode=ParseMode.HTML)
+    await _run(context, query.message.chat_id, int(capture_id), Command(resume={"action": action}))
+
+
 async def _pending(context, capture_id: int, i: int) -> dict | None:
     """The chunk awaiting a decision, if it is still chunk i of this capture."""
     graph = context.application.bot_data["graph"]
     state = await asyncio.to_thread(graph.get_state, {"configurable": {"thread_id": str(capture_id)}})
-    if state.interrupts and state.interrupts[0].value["i"] == i:
+    if state.interrupts and state.interrupts[0].value.get("i") == i:
         return state.interrupts[0].value["chunk"]
     return None
 
@@ -518,8 +621,10 @@ def build_app(token: str, graph=None) -> Application:
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & private, free_text, block=False))  # grading
     app.add_handler(CallbackQueryHandler(on_prompt, pattern=r"^pr:\d+:(sk|st|gr)$"))
     app.add_handler(CallbackQueryHandler(on_late, pattern=r"^late:\d+$", block=False))
+    app.add_handler(CallbackQueryHandler(on_ask, pattern=r"^ask:\d+$", block=False))
     app.add_handler(CallbackQueryHandler(on_capture, pattern=r"^cap:", block=False))  # long on CPU
     app.add_handler(CallbackQueryHandler(on_chunk, pattern=r"^ch:\d+:\d+:(ok|ed|sk)$"))
+    app.add_handler(CallbackQueryHandler(on_word, pattern=r"^wd:\d+:(ok|sk)$"))
     app.add_handler(CallbackQueryHandler(on_demo, pattern=r"^demo:"))
     app.add_handler(CallbackQueryHandler(on_grammar, pattern=r"^(gram|known|unknown):\d+$"))
     app.add_error_handler(report_error)

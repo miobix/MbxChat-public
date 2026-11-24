@@ -17,8 +17,10 @@ docker compose up -d --build  # bot (health on 127.0.0.1:8005) + Postgres (127.0
 curl http://127.0.0.1:8005/health
 ```
 
-Captures need MbxRead's compose stack running (its API on :8002 for krdict and library usage, its
-Ollama on :11434 with `gemma4:e4b`). Traces: Phoenix at http://127.0.0.1:6006.
+Captures need an Ollama on :11434 with `gemma4:e4b`. MbxRead (a sibling project) is optional:
+set `MBXREAD_URL` in `.env` and captures use its library examples; leave it unset and they are
+off. Dictionary checks need a free krdict key (`KRDICT_API_KEY`). Traces: Phoenix at
+http://127.0.0.1:6006.
 
 ## Backups and moving machines
 
@@ -37,10 +39,11 @@ docker compose up -d --build
 ## Content
 
 Public pools (NIKL grammar, refreshers, sentences, vocabulary) load at every bot start.
-MbxRead saved terms are personal: imported on the host, kept in the local database only:
+MbxRead saved terms (optional) are personal: imported on the host, kept in the local database
+only. The importer does not read `.env`, so point it at MbxRead in the shell:
 
 ```sh
-.venv/Scripts/python -m mbxchat.importer
+MBXREAD_URL=http://127.0.0.1:8002 .venv/Scripts/python -m mbxchat.importer
 ```
 
 Sources and licences: [docs/DATA.md](docs/DATA.md).

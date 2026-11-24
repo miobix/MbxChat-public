@@ -1,10 +1,7 @@
 """Capture workflow (SPEC §7c): draft → lookup → critic → chunks → review (interrupts) → save."""
 import json
 import logging
-import threading
-import time
 import urllib.error
-import urllib.parse
 import urllib.request
 from functools import cache
 from typing import Literal, TypedDict
@@ -17,13 +14,12 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 from pydantic import BaseModel, Field, ValidationError
 
-from mbxchat import config
+from mbxchat import config, krdict
 
 log = logging.getLogger(__name__)
 
 CONTENT_TAGS = {"NNG", "NNP", "VV", "VA", "MAG", "XR"}
 MAX_KRDICT = 4
-KRDICT_GAP = 3.0
 
 
 class CaptureError(Exception):
@@ -70,6 +66,10 @@ class State(TypedDict, total=False):
     chunks: list[dict]
     decisions: list[dict]
     saved: int
+    kind: str  # agent mode: "sentence" or "word"
+    word: dict
+    agent_calls: int
+    agent_notes: list[str]
 
 
 def ask(schema: type[BaseModel], system: str, user: str, model: str | None = None) -> BaseModel:
@@ -125,22 +125,10 @@ def _mbxread(path: str, body: dict | None = None, timeout: float = 20) -> object
         raise Unavailable(str(e)) from e
 
 
-_krdict_lock = threading.Lock()
-_krdict_last = 0.0
-
-
 def krdict_gloss(lemma: str) -> str | None:
-    """First English gloss of up to 3 krdict entries (homographs), None if none. Paced, never retried."""
-    global _krdict_last
-    with _krdict_lock:
-        # ponytail: paces cache hits too (MbxRead doesn't say which were cached)
-        time.sleep(max(0.0, _krdict_last + KRDICT_GAP - time.monotonic()))
-        try:
-            entries = _mbxread("/api/dict?word=" + urllib.parse.quote(lemma))
-        finally:
-            _krdict_last = time.monotonic()
-    glosses = [next((d["en_word"] for d in e.get("definitions", []) if d.get("en_word")), "?") for e in entries[:3]]
-    return " | ".join(glosses) if entries else None
+    """First English gloss of up to 3 krdict entries (homographs), None if none."""
+    entries = krdict.search(lemma)
+    return " | ".join(e["glosses"][0] if e["glosses"] else "?" for e in entries) if entries else None
 
 
 def usage(lemma: str, sentence: str) -> list[str]:
@@ -188,14 +176,14 @@ def lookup(state: State) -> State:
     grades = nikl_grades(lemmas)
     rare = [lemma for lemma in lemmas if lemma not in grades]
     findings: dict = {"krdict": {}, "usage": {}, "notes": []}
-    for lemma in rare[:MAX_KRDICT]:
+    for lemma in rare[:MAX_KRDICT] if krdict.enabled() else []:
         try:
             findings["krdict"][lemma] = krdict_gloss(lemma)
-        except Unavailable as e:
+        except krdict.Unavailable as e:
             findings["notes"].append(f"krdict unavailable: {e}")
             break
     beyond_beginner = rare + [lemma for lemma in lemmas if grades.get(lemma) in ("B", "C")]
-    for lemma in beyond_beginner[:2]:
+    for lemma in beyond_beginner[:2] if config.MBXREAD_URL else []:
         try:
             findings["usage"][lemma] = usage(lemma, d["polite"])
         except Unavailable as e:
@@ -257,12 +245,28 @@ def save(state: State) -> State:
 NODES = {"draft": draft, "lookup": lookup, "critic": critic, "chunks": chunks, "review": review, "save": save}
 
 
-def build(checkpointer):
+def build(checkpointer, mode: str | None = None):
+    """`workflow`: the fixed unit 3 chain. `agent` (SPEC §7e): the agent decides; a sentence runs the
+    whole chain (the agent's own draft is dropped), a word goes to word_lookup."""
     g = StateGraph(State)
     names = list(NODES)
+    if (mode or config.CAPTURE_MODE) == "agent":
+        from mbxchat import agent
+
+        g.add_node("agent", agent.agent)
+        for name, node in (("word_lookup", agent.word_lookup), ("word_review", agent.word_review),
+                           ("word_save", agent.word_save)):
+            g.add_node(name, node)
+        g.add_edge(START, "agent")
+        g.add_conditional_edges("agent", lambda s: "word_lookup" if s["kind"] == "word" else "draft")
+        g.add_edge("word_lookup", "word_review")
+        g.add_edge("word_review", "word_save")
+        g.add_edge("word_save", END)
+    else:
+        g.add_edge(START, names[0])
     for name in names:
         g.add_node(name, NODES[name])
-    for a, b in zip([START, *names], [*names, END]):
+    for a, b in zip(names, [*names[1:], END]):
         g.add_edge(a, b)
     return g.compile(checkpointer=checkpointer)
 

@@ -11,8 +11,9 @@ The user merges every PR on GitHub. Never run `gh pr merge` or merge to `main` l
 
 1. `docker compose up -d --wait db`, then `.venv/Scripts/python -m pytest tests -q`: all green.
    Note the count for STATUS.
-2. If the unit runs in the daily bot: `docker compose up -d --build bot`, then read
-   `docker compose logs --since 2m bot` for warnings.
+2. If the unit runs in the daily bot: `docker compose up -d --build` (no service name: `bot` and
+   `mcp` share the image, and naming only `bot` leaves `mcp` on old code), then read
+   `docker compose logs --since 2m bot mcp` for warnings.
 3. Docs, in the same commit:
    - `docs/STATUS.md`: rewrite Phase and Next; prune finished work; update Facts and the test count.
    - `docs/DECISIONS.md`: a dated `## <date> Unit N: <name>` section, appended, never rewritten.

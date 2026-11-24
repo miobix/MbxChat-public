@@ -8,3 +8,7 @@ psycopg-pool==3.3.3
 kiwipiepy==0.24.1
 arize-phoenix-otel==0.17.3
 openinference-instrumentation-langchain==0.1.82
+mcp==1.30.0
+langchain-mcp-adapters==0.3.2
+# After pip-compile on Windows: re-add  ; sys_platform == "win32"  to pywin32 in requirements.txt (mcp pulls it).
+# Then recompile requirements-dev.txt too (CI installs that one): pip-compile --allow-unsafe --generate-hashes --output-file=requirements-dev.txt --strip-extras requirements-dev.in

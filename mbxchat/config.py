@@ -4,18 +4,27 @@ from datetime import time
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://mbxchat:mbxchat@127.0.0.1:5434/mbxchat")
 HEALTH_PORT = int(os.getenv("HEALTH_PORT", "8005"))
 
-# MbxRead saved terms, read by `python -m mbxchat.importer` on the host.
-MBXREAD_URL = os.getenv("MBXREAD_URL", "http://127.0.0.1:8002").strip()
+# Optional MbxRead (library examples, saved terms). Empty = off.
+MBXREAD_URL = os.getenv("MBXREAD_URL", "").strip()
+# krdict Open API key (free, krdict.korean.go.kr). Empty = no dictionary checks.
+KRDICT_API_KEY = os.getenv("KRDICT_API_KEY", "").strip()
+
+# MCP tool server (SPEC §7e): its port, and where the bot finds it (compose: http://mcp:8006/mcp).
+MCP_PORT = int(os.getenv("MCP_PORT", "8006"))
+MCP_URL = os.getenv("MCP_URL", "http://127.0.0.1:8006/mcp").strip()
 
 # Capture model (SPEC §6, §7c). The ID is Ollama's digest prefix, checked at startup.
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434").strip()
 CAPTURE_MODEL = os.getenv("CAPTURE_MODEL", "gemma4:e4b").strip()
 CAPTURE_MODEL_ID = os.getenv("CAPTURE_MODEL_ID", "dc35e8d9c606").strip()
 GRADER_MODEL = os.getenv("GRADER_MODEL", CAPTURE_MODEL).strip()
+# Capture front end (SPEC §7e): "workflow" (fixed chain, unit 3) or "agent" (tool-calling agent).
+CAPTURE_MODE = os.getenv("CAPTURE_MODE", "agent").strip() or "agent"
 
 # AnkiConnect on the desktop (compose: host.docker.internal). Chunk cards go to ANKI_DECK.
 ANKI_URL = os.getenv("ANKI_URL", "http://127.0.0.1:8765").strip()
 ANKI_DECK = os.getenv("ANKI_DECK", "MbxChat").strip()
+ANKI_WORD_DECK = os.getenv("ANKI_WORD_DECK", "MbxChat::Words").strip()
 ANKI_RETRY_SECONDS = 60
 
 # Practice pings, in local time (PRACTICE_TZ, an IANA zone such as Europe/Paris).

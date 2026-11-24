@@ -1,6 +1,18 @@
 import psycopg
+import pytest
 
-from mbxchat import importer
+from mbxchat import config, importer
+
+
+@pytest.fixture(autouse=True)
+def mbxread_set(monkeypatch):
+    monkeypatch.setattr(config, "MBXREAD_URL", "http://mbxread")
+
+
+def test_term_import_is_skipped_when_mbxread_is_not_set(db_url, monkeypatch):
+    monkeypatch.setattr(config, "MBXREAD_URL", "")
+    monkeypatch.setattr(importer, "fetch_terms", lambda url: 1 / 0)
+    assert importer.import_personal() == ["term: skipped, MBXREAD_URL not set"]
 
 
 def _counts(url):

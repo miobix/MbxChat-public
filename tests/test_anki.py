@@ -1,4 +1,6 @@
 import asyncio
+import json
+import re
 
 import psycopg
 import pytest
@@ -18,10 +20,13 @@ class FakeAnki:
         if action == "createModel":
             self.models.append(p["modelName"])
         elif action == "findNotes":
-            tag = p["query"].removeprefix("tag:")
-            return [i for i, n in self.notes.items() if tag in n["tags"]]
+            if p["query"].startswith("tag:"):
+                tag = p["query"].removeprefix("tag:")
+                return [i for i, n in self.notes.items() if tag in n["tags"]]
+            deck, korean = re.fullmatch(r'"deck:(.*)" "Korean:(.*)"', p["query"]).groups()
+            return [i for i, n in self.notes.items() if n.get("deckName") == deck and n["fields"].get("Korean") == korean]
         elif action == "addNote":
-            if p["note"]["fields"]["Chunk"] in self.refuse:
+            if p["note"]["fields"].get("Chunk") in self.refuse:
                 raise RuntimeError("cannot create note")
             self.notes[len(self.notes) + 100] = p["note"]
             return len(self.notes) + 99
@@ -99,3 +104,33 @@ def test_queue_command_tries_anki_then_lists_what_waits(fake):
 ])
 def test_blank_hides_the_chunk_in_its_sentence(chunk, sentence, front):
     assert anki.blank(chunk, sentence) == front
+
+
+def _word(db_url, korean="최적화"):
+    cid = capture.new_capture("the word for optimization")
+    with psycopg.connect(db_url) as conn:
+        conn.execute("INSERT INTO word_card (capture_id, korean, english, dictionary, examples) "
+                     "VALUES (%s, %s, 'optimization', 'root 최적: optimum', %s)",
+                     (cid, korean, json.dumps(["성능을 최적화했어요."])))
+    return cid
+
+
+def test_a_word_card_goes_to_the_word_deck_once(fake, db_url, monkeypatch):
+    monkeypatch.setattr(anki.config, "ANKI_WORD_DECK", "Korean::Words")
+    cid = _word(db_url)
+    assert anki.word_outcome(cid) == "queued"
+    fake.open = True
+    assert anki.push() == 3 and anki.push() == 0
+    note = next(n for n in fake.notes.values() if n["modelName"] == anki.WORD_MODEL)
+    assert note["deckName"] == "Korean::Words" and note["fields"]["Examples"] == "성능을 최적화했어요."
+    assert anki.word_outcome(cid) == "in" and anki.WORD_MODEL in fake.models
+
+
+def test_a_word_already_in_the_deck_is_not_added_again(fake, db_url, monkeypatch):
+    monkeypatch.setattr(anki.config, "ANKI_WORD_DECK", "Korean")
+    fake.notes[7] = {"deckName": "Korean", "tags": [], "fields": {"Korean": "최적화", "English": "x"}}  # e.g. MbxRead's
+    cid = _word(db_url)
+    fake.open = True
+    assert anki.push() == 2  # the two chunks; the word was a duplicate
+    assert anki.word_outcome(cid) == "duplicate" and len(fake.notes) == 3
+    assert anki.queued() == []
