@@ -8,7 +8,7 @@ from mbxchat import config
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS item (
     id     bigserial PRIMARY KEY,
-    kind   text NOT NULL CHECK (kind IN ('grammar', 'sentence', 'word', 'wish', 'term')),
+    kind   text NOT NULL CHECK (kind IN ('grammar', 'sentence', 'word', 'term')),
     key    text NOT NULL,
     level  smallint,
     ko     text,
@@ -98,6 +98,17 @@ CREATE TABLE IF NOT EXISTS krdict_cache (
 CREATE TABLE IF NOT EXISTS known_grammar (
     item_id bigint PRIMARY KEY REFERENCES item(id) ON DELETE CASCADE,
     since   timestamptz NOT NULL DEFAULT now()
+);
+ALTER TABLE prompt ADD COLUMN IF NOT EXISTS pick text NOT NULL DEFAULT 'new';
+ALTER TABLE prompt ADD COLUMN IF NOT EXISTS focus text;
+CREATE TABLE IF NOT EXISTS mistake (
+    id         bigserial PRIMARY KEY,
+    prompt_id  bigint NOT NULL REFERENCES prompt(id),
+    category   text NOT NULL CHECK (category IN ('particle', 'ending', 'spelling', 'spacing', 'other')),
+    wrong      text NOT NULL,
+    fix        text NOT NULL,
+    grammar_id bigint,
+    created_at timestamptz NOT NULL DEFAULT now()
 );
 """
 

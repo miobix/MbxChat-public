@@ -195,3 +195,33 @@ Checked, evidence first:
 ## 2026-11-24 Unit 7 wrap-up
 - **Skill `lockfile-recompile`** (user): the dev lockfile missed the MCP packages and turned CI red on the unit 7 PR; the eval lockfile was stale the same way (recompiled here, additions only). The skill recompiles all three in order (runtime, then the two constrained by it), restores the `pywin32` Windows marker and reads the diff for unexpected bumps. A lockfile skill was declined in unit 7 as unlikely to recur; it recurred the same day. Indexed in CLAUDE.md.
 - **CPU vs GPU, recorded for the README** (`evals/results/grader_summary.jsonl`, same host and grader set of 66, 2026-11-23; the CPU rows are the first five, before the router added `reference_hits`): median / p90 seconds per answer, CPU → GPU: gemma4:e4b 11.0/14.0 → 1.4/1.7; A.X 4.0 Light 15.5/18.8 → 1.6/1.9; Mi:dm 2.0 Mini 4.9/6.6 → 0.8/0.9; Nemotron 3.5 Bolt 59.9/74.5 → 7.0/8.5; Qwen3.5-4B 17.2/26.5 → 2.1/2.8. Decode for gemma: ~9 → 159-192 tokens/s. Quality scores were the same picture on both. No CPU timings exist for capture or the agent (both measured on GPU only).
+
+## 2026-11-24 Unit 8 plan
+- **Evidence first:** 25 prompts, 12 graded (2 correct, 9 minor, 1 wrong). The grader's `issues` list was empty in all 12; the errors were only in `note`. Memory therefore cannot read `issues`.
+- **Captures never prompted back** (user): they are already in Anki. 7 of the 25 prompts so far were captures. Practice keeps only pool items and generated prompts.
+- **Variety** (user): a miss no longer returns the next day (wrong → due in 3 days), due drills take at most every other prompt, new items are random within the level order, one prompt per grammar point per session.
+- **Generated translate prompts:** only 20 graded sentences exist and 6 are used, so without generation practice would turn grammar-only within about a week. Generated sentences are never repeated; the ladder moves on their grammar point, so drills repeat a grammar point, not a phrase. Replaces the earlier "reorder the pool only" proposal.
+- **Mistake tagging by morpheme diff (kiwipiepy) of answer vs corrected sentence, no model call.** Tried on the 12 real answers: particles (한태→에게, missing 를), endings (니→어, 었었→었, 습니다→어요) and misspellings (담강자→담당자, 듣잇어→드디어, 호의의→회의) came out cleanly; full rewrites came out as noisy `content` spans, so `other` is never steered. An LLM tagging call was the alternative: an extra call per answer and output that varies run to run. Prior art for diff-based Korean error typing: KAGAS (Yoon et al., arXiv 2210.14389); no ready Hugging Face classifier found (model check: none fits).
+- **Not used:** Zep Community Edition is deprecated (help.getzep.com/ce-deprecation-notice). Graphiti needs a graph database (Neo4j, FalkorDB or Kuzu) and LLM extraction per episode, too heavy for one learner and a few dozen rows a week. An agent choosing the next drill: revisit once there are a few hundred graded answers; with 12 it would choose on noise.
+- **Grader untouched:** the diff does not depend on `issues`, so the 6b grader and its eval stand.
+
+## 2026-11-24 Unit 8: learner memory
+- **Built as planned** (SPEC §7f), with these changes found while building:
+- **Generated prompts lost their situation line:** in 3 of 6 live samples gemma wrote the grammar point into the situation ("This sentence requires -(으)며…"), which gives the task away. The register stays, as a `Literal` (free text ignored the allowed values). Live generation: ~1.1 s warm, 7 s cold.
+- **Pool sentences check their grammar point too:** the variety test caught a pool sentence reusing a grammar point the session had just served.
+- **Variants count as one grammar point:** NIKL `related` forms are matched too (를 → 을/를, 어요 → -아/어(요)), and weak points group by grammar point when there is one. Before this, a missing 를 and a missing 을 were two unrelated mistakes.
+- **Particles and endings are judged on the fixed side** (wrong side at most 2 or 3 syllables), so a misspelt particle (한태 → 에게) counts as a particle.
+- **Backfill:** the 12 graded answers from before unit 8 were tagged once by hand into `mistake` (28 rows, 7 with a grammar point), using each answer's own time. Weak points from them: 을/를 and -아/어(요). The second partly comes from 습니다 → 어요, a register change the diff reads as an ending slip; watch for it.
+- **Wishes dropped:** both captured through MbxChat (chunks in Anki) on 2026-11-24, then the two rows deleted and the `wish` kind removed from the `item` check. The live constraint was changed once by hand (`ALTER TABLE item DROP/ADD CONSTRAINT item_kind_check`); fresh databases get it from the schema.
+- **Phone check passed 2026-11-24:** 🎯 prompts arrive, `/weak` reads right.
+
+## 2026-11-24 Hardening pass, cycle 2
+- **Logs:** `bot` and `mcp` were recreated by this unit's rebuilds, so their earlier logs are gone; since then, 0 warnings or tracebacks. `db` (6,012 lines): 2,906 "checkpoint starting: immediate force wait" and 11 "terminating autovacuum" come from the test suite's CREATE/DROP DATABASE per test; no errors. `phoenix`: only 200 OK request lines (traces, eval experiments). `backup`: one "backup ok" per day. Rotation (`max-size 10m`) on every service.
+- **Growth:** database 13 MB (`item` 4 MB; checkpoints 0.5 MB; `krdict_cache` 30 rows; `mistake` 35). Phoenix volume 13 MB. Backups 364 KB for 2 dumps. No stray test databases. Retention for checkpoints, traces and `krdict_cache` still not worth it.
+- **Found and removed:** 31 dangling MbxChat images from rebuilds (`docker image prune --filter label=com.docker.compose.project=mbxchat`); they shared layers with the current image, so almost no disk came back.
+- **Found and fixed:** mistake tagging ran inside `record()`'s transaction, so a tagging error would have lost the grade. Now guarded and logged; test added.
+- **State after errors / loops:** a failed prompt generation falls back to a grammar prompt; the ping loop is unchanged (`forever` guard). Nothing else new holds state.
+- **Config drift:** the new `prompt` columns and `mistake` table arrive through `ADD COLUMN IF NOT EXISTS` / `CREATE TABLE IF NOT EXISTS` and are on the live install; the changed `item` check needed the one-off ALTER above.
+- **Pins:** no new images, actions or dependencies this cycle.
+- **Silent overwrite:** none new. First run: an empty `mistake` table gives no weak points (tested); every test runs on a fresh database.
+- **Restore proven:** `mbxchat-2026-11-23.dump` into a scratch database; counts matched the live data at dump time (later captures, prompts and the 2 deleted wishes account for the differences); dropped after. Backups still stay on the same disk; moving them off the machine is the user's call.

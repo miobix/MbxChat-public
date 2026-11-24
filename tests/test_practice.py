@@ -19,7 +19,7 @@ def test_ladder_climbs_holds_and_restarts():
     assert practice.schedule(3, "correct", TODAY) == (4, TODAY + timedelta(days=90))
     assert practice.schedule(9, "correct", TODAY) == (10, TODAY + timedelta(days=90))
     assert practice.schedule(2, "minor", TODAY) == (2, TODAY + timedelta(days=30))
-    assert practice.schedule(3, "wrong", TODAY) == (0, TODAY + timedelta(days=1))
+    assert practice.schedule(3, "wrong", TODAY) == (0, TODAY + timedelta(days=3))
 
 
 def test_a_correct_verdict_with_a_fix_becomes_minor(monkeypatch):
@@ -64,13 +64,37 @@ def pool(db_url, monkeypatch):
     return cid
 
 
-def test_prompts_alternate_grammar_and_translation_captures_first(pool):
+def test_prompts_alternate_and_never_serve_captures(pool):
     s = practice.open_session()
-    first, second, third = (practice.next_prompt(s) for _ in range(3))
-    assert first["kind"] == "grammar" and first["grammar_id"] == first["ref"]
-    assert (second["source"], second["ref"], second["situation"]) == ("capture", pool, "to my boss")
-    assert second["reference"] == "회의가 미뤄졌어요."
-    assert third["kind"] == "grammar" and third["ref"] != first["ref"]
+    prompts = [practice.next_prompt(s) for _ in range(4)]
+    assert all(p["source"] == "item" for p in prompts)
+    assert [p["kind"] for p in prompts] == ["grammar", "translate", "grammar", "translate"]
+    assert prompts[0]["grammar_id"] == prompts[0]["ref"]
+    assert prompts[1]["reference"]  # a pool sentence, used once
+    grammar = [p["grammar_id"] for p in prompts if p["grammar_id"]]
+    assert len(grammar) == len(set(grammar))  # one prompt per grammar point per session
+
+
+def test_pool_sentences_run_out_into_generated_prompts(pool, db_url, monkeypatch):
+    with psycopg.connect(db_url) as conn:
+        conn.execute("DELETE FROM item WHERE kind = 'sentence' AND id <> (SELECT min(id) FROM item WHERE kind = 'sentence')")
+    gen = practice.Generated(en="I only have ten minutes.", formality="friend")
+    monkeypatch.setattr(practice, "ask", lambda schema, *a: gen if schema is practice.Generated else GOOD)
+    s = practice.open_session()
+    kinds = [practice.next_prompt(s) for _ in range(4)]
+    pool_sentence, generated = kinds[1], kinds[3]
+    assert pool_sentence["reference"] and generated["reference"] is None
+    assert (generated["en"], generated["register"]) == ("I only have ten minutes.", "friend")
+    assert generated["source"] == "item" and generated["ref"] == generated["grammar_id"]
+
+
+def test_a_failed_generation_serves_the_grammar_point(pool, db_url, monkeypatch):
+    with psycopg.connect(db_url) as conn:
+        conn.execute("DELETE FROM item WHERE kind = 'sentence'")
+    s = practice.open_session()
+    practice.next_prompt(s)
+    p = practice.next_prompt(s)  # the fixture's ask returns a Grade, not Generated: generation fails
+    assert p["kind"] == "grammar" and p["grammar_id"]
 
 
 def test_grammar_prompts_skip_known_points_and_prefer_levels_up_to_4(pool, db_url):
@@ -84,17 +108,65 @@ def test_grammar_prompts_skip_known_points_and_prefer_levels_up_to_4(pool, db_ur
             assert p["ref"] not in known and levels[p["ref"]] <= practice.GRAMMAR_MAX_LEVEL
 
 
-def test_a_miss_comes_back_when_due(pool, db_url):
+def test_a_miss_comes_back_in_3_days_as_its_grammar_point(pool, db_url):
     s = practice.open_session()
-    practice.next_prompt(s)
-    p = practice.next_prompt(s)  # the capture
+    p = practice.next_prompt(s)
     practice.record(p, "회의가 미뤘어요", BAD)
     with psycopg.connect(db_url) as conn:
-        step, due = conn.execute("SELECT step, due FROM drill WHERE source = 'capture'").fetchone()
-        assert step == 0 and due == practice.now().date() + timedelta(days=1)
+        step, due = conn.execute("SELECT step, due FROM drill WHERE ref = %s", (p["grammar_id"],)).fetchone()
+        assert step == 0 and due == practice.now().date() + timedelta(days=3)
         conn.execute("UPDATE drill SET due = current_date - 1")
-        conn.execute("UPDATE prompt SET sent_at = now() - interval '2 days'")
-    assert practice.next_prompt(s)["source"] == "capture"
+        conn.execute("UPDATE prompt SET sent_at = now() - interval '2 days', session_id = NULL")
+    again = practice.next_prompt(practice.open_session())
+    assert (again["grammar_id"], again["pick"]) == (p["grammar_id"], "due")
+
+
+def test_tag_sorts_differences_into_categories():
+    assert practice.tag("건물 담강자에게 연락이 왔어요!", "건물 담당자에게 연락이 왔어요!") == [
+        ("spelling", "담강자", "담당자", "담당자")]
+    tags = practice.tag("가요 친구한태 소개 받았어요", "가요를 친구에게 소개받았어요.")
+    assert ("particle", "", "를", "를") in tags and ("particle", "한태", "에게", "에게") in tags
+    assert [t[:3] for t in practice.tag("가게 갈 거야, 사 올 거 있니?", "가게 갈 거야, 사 올 거 있어?")] == [("ending", "니", "어")]
+    assert practice.tag("출발하기전에 물 마셔야지", "출발하기 전에 물 마셔야지.") == [
+        ("spacing", "출발하기전에", "출발하기 전에", "")]
+    assert practice.tag("회의를 미뤄요", "회의를 미뤄요.") == []
+
+
+def test_a_repeated_mistake_steers_practice(pool, db_url):
+    """SPEC §8 unit 8 'done when': the same slip twice → a 🎯 prompt that uses the word, once in three."""
+    slip = GOOD.model_copy(update={"verdict": "minor", "corrected": "건물 담당자에게 연락이 왔어요."})
+    s = practice.open_session()
+    for _ in range(2):
+        practice.record(practice.next_prompt(s), "건물 담강자에게 연락이 왔어요", slip)
+    assert [(w["category"], w["fix"], w["n"]) for w in practice.weak()] == [("spelling", "담당자", 2)]
+    steered = practice.next_prompt(s)
+    assert steered["pick"] == "weak" and steered["word"] == "담당자" and steered["focus"] == "🎯 You missed 담당자 2 times"
+    assert "🎯 You missed 담당자 2 times" in bot._prompt_html(steered)
+    following = [practice.next_prompt(s) for _ in range(2)]
+    assert all(p["pick"] != "weak" for p in following)  # at most one in three
+    practice.record(following[-1], "건물 담당자에게 연락이 왔어요.", GOOD)
+    assert practice.weak() == []  # written right since: no longer weak
+
+
+def test_particle_variants_count_as_one_grammar_point_and_steer_to_it(pool, db_url):
+    s = practice.open_session()
+    for answer, fixed in (("책 읽어요", "책을 읽어요."), ("사과 먹어요", "사과를 먹어요.")):
+        p = practice.next_prompt(s)
+        practice.record(p, answer, GOOD.model_copy(update={"verdict": "minor", "corrected": fixed}))
+    with psycopg.connect(db_url) as conn:
+        target = conn.execute("SELECT id FROM item WHERE kind = 'grammar' AND ko = '을/를'").fetchone()[0]
+        conn.execute("UPDATE prompt SET sent_at = now() - interval '4 days', session_id = NULL")
+    [w] = practice.weak()
+    assert (w["category"], w["grammar_id"], w["n"], w["fix"]) == ("particle", target, 2, "를")
+    steered = practice.next_prompt(practice.open_session())
+    assert (steered["kind"], steered["grammar_id"], steered["pick"]) == ("grammar", target, "weak")
+
+
+def test_a_tagging_failure_still_records_the_grade(pool, db_url, monkeypatch):
+    monkeypatch.setattr(practice, "tag", lambda *a: 1 / 0)
+    p = practice.next_prompt(practice.open_session())
+    practice.record(p, "회의가 미뤘어요", BAD)
+    assert practice.get_prompt(p["id"])["grade"]["verdict"] == "wrong"
 
 
 def test_idle_sessions_close_after_30_minutes(pool, db_url):

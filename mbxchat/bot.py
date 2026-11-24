@@ -30,6 +30,7 @@ COMMANDS = [
     ("help", "What I can do"),
     ("grammar", "Explain a grammar point: /grammar 는데"),
     ("queue", "Cards waiting for Anki"),
+    ("weak", "Mistakes you keep making"),
     ("demo", "Preview of the chat UI"),
 ]
 
@@ -158,6 +159,16 @@ async def queue_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_html(head + "\n" + "\n".join(lines))
 
 
+async def weak_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    rows = await asyncio.to_thread(practice.weak)
+    if not rows:
+        await update.message.reply_html("No repeated mistakes in the last 30 days.")
+        return
+    lines = [f"• <b>{esc(r['fix'])}</b> ({r['category']}, {r['n']}×)" + (f": not <s>{esc(r['wrong'])}</s>" if r["wrong"] else "")
+             for r in rows]
+    await update.message.reply_html("Repeated in the last 30 days:\n" + "\n".join(lines))
+
+
 async def forever(name: str, every: float, step) -> None:
     """Run step() every `every` seconds for good; a repeated error is logged once."""
     last = None
@@ -204,10 +215,11 @@ VERDICT = {"correct": "✅ Correct", "minor": "🟡 Nearly", "wrong": "❌ Not q
 
 
 def _prompt_html(p: dict) -> str:
+    focus = f"<i>{esc(p['focus'])}</i>\n" if p.get("focus") else ""
     if p["kind"] == "grammar":
-        text = f"✍️ Write a sentence with <b>{esc(p['en'])}</b>"
+        text = f"{focus}✍️ Write a sentence with <b>{esc(p['en'])}</b>"
         return text + (f" using <b>{esc(p['word'])}</b>" if p["word"] else "")
-    lines = [f"✍️ <b>In Korean:</b> {esc(p['en'])}"]
+    lines = [f"{focus}✍️ <b>In Korean:</b> {esc(p['en'])}"]
     lines += [f"📍 {esc(p['situation'])}"] * bool(p["situation"])
     lines += [f"<i>{esc(p['register'])}</i>"] * bool(p["register"])
     return "\n".join(lines)
@@ -615,6 +627,7 @@ def build_app(token: str, graph=None) -> Application:
     app.add_handler(CommandHandler("demo", demo_cmd, filters=private))
     app.add_handler(CommandHandler("grammar", grammar_cmd, filters=private))
     app.add_handler(CommandHandler("queue", queue_cmd, filters=private))
+    app.add_handler(CommandHandler("weak", weak_cmd, filters=private))
     app.add_handler(CommandHandler("practice", practice_cmd, filters=private))
     app.add_handler(CommandHandler("stop", stop_cmd, filters=private))
     app.add_handler(CommandHandler("pause", pause_cmd, filters=private))

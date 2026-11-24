@@ -56,7 +56,7 @@ Never committed. MbxRead terms reload with `python -m mbxchat.importer` on the h
 
 | Kind | Source | Rows taken |
 |---|---|---|
-| `wish` | MbxWrite `write.db`, table `wish`, non-archived rows, imported once on 2026-11-22. The importer code was then removed: the local database is now the only copy. | - |
+| `wish` (gone) | MbxWrite `write.db`, table `wish`, imported once on 2026-11-22; both rows were captured through MbxChat on 2026-11-24 and the kind removed. | - |
 | `term` | MbxRead `GET /api/terms` (`MBXREAD_URL`) | status `learning` or `known` |
 
 If MbxRead is unreachable the import is skipped and existing terms are kept. Tests use synthetic
