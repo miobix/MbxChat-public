@@ -73,7 +73,7 @@ flowchart LR
 
 ## 3. Fixed constraints
 
-- **No personal data in the repo or the demo.** Captured phrases, imported wishes, saved terms
+- **No personal data in the repo or the demo.** Captured phrases, saved terms
   and learner memory live in the local database only. Seeds and demo data are written for the
   purpose. `.env` holds the bot token, the allowed user ID and keys; `.env.example` lists them.
 - **No paid model APIs.** Open models only. A hosted model is a possible later expansion if CPU
@@ -112,7 +112,7 @@ Import everything that can be sourced; prune later. Each source gets a provenanc
 | MbxWrite `data/grammar.tsv` + refreshers | 336 NIKL grammar points, graded 1-6, with explanations and examples | KOGL Type 1 (attribution); refreshers are original writing |
 | MbxWrite `data/translations/` | graded sentence pairs | original writing |
 | MbxWrite / MbxRead `vocab_levels.tsv` | 5,543 NIKL learner vocabulary lemmas | per MbxRead's provenance entry |
-| MbxWrite wishes | phrases the user wanted to say | **personal: local DB only**; imported once (2026-11-22), no importer code remains |
+| MbxWrite wishes | phrases the user wanted to say | imported once (2026-11-22), captured through MbxChat and dropped (2026-11-24) |
 | MbxRead saved terms | words the user saved while reading | **personal: local DB only**, read through MbxRead's API |
 | krdict | definitions and example sentences | API terms; cached, paced |
 
@@ -120,8 +120,8 @@ Public pools are committed under `data/` and upserted into one `item` table (kin
 ko, en, data) at every bot start. Personal sources are imported by `python -m mbxchat.importer`,
 run on the host, which reads the user's own installs; nothing personal is committed. Each kind is
 replaced as a whole, so re-imports are idempotent and source deletions carry over. **Nothing reads
-MbxWrite at run time** (it will not exist in production): its files were copied once and its
-wishes imported once; MbxChat owns both.
+MbxWrite at run time** (it will not exist in production): its files were copied once (its wishes
+were imported, captured and dropped); MbxChat owns the copies.
 
 ## 6. Models and the cost router
 
@@ -258,13 +258,13 @@ Plain code, no graph (one model call, no pause inside it).
   graded reply is followed by the next prompt. Outside a session, a prompt from the last 12 h
   can still be answered: "Capture this?" then offers `[✍️ It's my answer to the last prompt]`.
 - **Prompts** (`prompt` table, buttons `[📖 Grammar] [⏭ Skip] [⏹ Stop]`, Grammar only when the
-  prompt has a grammar point): **translate** (captures first, then the graded sentences, with
-  the reference answer when there is one) and **grammar** (a NIKL point not marked known,
+  prompt has a grammar point): **translate** (graded sentences with their reference answer, then
+  generated ones, §7f) and **grammar** (a NIKL point not marked known,
   levels 1-4 before 5-6, random among the undrilled, plus a random MbxRead term in `learning`).
   New items alternate between the two kinds. Nothing is prompted twice within a day.
-- **Ladder** (`drill`, one row per item): due items first, oldest due first. correct → next
+- **Ladder** (`drill`, one row per grammar point since unit 8, §7f): oldest due first. correct → next
   step, due in 3/10/30/90 days (90 repeats); minor → same step, same interval; wrong → step 0,
-  due tomorrow. Skip pushes a drilled item to tomorrow at the earliest.
+  due in 3 days. Skip pushes the grammar point to tomorrow at the earliest.
 - **Grader:** one `gemma4:e4b` call, `Grade {issues, corrected, model_answer, note, verdict}`
   (verdict last, so it follows the listed errors). A "correct" whose corrected sentence differs
   (ignoring spaces and punctuation) becomes "minor". Shown as verdict, corrected sentence,
@@ -316,6 +316,39 @@ tool-calling check, 20 of 20 runs valid, right path every time, 0.65 s median; n
   give away the task; the prompt stays waiting. A routing failure falls back to grading. Live
   check: "how do I say I am stuck in traffic" was guessed as a question, which is why all
   options are always shown.
+
+## 7f. Learner memory and prompt variety (unit 8)
+
+Practice (amends §7d):
+
+- **Captures are never prompted back:** they are already in Anki. Old `capture` rows in `drill`
+  are ignored, not deleted. The late-answer path (`[✍️ It's my answer to the last prompt]`) stays.
+- **The ladder tracks grammar points; sentences are new each time.** A grade moves the `drill`
+  row of the prompt's grammar point (a prompt without one moves nothing). Translate prompts come
+  from the graded sentences, each used once, then are generated: one model call
+  (`Generated {en, formality}`) writes an English sentence that needs a new grammar point and a
+  `learning` term. No situation line: the model kept naming the grammar in it. A generated
+  prompt has no reference answer and is never shown again. A failed generation serves that
+  grammar point as a grammar prompt.
+- **Spacing out:** wrong → step 0, due in 3 days. A due drill takes at most every other prompt;
+  new items are random within the level order. A grammar point is prompted at most once per
+  session and once a day (pool sentences included, by their grammar point).
+
+Learner memory (Postgres, no extra model call):
+
+- **Mistakes:** each grade diffs the answer against the corrected sentence (kiwipiepy morphemes,
+  plus a word diff for spacing) into `mistake {prompt_id, category, wrong, fix, grammar_id}`.
+  Categories, judged on the fixed side: `particle`, `ending`, `spelling` (a span a few jamo
+  away), `spacing`, `other` (rewrites). A particle or ending whose form, or a NIKL `related`
+  variant, matches a grammar point gets its `grammar_id` (so 을 and 를 are one point). A tagging
+  failure is logged and never costs the grade.
+- **Weak point:** the same grammar point (or, without one, the same category and fix) at least
+  twice in 30 days, not used cleanly since (a later correct answer on the grammar point, or the
+  word written right). `other` is never a weak point.
+- **Steering:** at most one prompt in three. A weak grammar point not prompted in the last 3 days
+  is served as a grammar prompt; a weak spelling word becomes the word of a grammar prompt. The
+  prompt carries one line, e.g. `🎯 You missed 담당자 2 times`. Spacing slips, and particles or
+  endings with no grammar point, show only in `/weak`.
 
 ## 8. Units
 

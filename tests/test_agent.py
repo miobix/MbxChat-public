@@ -134,7 +134,8 @@ def test_an_approved_word_lands_in_the_outbox_and_stays_out_of_practice(run, db_
     assert _word_cards(db_url) == [("최적화", "optimization", "root 최적: optimum", ["최적의 조건이에요."])]
     with psycopg.connect(db_url) as conn:
         assert conn.execute("SELECT kind FROM capture WHERE id = %s", (state["capture_id"],)).fetchone()[0] == "word"
-        assert practice._new_translation(conn) is None or practice._new_translation(conn)[0] == "item"
+        p = practice._translate_prompt(conn, 0)
+        assert p is None or p["source"] == "item"
 
 
 def test_a_skipped_word_saves_nothing(run, db_url):

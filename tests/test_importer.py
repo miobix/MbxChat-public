@@ -69,10 +69,10 @@ TERMS = [
 
 def test_term_import_skips_ignored_and_leaves_other_kinds_alone(db_url, monkeypatch):
     with psycopg.connect(db_url) as conn:
-        importer.replace(conn, "wish", [("wish", "1", None, None, "Seeded wish", {})])
+        importer.replace(conn, "word", [("word", "1", None, None, "Seeded word", {})])
     monkeypatch.setattr(importer, "fetch_terms", lambda url: TERMS)
     assert importer.import_personal() == ["term: 2 rows, 0 removed"]
-    assert _counts(db_url) == {"wish": 1, "term": 2}
+    assert _counts(db_url) == {"word": 1, "term": 2}
 
 
 def test_mbxread_down_is_skipped_and_existing_terms_kept(db_url, monkeypatch):

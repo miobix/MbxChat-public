@@ -1,6 +1,9 @@
-"""Practice loop (SPEC §7d): prompts from the pool, an LLM grader, a resurfacing ladder, pings."""
+"""Practice loop (SPEC §7d, §7f): prompts, an LLM grader, a resurfacing ladder, learner memory, pings."""
+import logging
 import re
+import unicodedata
 from datetime import date, datetime, time, timedelta
+from difflib import SequenceMatcher
 from typing import Literal
 from zoneinfo import ZoneInfo
 
@@ -9,8 +12,9 @@ from psycopg.rows import dict_row
 from pydantic import BaseModel, Field
 
 from mbxchat import config
-from mbxchat.capture import ask
+from mbxchat.capture import _kiwi, ask
 
+log = logging.getLogger(__name__)
 LADDER = (3, 10, 30, 90)
 SESSION_IDLE = timedelta(minutes=30)
 LATE_ANSWER = timedelta(hours=12)
@@ -68,82 +72,147 @@ def close_session() -> bool:
         return conn.execute("UPDATE session SET closed_at = now() WHERE closed_at IS NULL").rowcount > 0
 
 
-# --- choosing a prompt -----------------------------------------------------------------------
+# --- choosing a prompt (SPEC §7d, §7f) -------------------------------------------------------
+# Captures are never prompted back (they are in Anki). The ladder lives on grammar points, so a
+# drill comes back as a new sentence; pool sentences are used once, generated ones are one-off.
 
-_NOT_RECENT = (
-    "NOT EXISTS (SELECT 1 FROM prompt p WHERE p.source = {src} AND p.ref = {ref} "
-    "AND p.sent_at > now() - interval '1 day')"
+_SEEN_TODAY = "EXISTS (SELECT 1 FROM prompt p WHERE p.grammar_id = {g} AND p.sent_at > now() - interval '1 day')"
+_IN_SESSION = "EXISTS (SELECT 1 FROM prompt p WHERE p.grammar_id = {g} AND p.session_id = %(s)s)"
+_FREE = f"NOT {_SEEN_TODAY} AND NOT {_IN_SESSION}"
+
+
+class Generated(BaseModel):
+    en: str = Field(description="One short everyday English sentence to translate into Korean")
+    formality: Literal["friend", "coworker_chat", "polite"]
+
+
+GENERATE_SYSTEM = (
+    "You write translation drills for a Korean learner. Write one short, everyday English sentence whose "
+    "natural Korean translation needs the given grammar point and the given word. Never write Korean."
 )
-_UNDRILLED = "NOT EXISTS (SELECT 1 FROM drill d WHERE d.source = {src} AND d.ref = {ref})"
-_CAPTURE, _ITEM = "'capture'", "'item'"
 
 
-def _fresh(src: str, ref: str) -> str:
-    return _NOT_RECENT.format(src=src, ref=ref) + " AND " + _UNDRILLED.format(src=src, ref=ref)
-
-
-def _new_translation(conn) -> tuple[str, int] | None:
-    """Captures first, then the graded sentences."""
+def _due_grammar(conn, s: int, today: date) -> int | None:
     row = conn.execute(
-        f"SELECT 'capture' AS source, id FROM capture c WHERE kind = 'sentence' AND {_fresh(_CAPTURE, 'c.id')} "
-        "ORDER BY id LIMIT 1"
+        "SELECT d.ref FROM drill d JOIN item i ON i.id = d.ref AND i.kind = 'grammar' "
+        f"WHERE d.source = 'item' AND d.due <= %(t)s AND {_FREE.format(g='d.ref')} ORDER BY d.due, random() LIMIT 1",
+        {"s": s, "t": today},
     ).fetchone()
-    row = row or conn.execute(
-        f"SELECT 'item' AS source, id FROM item i WHERE kind = 'sentence' AND {_fresh(_ITEM, 'i.id')} "
-        "ORDER BY level, id LIMIT 1"
-    ).fetchone()
-    return (row["source"], row["id"]) if row else None
+    return row["ref"] if row else None
 
 
-def _new_grammar(conn) -> tuple[str, int] | None:
+def _new_grammar(conn, s: int) -> int | None:
     row = conn.execute(
-        f"SELECT id FROM item i WHERE kind = 'grammar' AND {_fresh(_ITEM, 'i.id')} "
-        "AND NOT EXISTS (SELECT 1 FROM known_grammar k WHERE k.item_id = i.id) "
-        "ORDER BY level > %s, random() LIMIT 1", (GRAMMAR_MAX_LEVEL,)
+        "SELECT id FROM item i WHERE kind = 'grammar' "
+        "AND NOT EXISTS (SELECT 1 FROM drill d WHERE d.source = 'item' AND d.ref = i.id) "
+        f"AND NOT EXISTS (SELECT 1 FROM known_grammar k WHERE k.item_id = i.id) AND {_FREE.format(g='i.id')} "
+        "ORDER BY level > %(m)s, random() LIMIT 1", {"s": s, "m": GRAMMAR_MAX_LEVEL},
     ).fetchone()
-    return ("item", row["id"]) if row else None
+    return row["id"] if row else None
 
 
-def _pick(conn, today: date) -> tuple[str, int]:
-    due = conn.execute(
-        "SELECT source, ref FROM drill d WHERE due <= %s AND "
-        + _NOT_RECENT.format(src="d.source", ref="d.ref") + " ORDER BY due, id LIMIT 1", (today,)
-    ).fetchone()
-    if due:
-        return due["source"], due["ref"]
-    last = conn.execute("SELECT kind FROM prompt ORDER BY id DESC LIMIT 1").fetchone()
-    order = (_new_translation, _new_grammar) if last and last["kind"] == "grammar" else (_new_grammar, _new_translation)
-    for find in order:
-        if found := find(conn):
-            return found
-    row = conn.execute("SELECT source, ref FROM drill ORDER BY due, id LIMIT 1").fetchone()
-    return row["source"], row["ref"]
+def _any_grammar(conn, s: int) -> int:
+    return conn.execute(
+        f"SELECT id FROM item i WHERE kind = 'grammar' ORDER BY {_IN_SESSION.format(g='i.id')}, random() LIMIT 1", {"s": s}
+    ).fetchone()["id"]
 
 
-def _build(conn, source: str, ref: int) -> dict:
-    p = {"source": source, "ref": ref, "kind": "translate", "situation": "", "register": "",
-         "reference": None, "grammar_id": None, "word": None}
-    if source == "capture":
-        c = conn.execute("SELECT text, situation, polite FROM capture WHERE id = %s", (ref,)).fetchone()
-        return p | {"en": c["text"], "situation": c["situation"], "reference": c["polite"]}
-    i = conn.execute("SELECT kind, ko, en, data FROM item WHERE id = %s", (ref,)).fetchone()
-    if i["kind"] == "sentence":
-        g = conn.execute("SELECT id FROM item WHERE kind = 'grammar' AND key = %s", (i["data"].get("grammar_id"),)).fetchone()
-        return p | {"en": i["en"], "reference": i["ko"], "register": i["data"].get("register", ""),
-                    "grammar_id": g["id"] if g else None}
-    word = conn.execute(
+def _term(conn) -> str | None:
+    w = conn.execute(
         "SELECT ko, en FROM item WHERE kind = 'term' AND data->>'status' = 'learning' ORDER BY random() LIMIT 1"
     ).fetchone()
-    return p | {"kind": "grammar", "en": i["ko"], "grammar_id": ref,
-                "word": f"{word['ko']} ({word['en']})" if word else None}
+    return f"{w['ko']} ({w['en']})" if w else None
 
 
-_COLUMNS = ("session_id", "source", "ref", "kind", "en", "situation", "register", "reference", "grammar_id", "word")
+def _grammar_prompt(conn, g: int, word: str | None = None) -> dict:
+    ko = conn.execute("SELECT ko FROM item WHERE id = %s", (g,)).fetchone()["ko"]
+    return {"source": "item", "ref": g, "kind": "grammar", "en": ko, "grammar_id": g, "word": word or _term(conn)}
+
+
+def _translate_prompt(conn, s: int) -> dict | None:
+    """A pool sentence never prompted before; when they run out, a generated one around a new grammar point."""
+    row = conn.execute(
+        "SELECT i.id, i.ko, i.en, i.data, g.id AS grammar_id FROM item i "
+        "LEFT JOIN item g ON g.kind = 'grammar' AND g.key = i.data->>'grammar_id' WHERE i.kind = 'sentence' "
+        "AND NOT EXISTS (SELECT 1 FROM prompt p WHERE p.source = 'item' AND p.ref = i.id) "
+        f"AND (g.id IS NULL OR {_FREE.format(g='g.id')}) ORDER BY i.level, random() LIMIT 1", {"s": s}
+    ).fetchone()
+    if row:
+        return {"source": "item", "ref": row["id"], "kind": "translate", "en": row["en"], "reference": row["ko"],
+                "register": row["data"].get("register", ""), "grammar_id": row["grammar_id"]}
+    if (g := _new_grammar(conn, s)) is None:
+        return None
+    p = _grammar_prompt(conn, g)
+    try:
+        gen = ask(Generated, GENERATE_SYSTEM, f"Grammar point: {p['en']}\nWord: {p['word'] or 'any'}")
+        return p | {"kind": "translate", "en": gen.en, "register": gen.formality, "word": None}
+    except Exception:
+        log.warning("generating a translate prompt failed; serving the grammar point instead", exc_info=True)
+        return p
+
+
+def weak_points(conn) -> list[dict]:
+    """Same grammar point (or same fix, without one) at least twice in 30 days, not used cleanly since (SPEC §7f)."""
+    rows = conn.execute(
+        "SELECT category, (array_agg(fix ORDER BY created_at DESC))[1] AS fix, grammar_id, count(*) AS n, "
+        "max(created_at) AS last, (array_agg(wrong ORDER BY created_at DESC))[1] AS wrong FROM mistake "
+        "WHERE category <> 'other' AND created_at > now() - interval '30 days' "
+        "GROUP BY category, grammar_id, CASE WHEN grammar_id IS NULL THEN fix END "
+        "HAVING count(*) >= 2 ORDER BY count(*) DESC, max(created_at) DESC"
+    ).fetchall()
+    # ponytail: "clean since" = a later correct answer on the grammar point, or the word written right.
+    return [r for r in rows if not conn.execute(
+        "SELECT 1 FROM prompt WHERE answered_at > %(last)s AND ("
+        "(%(g)s::bigint IS NOT NULL AND grammar_id = %(g)s AND grade->>'verdict' = 'correct') "
+        "OR (%(cat)s = 'spelling' AND strpos(answer, %(fix)s) > 0))",
+        {"last": r["last"], "g": r["grammar_id"], "cat": r["category"], "fix": r["fix"]},
+    ).fetchone()]
+
+
+def weak() -> list[dict]:
+    with _conn() as conn:
+        return weak_points(conn)
+
+
+def _steered(conn, s: int, today: date) -> dict | None:
+    recent = "p.sent_at > now() - interval '3 days'"
+    for w in weak_points(conn):
+        focus = f"🎯 You missed {w['fix']} {w['n']} times"
+        if w["grammar_id"] and not conn.execute(
+            f"SELECT 1 FROM prompt p WHERE p.grammar_id = %s AND ({recent} OR p.session_id = %s)", (w["grammar_id"], s)
+        ).fetchone():
+            return _grammar_prompt(conn, w["grammar_id"]) | {"focus": focus}
+        if w["category"] == "spelling" and not conn.execute(
+            f"SELECT 1 FROM prompt p WHERE p.word = %s AND {recent}", (w["fix"],)
+        ).fetchone():
+            g = _due_grammar(conn, s, today) or _new_grammar(conn, s) or _any_grammar(conn, s)
+            return _grammar_prompt(conn, g, w["fix"]) | {"focus": focus}
+    return None
+
+
+def _pick(conn, s: int, today: date) -> dict:
+    last = conn.execute("SELECT pick, kind FROM prompt ORDER BY id DESC LIMIT 2").fetchall()
+    if "weak" not in [r["pick"] for r in last] and (p := _steered(conn, s, today)):
+        return p | {"pick": "weak"}
+    if (not last or last[0]["pick"] != "due") and (g := _due_grammar(conn, s, today)):
+        return _grammar_prompt(conn, g) | {"pick": "due"}
+    finders = [lambda: _translate_prompt(conn, s), lambda: (g := _new_grammar(conn, s)) and _grammar_prompt(conn, g)]
+    if not last or last[0]["kind"] != "grammar":
+        finders.reverse()
+    for find in finders:
+        if p := find():
+            return p
+    return _grammar_prompt(conn, _due_grammar(conn, s, today) or _any_grammar(conn, s))
+
+
+_COLUMNS = ("session_id", "source", "ref", "kind", "en", "situation", "register", "reference", "grammar_id", "word",
+            "pick", "focus")
+_DEFAULTS = {"situation": "", "register": "", "reference": None, "grammar_id": None, "word": None, "pick": "new", "focus": None}
 
 
 def next_prompt(session_id: int) -> dict:
     with _conn() as conn:
-        p = _build(conn, *_pick(conn, now().date())) | {"session_id": session_id}
+        p = _DEFAULTS | _pick(conn, session_id, now().date()) | {"session_id": session_id}
         row = conn.execute(
             f"INSERT INTO prompt ({', '.join(_COLUMNS)}) VALUES ({', '.join(['%s'] * len(_COLUMNS))}) RETURNING id",
             [p[k] for k in _COLUMNS],
@@ -196,6 +265,57 @@ def bare(s: str) -> str:
     return re.sub(r"[\s.?!,]", "", s)
 
 
+# --- learner memory (SPEC §7f) ------------------------------------------------------------------
+
+def _surface(text: str, toks) -> str:
+    return text[toks[0].start:toks[-1].end] if toks else ""
+
+
+def tag(answer: str, corrected: str) -> list[tuple[str, str, str, str]]:
+    """(category, wrong, fix, fix morphemes) per difference between the answer and its correction."""
+    out = []
+    aw, cw = re.findall(r"[^\s.?!,]+", answer), re.findall(r"[^\s.?!,]+", corrected)
+    for op, i1, i2, j1, j2 in SequenceMatcher(None, aw, cw, autojunk=False).get_opcodes():
+        if op == "replace" and "".join(aw[i1:i2]) == "".join(cw[j1:j2]):
+            out.append(("spacing", " ".join(aw[i1:i2]), " ".join(cw[j1:j2]), ""))
+    ta = [t for t in _kiwi().tokenize(answer) if not t.tag.startswith("S")]
+    tc = [t for t in _kiwi().tokenize(corrected) if not t.tag.startswith("S")]
+    sm = SequenceMatcher(None, [t.form for t in ta], [t.form for t in tc], autojunk=False)
+    for op, i1, i2, j1, j2 in sm.get_opcodes():
+        a, c = ta[i1:i2], tc[j1:j2]
+        wrong, fix = _surface(answer, a), _surface(corrected, c)
+        if op == "equal" or bare(wrong) == bare(fix):
+            continue
+        tags = {t.tag[0] for t in c or a}  # judged on the fix, so a misspelt particle (한태 → 에게) still counts
+        if tags <= {"J"} and len(bare(wrong)) <= 2:
+            category = "particle"
+        elif tags <= {"E"} and len(bare(wrong)) <= 3:
+            category = "ending"
+        elif wrong and fix and abs(len(wrong) - len(fix)) <= 1 and SequenceMatcher(
+            None, unicodedata.normalize("NFD", wrong), unicodedata.normalize("NFD", fix)
+        ).ratio() >= 0.6:
+            category = "spelling"
+        else:
+            category = "other"
+        out.append((category, wrong, fix, "".join(t.form for t in c)))
+    return out
+
+
+def _grammar_forms(conn) -> dict[str, int]:
+    """NIKL form and its related variants, without hyphens and sense digits ('-던데2' → '던데') → grammar item
+    id. A main form beats a variant, a lower level beats a higher one."""
+    rows = conn.execute(
+        "SELECT id, data->>'form' AS form, data->>'related' AS related FROM item WHERE kind = 'grammar' ORDER BY level, id"
+    ).fetchall()
+    forms: dict[str, int] = {}
+    for key in ("form", "related"):
+        for r in rows:
+            for f in (r[key] or "").split(","):
+                forms.setdefault(re.sub(r"[-\d\s]", "", f), r["id"])
+    forms.pop("", None)
+    return forms
+
+
 # --- routing free text in a session (SPEC §7e) --------------------------------------------------
 
 class Route(BaseModel):
@@ -230,9 +350,9 @@ def explain(p: dict, question: str) -> str:
 
 
 def schedule(step: int, verdict: str, today: date) -> tuple[int, date]:
-    """(new step, due date): correct climbs the ladder, minor holds, wrong restarts tomorrow."""
+    """(new step, due date): correct climbs the ladder, minor holds, wrong restarts at the first rung."""
     if verdict == "wrong":
-        return 0, today + timedelta(days=1)
+        return 0, today + timedelta(days=LADDER[0])
     days = LADDER[min(step, len(LADDER) - 1)]
     return (step + 1 if verdict == "correct" else step), today + timedelta(days=days)
 
@@ -245,14 +365,25 @@ def record(p: dict, answer: str, g: Grade) -> None:
         ).rowcount
         if not claimed:
             return
-        row = conn.execute("SELECT step FROM drill WHERE source = %s AND ref = %s", (p["source"], p["ref"])).fetchone()
-        step, due = schedule(row["step"] if row else 0, g.verdict, now().date())
-        conn.execute(
-            "INSERT INTO drill (source, ref, step, due, last_verdict, times) VALUES (%s, %s, %s, %s, %s, 1) "
-            "ON CONFLICT (source, ref) DO UPDATE SET step = EXCLUDED.step, due = EXCLUDED.due, "
-            "last_verdict = EXCLUDED.last_verdict, times = drill.times + 1",
-            (p["source"], p["ref"], step, due, g.verdict),
-        )
+        if p["grammar_id"]:
+            row = conn.execute("SELECT step FROM drill WHERE source = 'item' AND ref = %s", (p["grammar_id"],)).fetchone()
+            step, due = schedule(row["step"] if row else 0, g.verdict, now().date())
+            conn.execute(
+                "INSERT INTO drill (source, ref, step, due, last_verdict, times) VALUES ('item', %s, %s, %s, %s, 1) "
+                "ON CONFLICT (source, ref) DO UPDATE SET step = EXCLUDED.step, due = EXCLUDED.due, "
+                "last_verdict = EXCLUDED.last_verdict, times = drill.times + 1",
+                (p["grammar_id"], step, due, g.verdict),
+            )
+        try:
+            forms, tags = _grammar_forms(conn), tag(answer, g.corrected)
+        except Exception:  # memory is a bonus; it must never cost the grade
+            log.warning("tagging mistakes for prompt %s failed", p["id"], exc_info=True)
+            forms, tags = {}, []
+        for category, wrong, fix, form in tags:
+            conn.execute(
+                "INSERT INTO mistake (prompt_id, category, wrong, fix, grammar_id) VALUES (%s, %s, %s, %s, %s)",
+                (p["id"], category, wrong, fix, forms.get(form) if category in ("particle", "ending") else None),
+            )
         if p["session_id"]:
             conn.execute("UPDATE session SET last_at = now() WHERE id = %s", (p["session_id"],))
 
@@ -260,12 +391,12 @@ def record(p: dict, answer: str, g: Grade) -> None:
 def skip(prompt_id: int) -> None:
     with _conn() as conn:
         p = conn.execute(
-            "UPDATE prompt SET skipped = true WHERE id = %s AND answered_at IS NULL RETURNING source, ref", (prompt_id,)
+            "UPDATE prompt SET skipped = true WHERE id = %s AND answered_at IS NULL RETURNING grammar_id", (prompt_id,)
         ).fetchone()
-        if p:
+        if p and p["grammar_id"]:
             conn.execute(
-                "UPDATE drill SET due = GREATEST(due, %s) WHERE source = %s AND ref = %s",
-                (now().date() + timedelta(days=1), p["source"], p["ref"]),
+                "UPDATE drill SET due = GREATEST(due, %s) WHERE source = 'item' AND ref = %s",
+                (now().date() + timedelta(days=1), p["grammar_id"]),
             )
 
 
