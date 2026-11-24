@@ -10,6 +10,11 @@ Unit 10: recorded demo").
 Source to "GitHub Actions" and check the first deploy, link the demo; then the hardening pass and
 doc roll-up.
 
+**On hold until there is more real-use data (user):** grader and model work. Going public goes on.
+
+**History sweep in progress:** plan in DECISIONS "Unit 11: public repo plan"; the clean copy is
+verified locally before anything is pushed, and the push waits for the user's OK.
+
 **Grader attempt done and stopped (2026-11-24):** a required-grammar check failed its bar and was
 reverted; it's a known limitation now (DECISIONS "Unit 11: the one grader attempt"). **For the
 user:** proofread g67-g84 at the end of `evals/grader_set.md` (`check: ok / fix / drop`); until
