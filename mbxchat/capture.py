@@ -14,7 +14,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 from pydantic import BaseModel, Field, ValidationError
 
-from mbxchat import config, krdict
+from mbxchat import config, krdict, metrics
 
 log = logging.getLogger(__name__)
 
@@ -74,7 +74,8 @@ class State(TypedDict, total=False):
 
 def ask(schema: type[BaseModel], system: str, user: str, model: str | None = None) -> BaseModel:
     llm = ChatOllama(
-        model=model or config.CAPTURE_MODEL, base_url=config.OLLAMA_URL, temperature=0.2, reasoning=False
+        model=model or config.CAPTURE_MODEL, base_url=config.OLLAMA_URL, temperature=0.2, reasoning=False,
+        callbacks=[metrics.MODEL],
     ).with_structured_output(schema, method="json_schema")
     try:
         return llm.invoke([("system", system), ("human", user)])

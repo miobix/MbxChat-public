@@ -11,7 +11,7 @@ import psycopg
 from psycopg.rows import dict_row
 from pydantic import BaseModel, Field
 
-from mbxchat import config
+from mbxchat import config, metrics
 from mbxchat.capture import _kiwi, ask
 
 log = logging.getLogger(__name__)
@@ -246,6 +246,7 @@ def task(p: dict) -> str:
 
 def grade(p: dict, answer: str, model: str | None = None) -> Grade:
     if p["reference"] and bare(answer) == bare(p["reference"]):
+        metrics.GRADES.labels("reference").inc()
         return Grade(issues=[], corrected=answer, model_answer=p["reference"], note="", verdict="correct")
     lines = [f"Task: {task(p)}"]
     lines += [f"Situation: {p['situation']}"] * bool(p["situation"])
@@ -254,6 +255,7 @@ def grade(p: dict, answer: str, model: str | None = None) -> Grade:
     lines.append(f"Learner's answer: {answer}")
     if p.get("hint"):
         lines.append(f"A spelling checker suggests: {p['hint']} (it can be wrong, and misses many errors)")
+    metrics.GRADES.labels("llm").inc()
     g = ask(Grade, GRADER_SYSTEM, "\n".join(lines), model or config.GRADER_MODEL)
     g.issues = [i for i in g.issues if "→" in i]
     if g.verdict == "correct" and (g.issues or bare(g.corrected) != bare(answer)):

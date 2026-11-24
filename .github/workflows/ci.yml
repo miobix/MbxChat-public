@@ -35,6 +35,11 @@ jobs:
           cache-dependency-path: requirements*.txt
       - run: pip install --require-hashes -r requirements-dev.txt
       - run: python -m pytest tests -q
+      - name: Alert rule tests
+        run: >-
+          docker run --rm -v "$PWD/monitoring:/m" -w /m --entrypoint promtool
+          prom/prometheus:v3.15.1@sha256:fa3302279710be2f21a8301ec17a8b4f2301fd829bd113839b3b6b02b6f191a2
+          test rules alerts_test.yml
 
   image:
     needs: [test]

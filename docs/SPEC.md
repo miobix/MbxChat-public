@@ -35,6 +35,7 @@ flowchart LR
     db[(Postgres: items, memory, checkpoints)]
     phoenix[Phoenix: traces + evals]
     prom[Prometheus] --> grafana[Grafana]
+    prom --> am[Alertmanager]
   end
   subgraph mbxread [compose project: mbxread, separate repo]
     reader[MbxRead API :8002]
@@ -45,6 +46,7 @@ flowchart LR
   bot -->|host.docker.internal:11434| llm
   bot -.OTel.-> phoenix
   prom -.scrape /metrics.-> bot
+  am -->|Bot API sendMessage| phone
   mcp -->|host.docker.internal:8002| reader
   reader -->|krdict API, cached, breaker| krdict[(krdict)]
   mcp -->|host.docker.internal:8765| anki[Anki desktop + AnkiConnect]
@@ -349,6 +351,21 @@ Learner memory (Postgres, no extra model call):
   is served as a grammar prompt; a weak spelling word becomes the word of a grammar prompt. The
   prompt carries one line, e.g. `🎯 You missed 담당자 2 times`. Spacing slips, and particles or
   endings with no grammar point, show only in `/weak`.
+
+## 7g. Monitoring (unit 9)
+
+- **`/metrics`** on the health server (`:8005`, `prometheus_client`):
+  `mbxchat_grades_total{tier=reference|llm}` (the §6 ladder), `mbxchat_model_call_seconds{model}`
+  and `mbxchat_model_errors_total{model}` (one LangChain callback on every `ChatOllama`: grader,
+  capture, router, agent), `mbxchat_errors_total` (errors reported in the chat) and
+  `mbxchat_last_poll_timestamp_seconds` (stamped by the `getUpdates` request after every
+  completed long poll, empty or not).
+- **Compose:** `prometheus` (scrape 15 s, 30-day retention, `127.0.0.1:9090`), `grafana`
+  (`127.0.0.1:3005`, no login, provisioned datasource and the `MbxChat` dashboard from
+  `monitoring/grafana/`), `alertmanager` (compose network only).
+- **Alert `BotDown`:** `up == 0` or the last poll older than 90 s, for 1 minute. Alertmanager
+  sends it, and its resolution, to the allowed chat through the Bot API with the bot's token
+  (works while the bot is down). Rule tests: `monitoring/alerts_test.yml` (`promtool`, in CI).
 
 ## 8. Units
 

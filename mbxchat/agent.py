@@ -17,7 +17,7 @@ from langchain_ollama import ChatOllama
 from langgraph.config import get_config
 from langgraph.types import interrupt
 
-from mbxchat import capture, config, krdict
+from mbxchat import capture, config, krdict, metrics
 
 log = logging.getLogger(__name__)
 MAX_STEPS = 6
@@ -50,7 +50,10 @@ def submit_sentence(casual: str, polite: str, note: str) -> str:
 
 
 def _llm():
-    return ChatOllama(model=config.CAPTURE_MODEL, base_url=config.OLLAMA_URL, temperature=0.2, reasoning=False)
+    return ChatOllama(
+        model=config.CAPTURE_MODEL, base_url=config.OLLAMA_URL, temperature=0.2, reasoning=False,
+        callbacks=[metrics.MODEL],
+    )
 
 
 async def _mcp_tools() -> list:

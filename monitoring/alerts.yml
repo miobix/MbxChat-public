@@ -1,0 +1,9 @@
+groups:
+  - name: mbxchat
+    rules:
+      # Long polls return at least every ~10 s, so 90 s without one means polling is stuck.
+      - alert: BotDown
+        expr: up{job="mbxchat"} == 0 or time() - mbxchat_last_poll_timestamp_seconds > 90
+        for: 1m
+        annotations:
+          summary: MbxChat is down or its Telegram polling has stalled
