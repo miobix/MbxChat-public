@@ -293,3 +293,8 @@ Checked with the `hardening-pass` skill, every area listed, including the ones w
 - **Config drift / first run:** schema changes are all `ADD COLUMN IF NOT EXISTS` in `db.init()`, run at every start; CI runs the empty-database path on every PR. The Anki note types are still created once and never updated (known since unit 4, in Facts).
 - **Silent overwrite:** the MbxRead import still refuses a source under half the stored count; nothing new writes by computed name.
 - **Branch protection:** the public repository has no ruleset yet; proposed to the user (STATUS), not set.
+
+## 2026-11-24 Cycle 3 skill pass
+- **`record-demo` written** (`.claude/skills/`): the record, automatic check, human read, drop, preview loop ran four times in unit 10, and the read step (dumping kept runs as text) was re-derived each time. Indexed in `CLAUDE.md` and the demo line in STATUS.
+- **Not written:** a check that the `BotDown` alert fires (done once in unit 9; the rule is covered by `promtool` tests in CI), and the public-copy rebuild (development is public now, so it will not run again).
+- **Ruleset on `main`** created by the user on GitHub: pull request required, `test`, `demo` and `image` must pass, force pushes and deletion blocked. "Never merge red" is now enforced, not a working rule.

@@ -6,8 +6,7 @@ branch and PR on this repository.
 
 **For the user, later:** retake `docs/img/grafana.png` after a few days of real use (the
 current one is from a fresh restart: model panels empty). Proofread g67-g84 in
-`evals/grader_set.md`. Consider a ruleset on `main` requiring CI (free now that the repo is
-public; none exists yet).
+`evals/grader_set.md`.
 
 **On hold until there is more real-use data (user):** grader and model work.
 
@@ -39,7 +38,9 @@ this public repository (unit 11) are the public face. Each step's reasons are in
 
 ## Facts
 - Remote: `miobix/MbxChat-public`, public. The private `miobix/MbxChat` is a read-only archive
-  (PRs #1-#19, commit map in `docs/PUBLIC_COPY.md`). The user merges every PR on GitHub.
+  (archived on GitHub; PRs #1-#19, commit map in `docs/PUBLIC_COPY.md`). Ruleset `main`: PR
+  required, checks `test`, `demo`, `image` must pass, no force push or deletion. The user merges
+  every PR on GitHub.
 - Compose (`name: mbxchat`, `restart: unless-stopped`): `bot` (health `127.0.0.1:8005`), `mcp`
   (tool server on the bot's image, compose network only, `mcp:8006/mcp`), `db`
   (`127.0.0.1:5434`, user and database `mbxchat`), `phoenix` (`127.0.0.1:6006`, auth off),
@@ -51,8 +52,8 @@ this public repository (unit 11) are the public face. Each step's reasons are in
   no login, dashboard provisioned from `monitoring/grafana/`), `alertmanager` (network only;
   `BotDown` to the allowed chat). Rule tests: `monitoring/alerts_test.yml` via `promtool` in CI.
 - Demo (SPEC §7h): `demo/index.html` + `demo/conversations.json`, live at
-  https://miobix.github.io/MbxChat-public/; rerecord with `demo/record.py` (command in §7h)
-  after any change to what the bot sends. Preview: `python -m http.server` in `demo/`, then
+  https://miobix.github.io/MbxChat-public/; rerecord with the `record-demo` skill after any
+  change to what the bot sends. Preview: `python -m http.server` in `demo/`, then
   `http://127.0.0.1:8000/#0`…`#3`.
 - Config in `.env`: `KRDICT_API_KEY` (set), `MBXREAD_URL=http://host.docker.internal:8002`
   (set), `CAPTURE_MODE` (unset = agent), `ANKI_WORD_DECK` (unset = `MbxChat::Words`).
