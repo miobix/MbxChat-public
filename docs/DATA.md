@@ -50,6 +50,20 @@ NIKL 한국어 학습용 어휘 목록: 5,543 lemmas with grade A/B/C and freque
 ("목록을 원하는 사람은 누구나 이용할 수 있도록 … 공개"); the download method and the
 homograph merge are recorded in MbxRead `docs/DECISIONS.md` (2026-07-22, Epic 13).
 
+## Recorded demo: `demo/conversations.json`
+
+Bot replies recorded by `demo/record.py` on a scratch database holding only the public pools
+above, with MbxRead off. Learner messages and the two seeded 을/를 slips were written for the
+demo; the learner's practice answers were written by the model. Model replies are `gemma4:e4b`
+output.
+
+It also holds text from **한국어기초사전 (krdict.korean.go.kr, 국립국어원)**: word meanings and
+example sentences returned by its Open API. The site's copyright policy
+(https://krdict.korean.go.kr/kor/kboardPolicy/copyRightTermsInfo, read 2026-11-24): material not
+marked otherwise is distributed under **CC BY-SA 2.0 KR**
+(https://creativecommons.org/licenses/by-sa/2.0/kr/). This section is the attribution;
+`conversations.json` is shared under the same licence.
+
 ## Personal pools (local database only, never committed)
 
 Never committed. MbxRead terms reload with `python -m mbxchat.importer` on the host:

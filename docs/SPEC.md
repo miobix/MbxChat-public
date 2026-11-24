@@ -19,7 +19,7 @@ A Telegram bot for practising **written** Korean output. Two loops share one cha
   answers in Korean, a grader corrects and explains, and the next prompt follows. Mistakes steer
   what comes back.
 
-Not in scope: voice (a later unit), a web UI for daily use, multi-user support, paid model APIs.
+Not in scope: voice messages (Telegram allows them, but audio ingestion is not part of this project), a web UI for daily use, multi-user support, paid model APIs.
 
 ## 2. Environment
 
@@ -98,7 +98,7 @@ flowchart LR
 | Storage | Postgres | items, learner memory, Anki outbox, LangGraph checkpoints |
 | Tracing + evals | **Arize Phoenix**, via OpenTelemetry | one container; swapping to Langfuse is an exporter change |
 | Monitoring | **Prometheus + Grafana** | `/metrics` on the bot, one provisioned dashboard, one alert |
-| Demo | static page on GitHub Pages | replays seeded conversations; no live model calls |
+| Demo | static page on GitHub Pages (§7h) | replays recorded conversations; no model calls |
 
 LangGraph caveat to respect everywhere: a node **re-runs from its start** when resumed after an
 interrupt. Side effects before an interrupt (writing a card, sending a message) must be
@@ -367,6 +367,33 @@ Learner memory (Postgres, no extra model call):
   sends it, and its resolution, to the allowed chat through the Bot API with the bot's token
   (works while the bot is down). Rule tests: `monitoring/alerts_test.yml` (`promtool`, in CI).
 
+## 7h. Recorded demo (unit 10)
+
+- **What it is:** `demo/index.html`, one static page with no build step, that replays
+  `demo/conversations.json` as a Telegram-style chat. Four groups (grammar lookup, sentence
+  capture, word capture, practice with a steered weak point), each a pool of input chips: picking
+  one plays its recording and greys the chip out; Reset brings them back. It calls no model and
+  takes no free input; it says so, names what a replay leaves out (MbxRead examples, Anki) and
+  shows how many recorded runs were kept.
+- **Recording:** `demo/record.py` drives the real handlers (`build_app`) with a fake Bot API
+  request that answers locally and logs every send, edit, tap, reaction and toast, with times.
+  Scratch database `mbxchat_demo` (public pools only, plus two seeded 을/를 slips), its own MCP
+  server without MbxRead, Anki unreachable, the real model and krdict. Practice answers are written
+  by the model; for half of them the recorder drops the first 을/를 (else 이/가) with kiwipiepy to
+  plant a slip. Rerun after any change to what the bot sends:
+  `docker compose up -d --build`, then
+  `docker compose run --rm --no-deps -v "$(pwd -W)/demo:/app/demo" bot python -m demo.record [group prefix ...]`
+  (a prefix such as `Practice` re-records only that group).
+- **Quality gate:** a run is kept only if it passes automatic checks (no ⚠️ or failure, the word
+  found in krdict, at least one chunk, a planted slip not graded correct, a clean answer graded
+  correct, no note praising an answer it marked down, a learner answer that is one clean Korean
+  sentence) and then a human read for wrong Korean or contradictions. A rejected run is moved with
+  its reason: `DATABASE_URL=postgresql://unused@127.0.0.1:1/x python -m demo.record drop "<label>" "<reason>"`.
+  Dropped runs and reasons stay in the JSON (`dropped`).
+- **CI:** the `demo` job builds the site on every run; `pages` deploys it from `main` only when
+  the repo is public. `tests/test_demo.py` replays the events against what was on screen (every
+  tap hits a button that existed).
+
 ## 8. Units
 
 Each unit is a branch and a PR, ends green in CI, and updates the docs.
@@ -384,9 +411,8 @@ Each unit is a branch and a PR, ends green in CI, and updates the docs.
 | 7 | **The agent** (§7e): capture as a tool-calling agent (word and sentence captures, enforced grounding), word cards to `ANKI_WORD_DECK`, read-only tools on the MCP server with MbxChat's own krdict client, MbxRead off unless `MBXREAD_URL` is set, free-text routing in a session; eval agent vs unit 3 workflow | agent matches or beats the workflow on the capture eval, with numbers on latency and calls; a word capture lands a card in Anki |
 | 8 | **Learner memory:** weak points across sessions steer drills (Postgres first; Graphiti/Zep evaluated); the agent choosing the next drill is considered here, once practice data exists (moved from unit 7) | a repeated mistake visibly changes what practice serves |
 | 9 | **Monitoring:** `/metrics`, Prometheus + Grafana, dashboard (calls per tier, latency, errors), alert on stalled polling | stop the bot, the alert fires |
-| 10 | **Public demo:** Pages replay of seeded conversations; notes which features are not live (MbxRead examples, Anki) | demo deployed from CI |
+| 10 | **Public demo:** Pages replay of seeded conversations; notes which features are not live (MbxRead examples, Anki) | demo built in CI; the deploy job runs once the repo is public (unit 11), since GitHub Free serves Pages from public repos only |
 | 11 | **Go public:** history and content sweep, README + FEATURES, flip the repo public | sweep finds nothing personal; repo public; demo linked |
-| later | Voice answers: Telegram voice note → STT → grade | |
 
 At the end of each cycle (after units 4, 8 and 11): hardening pass and doc roll-up.
 

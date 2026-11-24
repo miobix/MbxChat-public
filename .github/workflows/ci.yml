@@ -65,3 +65,28 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/mbxchat:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # Recorded demo (SPEC §7h): built on every run; deployed only from main once the repo is public
+  # (GitHub Free serves Pages from public repos only).
+  demo:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: mkdir _site && cp demo/index.html demo/conversations.json _site/
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  pages:
+    needs: [test, demo]
+    if: github.event_name == 'push' && !github.event.repository.private
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

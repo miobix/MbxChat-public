@@ -1,0 +1,1744 @@
+{
+ "recorded": "2026-11-24",
+ "model": "gemma4:e4b",
+ "kept": 20,
+ "dropped": [
+  {
+   "group": "Capture a sentence",
+   "label": "could you send me that file again? // to a coworker",
+   "flags": [
+    "failure: ⚠️ Capture failed: <code>CaptureError: the agent did not fin",
+    "no chunk to review"
+   ]
+  },
+  {
+   "group": "Capture a sentence",
+   "label": "let's grab lunch tomorrow // to a friend",
+   "flags": [
+    "failure: ⚠️ Capture failed: <code>CaptureError: the agent did not fin",
+    "no chunk to review"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: -는 바람에",
+   "flags": [
+    "learner answer is not one clean Korean sentence"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: -는 (present modifier)",
+   "flags": [
+    "learner answer is not one clean Korean sentence",
+    "clean answer graded minor"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: -(으)니까",
+   "flags": [
+    "learner answer is not one clean Korean sentence"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: (이)나",
+   "flags": [
+    "learner answer is not one clean Korean sentence",
+    "clean answer graded minor"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: -는다면서(요)",
+   "flags": [
+    "learner answer is not one clean Korean sentence",
+    "clean answer graded minor"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: -아/어 놓다",
+   "flags": [
+    "learner answer is not one clean Korean sentence"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: -(으)ㄹ게(요)",
+   "flags": [
+    "planted slip graded correct"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: -던데 (connective)",
+   "flags": [
+    "learner answer is not one clean Korean sentence"
+   ]
+  },
+  {
+   "group": "Capture a sentence",
+   "label": "can we push the meeting to next week? // to my team lead",
+   "flags": [
+    "review: casual line keeps 요 and 팀장님; the note contradicts the labels"
+   ]
+  },
+  {
+   "group": "Capture a sentence",
+   "label": "thank you for waiting // to a customer",
+   "flags": [
+    "review: casual line 감사해요 is not 반말"
+   ]
+  },
+  {
+   "group": "Capture a sentence",
+   "label": "is this seat taken?",
+   "flags": [
+    "review: casual line 있어요 is not 반말"
+   ]
+  },
+  {
+   "group": "Capture a sentence",
+   "label": "I'll think about it and get back to you // to a client",
+   "flags": [
+    "review: casual line 드릴게요 is not 반말"
+   ]
+  },
+  {
+   "group": "Capture a sentence",
+   "label": "the printer isn't working again // to a coworker",
+   "flags": [
+    "review: note calls -네요 a formal ending"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: -듯(이)",
+   "flags": [
+    "review: the answer uses 처럼, not -듯이, and was graded correct"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: -는 동안(에)",
+   "flags": [
+    "review: awkward sentence (들으면서 and 공부하는 동안 overlap), not flagged"
+   ]
+  },
+  {
+   "group": "Practice and memory",
+   "label": "Grammar: -기에",
+   "flags": [
+    "review: -기에 reason followed by advice reads off"
+   ]
+  }
+ ],
+ "groups": [
+  {
+   "title": "Grammar lookup",
+   "note": "Explanations come from the NIKL basic grammar list (KOGL type 1).",
+   "items": [
+    {
+     "label": "/grammar 는데",
+     "events": [
+      {
+       "t": 0.0,
+       "op": "user",
+       "id": 1,
+       "text": "/grammar 는데"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "<b>는데</b> matches several points. Which one?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "-는데 (background, contrast) · L2"
+        ],
+        [
+         "-는데(요) (ending) · L2"
+        ]
+       ]
+      },
+      {
+       "t": 0.02,
+       "op": "tap",
+       "id": 2,
+       "label": "-는데 (background, contrast) · L2"
+      },
+      {
+       "t": 0.03,
+       "op": "edit",
+       "id": 2,
+       "html": "📖 <b>-는데 (background, contrast)</b>  ·  level 2  ·  both\nSets up background or a contrast for what comes next. Very common joint in speech; if it's your default, try -지만, -(으)니까 or -아/어서 where they fit.\n• 비가 오는데 우산이 없어.\n• 맛은 있는데 좀 비싸.\n• 내일 회의가 있는데 같이 갈래?",
+       "buttons": [
+        [
+         "✓ I know this"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "label": "/grammar 아서",
+     "events": [
+      {
+       "t": 0.0,
+       "op": "user",
+       "id": 1,
+       "text": "/grammar 아서"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "📖 <b>-아/어서</b>  ·  level 1  ·  both\nCause (\"because\") or a connected sequence (\"did A, and then B with it\"). No past tense before it.\n• 늦어서 죄송합니다.\n• 친구를 만나서 같이 밥을 먹었다.",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✓ I know this"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "label": "/grammar 거든요",
+     "events": [
+      {
+       "t": 0.0,
+       "op": "user",
+       "id": 1,
+       "text": "/grammar 거든요"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "📖 <b>-거든(요) (ending)</b>  ·  level 3  ·  spoken\nGives a reason or background the listener didn't know.\n• 오늘 못 가. 일이 있거든.\n• 제가 요즘 좀 바쁘거든요.",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✓ I know this"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "label": "/grammar (으)니까",
+     "events": [
+      {
+       "t": 0.0,
+       "op": "user",
+       "id": 1,
+       "text": "/grammar (으)니까"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "📖 <b>-(으)니까</b>  ·  level 1  ·  both\nReason the speaker puts forward, typically to justify a suggestion or command. Also \"when I did A, I found B\".\n• 비가 오니까 우산 가져가.\n• 가 보니까 문이 닫혀 있었어.\n<i>vs -아/어서: -아서 can't be followed by a command or \"let's\"; -니까 can.</i>",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✓ I know this"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "label": "/grammar (으)면서",
+     "events": [
+      {
+       "t": 0.0,
+       "op": "user",
+       "id": 1,
+       "text": "/grammar (으)면서"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "📖 <b>-(으)면서</b>  ·  level 2  ·  both\n\"While\", same subject doing two things at once; also \"even though\" (contradiction).\n• 음악 들으면서 공부해요.\n• 알면서 왜 물어봐?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✓ I know this"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "label": "/grammar 기로 하다",
+     "events": [
+      {
+       "t": 0.0,
+       "op": "user",
+       "id": 1,
+       "text": "/grammar 기로 하다"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "📖 <b>-기로 하다</b>  ·  level 2  ·  both\n\"Decide / agree to\".\n• 다음 달에 여행 가기로 했어.\n• 담배 끊기로 했어요.",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✓ I know this"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Capture a sentence",
+   "note": "Live, chunks also get example sentences from the user's MbxRead library, and approved cards go straight into Anki. Here Anki is closed, so the cards queue.",
+   "items": [
+    {
+     "label": "I'm running ten minutes late // texting a friend",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "I'm running ten minutes late // texting a friend"
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.03,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.03,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>I'm running ten minutes late</i>\n📍 texting a friend",
+       "buttons": []
+      },
+      {
+       "t": 0.04,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 0.98,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 1.72,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 1.73,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Critic reviewing…",
+       "buttons": []
+      },
+      {
+       "t": 2.47,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Picking chunks…",
+       "buttons": []
+      },
+      {
+       "t": 3.99,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>Polite:</b> 저 10분 정도 늦을 것 같아요.\n<b>Casual:</b> 나 10분 정도 늦을 것 같아.\n<i>In casual speech, '같아' (gata) is very common for expressing likelihood. In polite speech, '같아요' (gatayo) is the standard polite ending.</i>\n2 chunks to review below.",
+       "buttons": []
+      },
+      {
+       "t": 3.99,
+       "op": "send",
+       "id": 4,
+       "html": "<b>Chunk 1/2</b> · expression\n<b>늦을 것 같아</b>  I think I will be late\n<i>Casual</i>\n나 10분 정도 늦을 것 같아.",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "✏️ Edit",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 3.99,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 3.99,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 3.99,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>늦을 것 같아</b>  I think I will be late",
+       "buttons": []
+      },
+      {
+       "t": 4.0,
+       "op": "send",
+       "id": 5,
+       "html": "<b>Chunk 2/2</b> · expression\n<b>늦을 것 같아요</b>  I think I will be late\n<i>Polite</i>\n저 10분 정도 늦을 것 같아요.",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "✏️ Edit",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 4.0,
+       "op": "tap",
+       "id": 5,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 4.0,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 4.0,
+       "op": "edit",
+       "id": 5,
+       "html": "✅ <b>늦을 것 같아요</b>  I think I will be late",
+       "buttons": []
+      },
+      {
+       "t": 4.04,
+       "op": "send",
+       "id": 6,
+       "html": "Done: 2 chunks saved. Anki is closed: 2 cards queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "I haven't decided yet",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "I haven't decided yet"
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.03,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.03,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>I haven't decided yet</i>",
+       "buttons": []
+      },
+      {
+       "t": 0.04,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 1.34,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 2.1,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 2.11,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Critic reviewing…",
+       "buttons": []
+      },
+      {
+       "t": 2.78,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Picking chunks…",
+       "buttons": []
+      },
+      {
+       "t": 4.0,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>Polite:</b> 아직 못 정했어요.\n<b>Casual:</b> 아직 못 정했어.\n<i>This is a very direct translation. Depending on the context, you might also say '생각 중이에요' (I'm thinking about it) if you want to sound a little softer.</i>\n1 chunk to review below.",
+       "buttons": []
+      },
+      {
+       "t": 4.0,
+       "op": "send",
+       "id": 4,
+       "html": "<b>Chunk 1/1</b> · collocation\n<b>아직 못 정하다</b>  not have decided yet\n<i>Casual/Polite</i>\n아직 못 정했어요.",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "✏️ Edit",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 4.0,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 4.0,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 4.0,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>아직 못 정하다</b>  not have decided yet",
+       "buttons": []
+      },
+      {
+       "t": 4.04,
+       "op": "send",
+       "id": 5,
+       "html": "Done: 1 chunk saved. Anki is closed: 1 card queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "it was nice meeting you // after a first meeting",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "it was nice meeting you // after a first meeting"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.02,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.02,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>it was nice meeting you</i>\n📍 after a first meeting",
+       "buttons": []
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 0.43,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 1.06,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 1.07,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Critic reviewing…",
+       "buttons": []
+      },
+      {
+       "t": 1.84,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Picking chunks…",
+       "buttons": []
+      },
+      {
+       "t": 3.01,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>Polite:</b> 만나서 반가웠습니다.\n<b>Casual:</b> 만나서 반가웠어.\n<i>The casual version is very common among friends or peers. The polite version is standard for most professional or new acquaintance settings.</i>\n1 chunk to review below.",
+       "buttons": []
+      },
+      {
+       "t": 3.01,
+       "op": "send",
+       "id": 4,
+       "html": "<b>Chunk 1/1</b> · expression\n<b>만나서 반가웠다</b>  to be glad to meet (someone)\n<i>Casual/Polite</i>\n만나서 반가웠어.",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "✏️ Edit",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 3.01,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 3.01,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 3.01,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>만나서 반가웠다</b>  to be glad to meet (someone)",
+       "buttons": []
+      },
+      {
+       "t": 3.05,
+       "op": "send",
+       "id": 5,
+       "html": "Done: 1 chunk saved. Anki is closed: 1 card queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "do you want to get coffee? // to a friend",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "do you want to get coffee? // to a friend"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.03,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.03,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>do you want to get coffee?</i>\n📍 to a friend",
+       "buttons": []
+      },
+      {
+       "t": 0.04,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 0.7,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 1.53,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 1.54,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Critic reviewing…",
+       "buttons": []
+      },
+      {
+       "t": 2.2,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Picking chunks…",
+       "buttons": []
+      },
+      {
+       "t": 3.67,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>Polite:</b> 커피 한잔 하실래요?\n<b>Casual:</b> 커피 마시러 갈래?\n<i>The casual version uses '갈래?' (Shall we go?), which is very common among close friends. The polite version uses '-실래요?' (Would you like to?), which is a standard, friendly way to invite someone.</i>\n2 chunks to review below.",
+       "buttons": []
+      },
+      {
+       "t": 3.67,
+       "op": "send",
+       "id": 4,
+       "html": "<b>Chunk 1/2</b> · collocation\n<b>커피 마시러 갈래?</b>  Want to go for coffee?\n<i>Casual</i>\n커피 마시러 갈래?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "✏️ Edit",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 3.67,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 3.67,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 3.67,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>커피 마시러 갈래?</b>  Want to go for coffee?",
+       "buttons": []
+      },
+      {
+       "t": 3.68,
+       "op": "send",
+       "id": 5,
+       "html": "<b>Chunk 2/2</b> · collocation\n<b>커피 한잔 하실래요?</b>  Would you like to have a cup of coffee?\n<i>Polite</i>\n커피 한잔 하실래요?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "✏️ Edit",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 3.68,
+       "op": "tap",
+       "id": 5,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 3.68,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 3.68,
+       "op": "edit",
+       "id": 5,
+       "html": "✅ <b>커피 한잔 하실래요?</b>  Would you like to have a cup of coffee?",
+       "buttons": []
+      },
+      {
+       "t": 3.73,
+       "op": "send",
+       "id": 6,
+       "html": "Done: 2 chunks saved. Anki is closed: 2 cards queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "sorry, I didn't catch that // on the phone",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "sorry, I didn't catch that // on the phone"
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.03,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.03,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>sorry, I didn't catch that</i>\n📍 on the phone",
+       "buttons": []
+      },
+      {
+       "t": 0.04,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 0.78,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 1.58,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 1.73,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Critic reviewing…",
+       "buttons": []
+      },
+      {
+       "t": 2.47,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Picking chunks…",
+       "buttons": []
+      },
+      {
+       "t": 4.09,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>Polite:</b> 죄송해요, 뭐라고 하셨는지 잘 못 들었어요. 다시 말씀해 주시겠어요?\n<b>Casual:</b> 뭐라고? 다시 말해줄래?\n<i>The casual version is very common among friends. The polite version is standard for most professional or unfamiliar calls.</i>\n2 chunks to review below.",
+       "buttons": []
+      },
+      {
+       "t": 4.09,
+       "op": "send",
+       "id": 4,
+       "html": "<b>Chunk 1/2</b> · collocation\n<b>잘 못 들었어요</b>  I couldn't hear well\n<i>Polite</i>\n죄송해요, 뭐라고 하셨는지 잘 못 들었어요. 다시 말씀해 주시겠어요?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "✏️ Edit",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 4.09,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 4.09,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 4.09,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>잘 못 들었어요</b>  I couldn't hear well",
+       "buttons": []
+      },
+      {
+       "t": 4.1,
+       "op": "send",
+       "id": 5,
+       "html": "<b>Chunk 2/2</b> · grammar\n<b>다시 말씀해 주시겠어요?</b>  Could you say that again?\n<i>Polite</i>\n죄송해요, 뭐라고 하셨는지 잘 못 들었어요. 다시 말씀해 주시겠어요?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "✏️ Edit",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 4.11,
+       "op": "tap",
+       "id": 5,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 4.11,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 4.11,
+       "op": "edit",
+       "id": 5,
+       "html": "✅ <b>다시 말씀해 주시겠어요?</b>  Could you say that again?",
+       "buttons": []
+      },
+      {
+       "t": 4.14,
+       "op": "send",
+       "id": 6,
+       "html": "Done: 2 chunks saved. Anki is closed: 2 cards queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Capture a word",
+   "note": "Meanings and examples are checked against krdict. Anki is closed here, so cards queue.",
+   "items": [
+    {
+     "label": "postpone",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "postpone"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.02,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.02,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>postpone</i>",
+       "buttons": []
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 1.04,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 3.66,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>미루다</b> · delay; put off; postpone\n📖 krdict: delay; put off; postpone\n<i>Examples, from krdict:</i>\n• 유민이는 방학 숙제를 끝까지 미루다가 결국 개학 전날 밤을 새웠다.\n• 일 때문에 결혼을 미루어 온 언니가 드디어 다음 달에 결혼식을 한다.\n• 숙제를 미루다.",
+       "buttons": []
+      },
+      {
+       "t": 3.66,
+       "op": "send",
+       "id": 4,
+       "html": "Save <b>미루다</b> · delay; put off; postpone as a card?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 3.66,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 3.66,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 3.66,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>미루다</b>  delay; put off; postpone",
+       "buttons": []
+      },
+      {
+       "t": 3.7,
+       "op": "send",
+       "id": 5,
+       "html": "Anki is closed: the card is queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "umbrella",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "umbrella"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.02,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.02,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>umbrella</i>",
+       "buttons": []
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 0.7,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 6.3,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>우산</b> · umbrella\n📖 krdict: umbrella; parasol | umbrella stem | umbrella ribs\n<i>Examples, from krdict:</i>\n• 갑자기 소나기를 만난 지수는 우산을 사러 가게로 뛰어갔다.\n• 장마철이 되면 언니는 작게 접히는 오단 우산을 항상 가방에 넣어 가지고 다닌다.\n• 바람이 하도 불어서 우산을 써도 소용이 없었어요.",
+       "buttons": []
+      },
+      {
+       "t": 6.3,
+       "op": "send",
+       "id": 4,
+       "html": "Save <b>우산</b> · umbrella as a card?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 6.3,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 6.3,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 6.3,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>우산</b>  umbrella",
+       "buttons": []
+      },
+      {
+       "t": 6.34,
+       "op": "send",
+       "id": 5,
+       "html": "Anki is closed: the card is queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "receipt",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "receipt"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.02,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.02,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>receipt</i>",
+       "buttons": []
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 3.78,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 6.29,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>영수증</b> · receipt\n📖 krdict: receipt | cash receipt\n<i>Examples, from krdict:</i>\n• 아내는 장을 볼 때 영수증을 꼼꼼히 챙기곤 한다.\n• 나는 영수증을 정리하면서 내가 쓸데없는 소비를 많이 했음을 깨달았다.\n• 영수증을 잃어버리는 바람에 내가 돈을 지불했다는 것을 증명할 방법이 없어졌다.",
+       "buttons": []
+      },
+      {
+       "t": 6.29,
+       "op": "send",
+       "id": 4,
+       "html": "Save <b>영수증</b> · receipt as a card?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 6.29,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 6.29,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 6.29,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>영수증</b>  receipt",
+       "buttons": []
+      },
+      {
+       "t": 6.32,
+       "op": "send",
+       "id": 5,
+       "html": "Anki is closed: the card is queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "colleague",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "colleague"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.02,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.02,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>colleague</i>",
+       "buttons": []
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 3.81,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 6.27,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>동료</b> · colleague; coworker\n📖 krdict: coworker; colleague | comradeship\n<i>Examples, from krdict:</i>\n• 지난 토요일에 일을 마치고 직장 동료 모두와 회식을 했다.\n• 나는 어제 퇴근 후 동료들과 함께 연극 관람을 하고 집으로 돌아갔다.\n• 직장 동료.",
+       "buttons": []
+      },
+      {
+       "t": 6.27,
+       "op": "send",
+       "id": 4,
+       "html": "Save <b>동료</b> · colleague; coworker as a card?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 6.27,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 6.27,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 6.27,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>동료</b>  colleague; coworker",
+       "buttons": []
+      },
+      {
+       "t": 6.32,
+       "op": "send",
+       "id": 5,
+       "html": "Anki is closed: the card is queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "to be tired",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "to be tired"
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.03,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.03,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>to be tired</i>",
+       "buttons": []
+      },
+      {
+       "t": 0.04,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 3.93,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 6.31,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>피곤하다</b> · tired; exhausted; fatigued\n📖 krdict: tired; exhausted; fatigued\n<i>Examples, from krdict:</i>\n• 피곤하신가 봐요. 그럼 좀 주무세요.",
+       "buttons": []
+      },
+      {
+       "t": 6.31,
+       "op": "send",
+       "id": 4,
+       "html": "Save <b>피곤하다</b> · tired; exhausted; fatigued as a card?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 6.31,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 6.31,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 6.31,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>피곤하다</b>  tired; exhausted; fatigued",
+       "buttons": []
+      },
+      {
+       "t": 6.35,
+       "op": "send",
+       "id": 5,
+       "html": "Anki is closed: the card is queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "schedule",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "schedule"
+      },
+      {
+       "t": 0.02,
+       "op": "send",
+       "id": 2,
+       "html": "Capture this?",
+       "reply_to": 1,
+       "buttons": [
+        [
+         "➕ Capture",
+         "✖ No"
+        ]
+       ]
+      },
+      {
+       "t": 0.02,
+       "op": "tap",
+       "id": 2,
+       "label": "➕ Capture"
+      },
+      {
+       "t": 0.02,
+       "op": "edit",
+       "id": 2,
+       "html": "➕ <i>schedule</i>",
+       "buttons": []
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 3,
+       "html": "⏳ Drafting…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 3.74,
+       "op": "edit",
+       "id": 3,
+       "html": "⏳ Checking words in krdict and your library…",
+       "buttons": []
+      },
+      {
+       "t": 6.21,
+       "op": "edit",
+       "id": 3,
+       "html": "<b>스케줄</b> · schedule\n📖 krdict: schedule\n<i>Examples, from krdict:</i>\n• 스케줄을 지나치게 빡빡하게 짜는 것보다는 중간에 여유 시간을 두는 것이 효율적이다.\n• 방학을 헛되이 보내지 않으려면 방학 때 할 일들을 미리 정해서 스케줄을 짜 놓는 것이 좋다.\n• 스케줄을 좀 맞춰 보자. 너는 언제 시간이 돼?",
+       "buttons": []
+      },
+      {
+       "t": 6.21,
+       "op": "send",
+       "id": 4,
+       "html": "Save <b>스케줄</b> · schedule as a card?",
+       "reply_to": null,
+       "buttons": [
+        [
+         "✅ Approve",
+         "⏭ Skip"
+        ]
+       ]
+      },
+      {
+       "t": 6.21,
+       "op": "tap",
+       "id": 4,
+       "label": "✅ Approve"
+      },
+      {
+       "t": 6.21,
+       "op": "toast",
+       "text": "Saved"
+      },
+      {
+       "t": 6.21,
+       "op": "edit",
+       "id": 4,
+       "html": "✅ <b>스케줄</b>  schedule",
+       "buttons": []
+      },
+      {
+       "t": 6.25,
+       "op": "send",
+       "id": 5,
+       "html": "Anki is closed: the card is queued, sent once it opens.",
+       "reply_to": null,
+       "buttons": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Practice and memory",
+   "note": "Learner answers here were written by the model; in half of them the recorder then dropped a particle (을/를 or 이/가) to plant a beginner slip. Two earlier 을/를 slips were seeded, so practice has a weak point to steer at (🎯).",
+   "items": [
+    {
+     "label": "Grammar: 을/를",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "/practice"
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 2,
+       "html": "<i>🎯 You missed 책을 2 times</i>\n✍️ Write a sentence with <b>을/를</b>",
+       "reply_to": null,
+       "buttons": [
+        [
+         "📖 Grammar",
+         "⏭ Skip",
+         "⏹ Stop"
+        ]
+       ]
+      },
+      {
+       "t": 3.02,
+       "op": "user",
+       "id": 3,
+       "text": "저는 한국 음식 좋아해요."
+      },
+      {
+       "t": 3.04,
+       "op": "send",
+       "id": 4,
+       "html": "⏳ Grading…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 4.79,
+       "op": "edit",
+       "id": 4,
+       "html": "<b>🟡 Nearly</b>\n<b>Corrected:</b> 저는 한국 <s>음식</s> <b>음식을</b> 좋아해요.",
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "Grammar: -기 전에",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "/practice"
+      },
+      {
+       "t": 0.03,
+       "op": "send",
+       "id": 2,
+       "html": "✍️ Write a sentence with <b>-기 전에</b>",
+       "reply_to": null,
+       "buttons": [
+        [
+         "📖 Grammar",
+         "⏭ Skip",
+         "⏹ Stop"
+        ]
+       ]
+      },
+      {
+       "t": 0.48,
+       "op": "user",
+       "id": 3,
+       "text": "외출하기 전에 꼭 엄마께 전화드려야 해요."
+      },
+      {
+       "t": 0.5,
+       "op": "send",
+       "id": 4,
+       "html": "⏳ Grading…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 1.73,
+       "op": "edit",
+       "id": 4,
+       "html": "<b>✅ Correct</b>\n<b>Model answer:</b> <tg-spoiler>외출하기 전에 꼭 엄마께 전화드려야 해요.</tg-spoiler>\n<blockquote expandable>The learner's sentence is perfect! It uses '-기 전에' correctly and the vocabulary and politeness level are very natural for the situation. Well done!</blockquote>",
+       "buttons": []
+      }
+     ]
+    },
+    {
+     "label": "Grammar: -(으)려면",
+     "events": [
+      {
+       "t": 0.01,
+       "op": "user",
+       "id": 1,
+       "text": "/practice"
+      },
+      {
+       "t": 0.04,
+       "op": "send",
+       "id": 2,
+       "html": "✍️ Write a sentence with <b>-(으)려면</b>",
+       "reply_to": null,
+       "buttons": [
+        [
+         "📖 Grammar",
+         "⏭ Skip",
+         "⏹ Stop"
+        ]
+       ]
+      },
+      {
+       "t": 0.44,
+       "op": "user",
+       "id": 3,
+       "text": "한국어를 잘 하려면 매일 연습해야 해요."
+      },
+      {
+       "t": 0.45,
+       "op": "send",
+       "id": 4,
+       "html": "⏳ Grading…",
+       "reply_to": null,
+       "buttons": []
+      },
+      {
+       "t": 1.58,
+       "op": "edit",
+       "id": 4,
+       "html": "<b>✅ Correct</b>\n<b>Model answer:</b> <tg-spoiler>한국어를 잘 하려면 매일 연습해야 해요.</tg-spoiler>\n<i>The learner's sentence is perfect! It uses -(으)려면 correctly and sounds very natural. Well done!</i>",
+       "buttons": []
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,11 +1,19 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** cycle 3 (units 9-11, SPEC §8). **Unit 9 (monitoring, SPEC §7g) is done on branch
-`unit-9-monitoring`, PR open, waiting for the user's merge.** Done-when met: stopping the bot sends
-a `BotDown` Telegram message (DECISIONS "2026-11-24 Unit 9: monitoring").
+**Phase:** cycle 3 (units 9-11, SPEC §8). Unit 9 (monitoring) merged (PR #17). **Unit 10 (recorded
+demo, SPEC §7h) is done on branch `unit-10-demo`, PR open, waiting for the user's merge.** The
+demo is built in CI; it deploys to Pages only once the repo is public (DECISIONS "2026-11-24
+Unit 10: recorded demo").
 
-**Next: unit 10 (public demo):** Pages replay of seeded conversations, deployed from CI. Unit 11
-ends cycle 3 (hardening pass, doc roll-up, go public).
+**Next: unit 11 (go public), the last unit; it closes cycle 3:** history and content sweep
+(`publish-sanitized-repo`), README + FEATURES, flip the repo public, set Settings → Pages →
+Source to "GitHub Actions" and check the first deploy, link the demo; then the hardening pass and
+doc roll-up.
+
+**Open, the user's call:** the grader misses answers that skip the required grammar (seen twice
+in the demo read-through). At most one attempt: labeled items for it and an eval run; if the eval
+shows no gain, stop and list it under known limitations (DECISIONS "Unit 10: demo pool, grader
+note, generated prompts").
 
 ## Cycle 2 in one paragraph
 Practice (unit 5) serves grammar and translate prompts, grades them with `gemma4:e4b` (chosen in
@@ -24,6 +32,15 @@ correction, and a mistake repeated twice steers at most one prompt in three (�
 - **README note for unit 11:** MbxRead material is used when `MBXREAD_URL` is set and ignored
   when not; the author shares MbxRead's Ollama. CPU vs GPU numbers: DECISIONS 2026-11-24
   "Unit 7 wrap-up".
+- **README for unit 11 must have a "Known problems" section** (user): each known weakness of the
+  pipelines, and why it cannot or did not change now. From unit 10 so far: the capture agent
+  sometimes runs out of steps (2 of 6 sentence captures in one recording run, 0 of 12 in the
+  next); the grader misses some errors (graded a sentence that never used the required -기 as
+  correct, and a broken -(으)ㄹ 것 sentence too) and flags some correct answers (false alarms 2 of
+  18 on the eval set); the grader's corrections can rewrite toward the reference (the override now
+  drops the stale note, but the "Nearly" stays); capture's casual line is not always 반말 (4 of 12 in the pool recording kept 요, mostly where the situation is a client, customer or lead). Why not
+  fixed: the grader prompt was retried twice and the eval said no (DECISIONS "Unit 10"); bigger
+  models need hardware this host doesn't have (SPEC §6). Also a scope line: Telegram allows voice messages, but audio ingestion is not part of the project (SPEC §1). Each reason must be technical: what was tried, what the evidence showed, or which constraint blocks it. Add anything the unit 11 pass finds.
 - **Open question (user): spacing slips.** `grade()` compares with spaces stripped, so a
   spacing-only fix keeps the verdict `correct`. Spacing slips are now recorded in `mistake`.
 - **Later, not now (user):** move the benchmark core (grader set + harness + results log) into
@@ -51,6 +68,9 @@ correction, and a mistake repeated twice steers at most one prompt in three (�
 - Monitoring (SPEC §7g): `prometheus` (`127.0.0.1:9090`, 30 days), `grafana` (`127.0.0.1:3005`,
   no login, dashboard provisioned from `monitoring/grafana/`), `alertmanager` (network only;
   `BotDown` to the allowed chat). Rule tests: `monitoring/alerts_test.yml` via `promtool` in CI.
+- Demo (SPEC §7h): `demo/index.html` + `demo/conversations.json`; rerecord with `demo/record.py`
+  (command in §7h) after any change to what the bot sends. Preview: `python -m http.server` in
+  `demo/`, then `http://127.0.0.1:8000/#0`…`#3`.
 - Config in `.env`: `KRDICT_API_KEY` (set), `MBXREAD_URL=http://host.docker.internal:8002`
   (set), `CAPTURE_MODE` (unset = agent), `ANKI_WORD_DECK` (unset = `MbxChat::Words`).
 - Practice (SPEC §7d, §7f): `/practice`, `/stop`, `/pause`, `/weak`; pings in `PRACTICE_TZ`.
@@ -71,7 +91,7 @@ correction, and a mistake repeated twice steers at most one prompt in three (�
 - Evals: on the host (`requirements-eval.txt`, `PYTHONUTF8=1` when output goes to a file):
   `evals.grader_eval`, `evals.capture_side_by_side`, `evals.tool_calling`; needing `mcp`: the
   `eval-in-container` skill (`evals.capture_ab`). Results in `evals/results/`.
-- Tests: 147 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 151 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model, krdict HTTP and MbxRead faked.
 - Content: one `item` table (kinds grammar, sentence, word, term). Public pools (`data/`) are
   upserted at every bot start; MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002
