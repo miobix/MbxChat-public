@@ -246,20 +246,19 @@ NODES = {"draft": draft, "lookup": lookup, "critic": critic, "chunks": chunks, "
 
 
 def build(checkpointer, mode: str | None = None):
-    """`workflow`: the fixed unit 3 chain. `agent` (SPEC §7e): the agent drafts a sentence (then the
-    same chain from lookup) or finds a word (then word_lookup)."""
+    """`workflow`: the fixed unit 3 chain. `agent` (SPEC §7e): the agent decides; a sentence runs the
+    whole chain (the agent's own draft is dropped), a word goes to word_lookup."""
     g = StateGraph(State)
     names = list(NODES)
     if (mode or config.CAPTURE_MODE) == "agent":
         from mbxchat import agent
 
-        names = names[1:]
         g.add_node("agent", agent.agent)
         for name, node in (("word_lookup", agent.word_lookup), ("word_review", agent.word_review),
                            ("word_save", agent.word_save)):
             g.add_node(name, node)
         g.add_edge(START, "agent")
-        g.add_conditional_edges("agent", lambda s: "word_lookup" if s["kind"] == "word" else "lookup")
+        g.add_conditional_edges("agent", lambda s: "word_lookup" if s["kind"] == "word" else "draft")
         g.add_edge("word_lookup", "word_review")
         g.add_edge("word_review", "word_save")
         g.add_edge("word_save", END)

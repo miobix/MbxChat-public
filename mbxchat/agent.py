@@ -1,6 +1,6 @@
 """Capture agent (SPEC §7e): decides word vs sentence and writes the Korean, with the MCP tools.
 
-Grounding is not the agent's choice: after it submits, capture's `lookup` (sentence) or
+Grounding is not the agent's choice: after it submits, capture's `draft` (sentence) or
 `word_lookup` (word) always runs. Here the model may use the tools to choose its Korean.
 """
 import ast
@@ -109,9 +109,8 @@ async def _run(meaning: str) -> dict:
 def agent(state: capture.State) -> capture.State:
     out = asyncio.run(_run(capture._meaning(state)))
     a = out["args"]
-    if out["kind"] == "sentence":
-        return {"kind": "sentence", "agent_calls": out["calls"], "agent_notes": out["notes"],
-                "draft": {"casual": a["casual"], "polite": a["polite"], "note": a.get("note", "")}}
+    if out["kind"] == "sentence":  # the workflow's draft node writes it (SPEC §7e)
+        return {"kind": "sentence", "agent_calls": out["calls"], "agent_notes": out["notes"]}
     return {"kind": "word", "agent_calls": out["calls"], "agent_notes": out["notes"],
             "word": {"korean": a["korean"].strip(), "english": a["english"].strip(),
                      "model_examples": [e.strip() for e in a.get("examples", []) if e.strip()][:3]}}

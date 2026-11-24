@@ -57,8 +57,7 @@ def run(mode: str, text: str, situation: str) -> dict:
     try:
         if mode == "agent":
             s |= agent.agent(s)
-            if s["kind"] == "word":
-                s |= agent.word_lookup(s)
+            s |= agent.word_lookup(s) if s["kind"] == "word" else capture.draft(s)
         else:
             s |= capture.draft(s)
         if s.get("kind") != "word":

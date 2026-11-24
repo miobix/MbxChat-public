@@ -1,30 +1,30 @@
-{"mode": "workflow", "seconds": 5.4, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "I'm running late, start without me"}
-{"mode": "agent", "seconds": 3.7, "model_calls": 3, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "I'm running late, start without me"}
-{"mode": "workflow", "seconds": 4.2, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "Could you check the report before the meeting tomorrow?"}
-{"mode": "agent", "seconds": 3.4, "model_calls": 3, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "Could you check the report before the meeting tomorrow?"}
-{"mode": "workflow", "seconds": 4.6, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "I've been meaning to call you, sorry it took so long"}
-{"mode": "agent", "seconds": 3.6, "model_calls": 3, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "I've been meaning to call you, sorry it took so long"}
-{"mode": "workflow", "seconds": 3.1, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "This is way too spicy for me"}
-{"mode": "agent", "seconds": 2.2, "model_calls": 3, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "This is way too spicy for me"}
-{"mode": "workflow", "seconds": 3.0, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "Is it okay if I pay by card?"}
-{"mode": "agent", "seconds": 2.6, "model_calls": 3, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "Is it okay if I pay by card?"}
-{"mode": "workflow", "seconds": 4.1, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "I couldn't sleep at all because of the noise upstairs"}
-{"mode": "agent", "seconds": 3.0, "model_calls": 3, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "I couldn't sleep at all because of the noise upstairs"}
-{"mode": "workflow", "seconds": 2.9, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "Let's grab a coffee sometime next week"}
-{"mode": "agent", "seconds": 2.6, "model_calls": 3, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "Let's grab a coffee sometime next week"}
-{"mode": "workflow", "seconds": 3.3, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "The package was supposed to arrive yesterday"}
-{"mode": "agent", "seconds": 2.5, "model_calls": 3, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "The package was supposed to arrive yesterday"}
-{"mode": "workflow", "seconds": 4.7, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "I'm not sure I can make it, I'll let you know by tonight"}
-{"mode": "agent", "seconds": 3.1, "model_calls": 3, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "I'm not sure I can make it, I'll let you know by tonight"}
-{"mode": "workflow", "seconds": 3.4, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "Thank you for taking care of me while I was sick"}
-{"mode": "agent", "seconds": 3.2, "model_calls": 3, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "Thank you for taking care of me while I was sick"}
-{"mode": "workflow", "seconds": 3.3, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "the word for optimization, a coworker said it"}
+{"mode": "workflow", "seconds": 13.5, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "I'm running late, start without me"}
+{"mode": "agent", "seconds": 4.8, "model_calls": 4, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "I'm running late, start without me"}
+{"mode": "workflow", "seconds": 4.6, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "Could you check the report before the meeting tomorrow?"}
+{"mode": "agent", "seconds": 4.6, "model_calls": 4, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "Could you check the report before the meeting tomorrow?"}
+{"mode": "workflow", "seconds": 5.5, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "I've been meaning to call you, sorry it took so long"}
+{"mode": "agent", "seconds": 5.1, "model_calls": 4, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "I've been meaning to call you, sorry it took so long"}
+{"mode": "workflow", "seconds": 2.6, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "This is way too spicy for me"}
+{"mode": "agent", "seconds": 3.6, "model_calls": 4, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "This is way too spicy for me"}
+{"mode": "workflow", "seconds": 3.3, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "Is it okay if I pay by card?"}
+{"mode": "agent", "seconds": 3.6, "model_calls": 4, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "Is it okay if I pay by card?"}
+{"mode": "workflow", "seconds": 4.0, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "I couldn't sleep at all because of the noise upstairs"}
+{"mode": "agent", "seconds": 4.1, "model_calls": 4, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "I couldn't sleep at all because of the noise upstairs"}
+{"mode": "workflow", "seconds": 3.0, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "Let's grab a coffee sometime next week"}
+{"mode": "agent", "seconds": 3.2, "model_calls": 4, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "Let's grab a coffee sometime next week"}
+{"mode": "workflow", "seconds": 3.6, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "The package was supposed to arrive yesterday"}
+{"mode": "agent", "seconds": 3.5, "model_calls": 4, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "The package was supposed to arrive yesterday"}
+{"mode": "workflow", "seconds": 4.3, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "I'm not sure I can make it, I'll let you know by tonight"}
+{"mode": "agent", "seconds": 5.5, "model_calls": 4, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "I'm not sure I can make it, I'll let you know by tonight"}
+{"mode": "workflow", "seconds": 4.0, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "Thank you for taking care of me while I was sick"}
+{"mode": "agent", "seconds": 4.2, "model_calls": 4, "agent_calls": 0, "krdict_requests": 0, "kind": "sentence", "error": null, "text": "Thank you for taking care of me while I was sick"}
+{"mode": "workflow", "seconds": 3.5, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "the word for optimization, a coworker said it"}
 {"mode": "agent", "seconds": 0.8, "model_calls": 2, "agent_calls": 1, "krdict_requests": 0, "kind": "word", "error": null, "text": "the word for optimization, a coworker said it"}
-{"mode": "workflow", "seconds": 3.0, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "word: deadline"}
-{"mode": "agent", "seconds": 0.9, "model_calls": 2, "agent_calls": 1, "krdict_requests": 1, "kind": "word", "error": null, "text": "word: deadline"}
-{"mode": "workflow", "seconds": 4.2, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "how do you say 'commute' as a noun"}
-{"mode": "agent", "seconds": 0.7, "model_calls": 2, "agent_calls": 1, "krdict_requests": 0, "kind": "word", "error": null, "text": "how do you say 'commute' as a noun"}
-{"mode": "workflow", "seconds": 3.4, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "Korean for receipt?"}
+{"mode": "workflow", "seconds": 2.8, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "word: deadline"}
+{"mode": "agent", "seconds": 1.0, "model_calls": 2, "agent_calls": 1, "krdict_requests": 0, "kind": "word", "error": null, "text": "word: deadline"}
+{"mode": "workflow", "seconds": 4.0, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "how do you say 'commute' as a noun"}
+{"mode": "agent", "seconds": 0.8, "model_calls": 2, "agent_calls": 1, "krdict_requests": 0, "kind": "word", "error": null, "text": "how do you say 'commute' as a noun"}
+{"mode": "workflow", "seconds": 2.7, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "Korean for receipt?"}
 {"mode": "agent", "seconds": 0.8, "model_calls": 2, "agent_calls": 1, "krdict_requests": 0, "kind": "word", "error": null, "text": "Korean for receipt?"}
-{"mode": "workflow", "seconds": 3.7, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "procrastinate"}
-{"mode": "agent", "seconds": 0.9, "model_calls": 2, "agent_calls": 1, "krdict_requests": 0, "kind": "word", "error": null, "text": "procrastinate"}
+{"mode": "workflow", "seconds": 3.4, "model_calls": 3, "agent_calls": null, "krdict_requests": 0, "kind": null, "error": null, "text": "procrastinate"}
+{"mode": "agent", "seconds": 1.0, "model_calls": 2, "agent_calls": 1, "krdict_requests": 0, "kind": "word", "error": null, "text": "procrastinate"}

@@ -1,11 +1,8 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 7 (the agent) on `unit-7-agent`, 10 commits, not pushed. Steps 1-7 done; the
-hybrid capture mode (7b) and the phone check (8) remain before the PR. Plan: SPEC §7e;
+**Phase:** unit 7 (the agent) on `unit-7-agent`, not pushed. Steps 1-7b done; the phone check (8)
+remains before the PR. The live bot runs agent mode (the new default). Plan: SPEC §7e;
 decisions: DECISIONS "2026-11-23 Unit 7 plan" and "2026-11-23 Unit 7 build".
-
-**Next session starts with a plain recap of unit 7 for the user** (the summary below, a diagram of
-bot / mcp / db / Ollama / krdict, and what each piece is for), before any new work.
 
 ## Unit 7 so far (2026-11-23)
 1. **MbxRead is opt-in.** `MBXREAD_URL` empty by default: no MbxRead calls, no notes. The repo
@@ -15,8 +12,9 @@ bot / mcp / db / Ollama / krdict, and what each piece is for), before any new wo
    they hold across restarts and across the two processes that call krdict (bot, mcp).
 3. **MCP tool server** (`mcp` compose service, the bot's image, `mbxchat/mcp_server.py`):
    read-only `krdict_lookup`, `library_examples` (only with `MBXREAD_URL`), `known_items`.
-4. **Capture agent** (`mbxchat/agent.py`, behind `CAPTURE_MODE`, default `workflow`): decides
-   word vs sentence; grounding stays fixed code (dictionary check, examples).
+4. **Capture agent** (`mbxchat/agent.py`, `CAPTURE_MODE`, default `agent`): decides word vs
+   sentence; grounding stays fixed code. **Hybrid (7b):** a sentence drops the agent's draft and
+   runs the whole workflow chain; eval rerun shows the same drafts, +1 model call.
 5. **Word capture → word cards:** "the word for optimization" → 최적화 (krdict misses it; root
    최적 found), examples that use the word (library full sentences, else krdict, else model,
    labelled), `[✅ Approve] [⏭ Skip]`, Anki deck `ANKI_WORD_DECK` (default `MbxChat::Words`),
@@ -30,12 +28,7 @@ bot / mcp / db / Ollama / krdict, and what each piece is for), before any new wo
    (4/10 agent sentence runs failed), word examples that did not contain the word.
 
 ## Left until the PR
-- **7b. Hybrid (decided with the user, from the eval):** in agent mode a "sentence" decision
-  drops the agent's draft and runs the workflow's `draft` node; words keep the agent path. Then
-  rerun `evals/capture_ab.py` (cached, ~2 min) to confirm sentences match the workflow, and make
-  `agent` the `CAPTURE_MODE` default. Small: one graph edge, tests, SPEC §7e.
-- **8. Phone check (needs the user, ~10 min):** with `CAPTURE_MODE=agent` in `.env` and the bot
-  rebuilt: capture "the word for optimization" → approve → the card shows in Anki (first real
+- **8. Phone check (needs the user, ~10 min):** the bot is already rebuilt in agent mode: capture "the word for optimization" → approve → the card shows in Anki (first real
   test of AnkiConnect's `"deck:…" "Korean:…"` duplicate query); capture a sentence; in a
   practice session send an English question, a single Korean word, and a Korean answer.
 - **Then:** DECISIONS closing lines, `finish-unit` (tests, push, PR, CI). The user merges.
@@ -70,7 +63,7 @@ bot / mcp / db / Ollama / krdict, and what each piece is for), before any new wo
   missing.
 - Config in `.env`: `KRDICT_API_KEY` (set), `MBXREAD_URL=http://host.docker.internal:8002`
   (set; MbxRead's own `.env` `ALLOWED_HOSTS` includes `host.docker.internal`), `CAPTURE_MODE`
-  (unset = workflow), `ANKI_WORD_DECK` (unset = `MbxChat::Words`).
+  (unset = agent), `ANKI_WORD_DECK` (unset = `MbxChat::Words`).
 - Practice (SPEC §7d): `/practice`, `/stop`, `/pause`; pings in `PRACTICE_TZ`. Tables `session`,
   `prompt`, `drill`, `setting`. Routing of free text in a session: SPEC §7e.
 - `/` menu: set at startup for the allowed chat only. `practice`, `stop`, `pause`, `help`,

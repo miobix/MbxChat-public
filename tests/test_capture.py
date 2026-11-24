@@ -48,7 +48,7 @@ def offline(db_url, monkeypatch):
 @pytest.fixture
 def graph(db_url):
     saver = db.checkpointer(db_url)
-    yield capture.build(saver)
+    yield capture.build(saver, mode="workflow")
     saver.conn.close()
 
 

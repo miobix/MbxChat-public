@@ -279,7 +279,7 @@ Plain code, no graph (one model call, no pause inside it).
 ## 7e. Capture agent (unit 7)
 
 A LangGraph tool-calling agent takes the front of capture, behind `CAPTURE_MODE`
-(`workflow` | `agent`; `workflow` until the unit 7 eval decides). Model: `gemma4:e4b` (in the
+(`workflow` | `agent`; default `agent` since the unit 7 eval). Model: `gemma4:e4b` (in the
 tool-calling check, 20 of 20 runs valid, right path every time, 0.65 s median; no model router).
 
 - **The agent decides:** what kind of capture this is (a **word**: "the word for optimization";
@@ -303,8 +303,9 @@ tool-calling check, 20 of 20 runs valid, right path every time, 0.65 s median; n
   `findNotes` looks for the Korean word in that deck under any note type with a Korean field
   (MbxRead's included): found → "Already in <deck>: nothing added". The capture is marked
   `kind = 'word'`, so practice never prompts it; word cards are Anki-only.
-- **Sentence path:** `submit_sentence {casual, polite}` then the unit 3 nodes unchanged
-  (critic → chunks → review → save), so the comparison isolates the agent's part.
+- **Sentence path (hybrid):** `submit_sentence` marks the capture a sentence; the agent's own
+  draft is dropped and the whole unit 3 chain runs (draft → lookup → critic → chunks → review →
+  save). In the eval the agent's drafts were flatter than the workflow's, with no tool use.
 - **Session routing** (all modes, `practice.route`): inside an open session, mostly-Hangul text
   is an answer and is graded with no extra call (answers are Korean; phrases to capture are
   English, and questions are asked in English, user 2026-11-23). A single Korean word (no

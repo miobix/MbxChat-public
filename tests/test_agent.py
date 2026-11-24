@@ -7,6 +7,7 @@ from langgraph.types import Command
 
 from mbxchat import agent, bot, capture, config, db, krdict
 
+DRAFT = capture.Draft(casual="나 늦었어.", polite="저 늦었어요.", note="workflow draft")
 REVIEW = capture.Review(casual="나 늦어.", polite="저 늦어요.", issues=[])
 CHUNKS = capture.Chunks(items=[])
 
@@ -45,7 +46,7 @@ def run(db_url, monkeypatch):
     monkeypatch.setattr(config, "MBXREAD_URL", "")
     monkeypatch.setattr(krdict, "search", _search)
     monkeypatch.setattr(krdict, "examples", lambda code, k=4: ["최적의 조건이에요."])
-    monkeypatch.setattr(capture, "ask", lambda schema, s, u: {capture.Review: REVIEW, capture.Chunks: CHUNKS}[schema])
+    monkeypatch.setattr(capture, "ask", lambda schema, s, u: {capture.Draft: DRAFT, capture.Review: REVIEW, capture.Chunks: CHUNKS}[schema])
     monkeypatch.setattr(capture, "content_lemmas", lambda text: [])
 
     async def tools():
@@ -67,11 +68,11 @@ def run(db_url, monkeypatch):
     saver.conn.close()
 
 
-def test_a_sentence_goes_through_the_unit_3_chain(run):
+def test_a_sentence_drops_the_agent_draft_and_runs_the_whole_workflow(run):
     state, llm = run([_call("krdict_lookup", word="늦다"),
                       _call("submit_sentence", casual="나 늦어.", polite="저 늦어요.", note="늦다 = be late")])
     assert state["kind"] == "sentence" and state["agent_calls"] == 1
-    assert state["draft"] == {"casual": "나 늦어.", "polite": "저 늦어요.", "note": "늦다 = be late"}
+    assert state["draft"] == DRAFT.model_dump()
     assert state["review"] == REVIEW.model_dump() and state["saved"] == 0
     assert {"krdict_lookup", "submit_word", "submit_sentence"} <= set(llm.tools)
 
@@ -153,7 +154,7 @@ def test_library_fragments_are_dropped_for_full_sentences(run, monkeypatch):
 
 def test_a_tool_call_written_as_text_is_accepted(run):
     state, llm = run([AIMessage('submit_sentence(casual="나 너무 매워", note="", polite="저 너무 매워요")')])
-    assert state["draft"] == {"casual": "나 너무 매워", "polite": "저 너무 매워요", "note": ""} and len(llm.seen) == 1
+    assert state["kind"] == "sentence" and len(llm.seen) == 1
 
 
 @pytest.mark.parametrize("content", ["submit_sentence(casual=x)", "print('hi')", "submit_word('최적화')", "just text"])
