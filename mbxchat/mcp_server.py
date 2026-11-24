@@ -3,6 +3,9 @@
 Run as its own compose service: python -m mbxchat.mcp_server. A tool whose backend is not
 configured (no krdict key, no MBXREAD_URL) is not offered at all.
 """
+import logging
+
+import anyio
 import psycopg
 from mcp.server.fastmcp import FastMCP
 from psycopg.rows import dict_row
@@ -53,5 +56,11 @@ def build() -> FastMCP:
     return server
 
 
+def not_closed_stream(record: logging.LogRecord) -> bool:
+    """Drops the SDK's traceback for a client closing its session (one per agent run)."""
+    return not (record.exc_info and isinstance(record.exc_info[1], anyio.ClosedResourceError))
+
+
 if __name__ == "__main__":
+    logging.getLogger("mcp.server.streamable_http").addFilter(not_closed_stream)
     build().run(transport="streamable-http")

@@ -1,39 +1,15 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** unit 7 (the agent) on `unit-7-agent`, not pushed. Steps 1-7b done; the phone check (8)
-remains before the PR. The live bot runs agent mode (the new default). Plan: SPEC §7e;
-decisions: DECISIONS "2026-11-23 Unit 7 plan" and "2026-11-23 Unit 7 build".
+**Phase:** unit 7 (the agent) done on `unit-7-agent`, PR open; the user merges. Next: unit 8
+(learner memory, SPEC §8), which ends cycle 2 (hardening pass, doc roll-up). Decisions: DECISIONS
+"2026-11-23 Unit 7 plan", "2026-11-23 Unit 7 build", "2026-11-24 Unit 7: the agent".
 
-## Unit 7 so far (2026-11-23)
-1. **MbxRead is opt-in.** `MBXREAD_URL` empty by default: no MbxRead calls, no notes. The repo
-   runs for anyone; the author's `.env` sets it.
-2. **MbxChat's own krdict client** (`mbxchat/krdict.py`): every answer cached in Postgres, one
-   request every 3 s, 30 min pause after the first failure. Gap and pause live in Postgres, so
-   they hold across restarts and across the two processes that call krdict (bot, mcp).
-3. **MCP tool server** (`mcp` compose service, the bot's image, `mbxchat/mcp_server.py`):
-   read-only `krdict_lookup`, `library_examples` (only with `MBXREAD_URL`), `known_items`.
-4. **Capture agent** (`mbxchat/agent.py`, `CAPTURE_MODE`, default `agent`): decides word vs
-   sentence; grounding stays fixed code. **Hybrid (7b):** a sentence drops the agent's draft and
-   runs the whole workflow chain; eval rerun shows the same drafts, +1 model call.
-5. **Word capture → word cards:** "the word for optimization" → 최적화 (krdict misses it; root
-   최적 found), examples that use the word (library full sentences, else krdict, else model,
-   labelled), `[✅ Approve] [⏭ Skip]`, Anki deck `ANKI_WORD_DECK` (default `MbxChat::Words`),
-   duplicate check against that deck. Word captures never come back as practice prompts.
-6. **Session routing (live now, all modes):** Korean with a space = answer, graded, no extra
-   call; a single Korean word = offered for capture; anything else = one quick classification,
-   then `[➕ Capture] [💬 Answer it] [✍️ Grade it as my answer]`. Questions in English.
-7. **Eval, workflow vs agent** (`evals/capture_ab.py`, `evals/results/capture_ab.md`): sentences
-   3 model calls either way, agent used 0 tools and drafted flatter; words: agent 0.8 s with a
-   real card, workflow just echoes the word. Bugs it found, fixed: tool calls written as text
-   (4/10 agent sentence runs failed), word examples that did not contain the word.
-
-## Left until the PR
-- **8. Phone check (needs the user, ~10 min):** the bot is already rebuilt in agent mode: capture "the word for optimization" → approve → the card shows in Anki (first real
-  test of AnkiConnect's `"deck:…" "Korean:…"` duplicate query); capture a sentence; in a
-  practice session send an English question, a single Korean word, and a Korean answer.
-- **Then:** DECISIONS closing lines, `finish-unit` (tests, push, PR, CI). The user merges.
-- **Needed from the user:** the phone check above. Optional: picks in `capture_ab.md`. Open,
-  not blocking: the spacing-slips question below.
+## Unit 7 in one paragraph
+Capture runs in agent mode by default (`CAPTURE_MODE`): the agent (`mbxchat/agent.py`, read-only
+tools on the `mcp` service) decides word or sentence. Words go to a fixed `word_lookup` (krdict,
+root fallback, examples that contain the word) and a card into `ANKI_WORD_DECK`; sentences run
+the unit 3 workflow chain unchanged. In a session, free text is routed (answer / capture /
+question). MbxRead is opt-in via `MBXREAD_URL`. Phone check passed 2026-11-24.
 
 ## Later
 - **README note for unit 11:** MbxRead material is used when `MBXREAD_URL` is set and ignored
@@ -87,7 +63,7 @@ decisions: DECISIONS "2026-11-23 Unit 7 plan" and "2026-11-23 Unit 7 build".
   `python -m evals.tool_calling MODEL...`. Needing the `mcp` service (no host port):
   `docker compose run --rm --no-deps -v "$(pwd -W)/evals:/app/evals" bot python -m evals.capture_ab`
   (Git Bash; a relative `-v ./evals` mount came up empty). Results in `evals/results/`.
-- Tests: 135 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 136 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model, krdict HTTP and MbxRead faked.
 - Content: one `item` table. Public pools (`data/`) are upserted at every bot start; personal
   MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002 .venv/Scripts/python -m mbxchat.importer`

@@ -65,3 +65,15 @@ def test_known_items_finds_terms_words_and_grammar(db_url):
     terms = _call("known_items", {"query": "미루다"})["matches"]
     assert {"kind": "term", "ko": "미루다", "en": "put off", "status": "learning", "known": False} in terms
     assert _call("known_items", {"query": "뷁뷁"}) == {"matches": []}
+
+
+def test_only_the_closed_session_traceback_is_dropped():
+    import logging
+
+    import anyio
+
+    def record(exc):
+        return logging.LogRecord("mcp", logging.ERROR, "", 0, "Error in standalone SSE writer", (),
+                                 (type(exc), exc, None))
+    assert not mcp_server.not_closed_stream(record(anyio.ClosedResourceError()))
+    assert mcp_server.not_closed_stream(record(RuntimeError("real")))
