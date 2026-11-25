@@ -18,12 +18,15 @@ def correction(wrong: str, right: str) -> str:
 
 
 def word_diff(old: str, new: str) -> str:
-    """`new` with the words that changed from `old` shown as <s>old</s> <b>new</b>."""
+    """`new` with the words that changed from `old` shown as <s>old</s> <b>new</b>.
+    Words that differ only in trailing punctuation count as unchanged."""
     a, b = old.split(), new.split()
+    key = lambda w: w.rstrip(".?!,")  # noqa: E731
     out = []
-    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(a=a, b=b, autojunk=False).get_opcodes():
+    sm = difflib.SequenceMatcher(a=[key(w) for w in a], b=[key(w) for w in b], autojunk=False)
+    for op, i1, i2, j1, j2 in sm.get_opcodes():
         if op == "equal":
-            out.append(esc(" ".join(a[i1:i2])))
+            out.append(esc(" ".join(b[j1:j2])))
             continue
         if i2 > i1:
             out.append(f"<s>{esc(' '.join(a[i1:i2]))}</s>")

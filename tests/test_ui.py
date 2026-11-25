@@ -17,6 +17,11 @@ def test_word_diff_marks_only_changed_words():
     assert word_diff("a < b", "a < b") == "a &lt; b"
 
 
+def test_word_diff_ignores_a_missing_final_period():
+    assert word_diff("저는 밥을 먹었어요", "저는 밥을 먹었어요.") == "저는 밥을 먹었어요."
+    assert word_diff("밥을 먹어요", "밥을 먹었어요.") == "밥을 <s>먹어요</s> <b>먹었어요.</b>"
+
+
 def test_correction_escapes_both_sides():
     assert correction("<a>", "b&c") == "<s>&lt;a&gt;</s> → <b>b&amp;c</b>"
 

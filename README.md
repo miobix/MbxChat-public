@@ -1,11 +1,10 @@
 # MbxChat
 
 A Telegram bot for practising written Korean, built as a LangGraph agent over local open
-models. Tell it something you want to say and it writes the Korean, checks the words in the
-learners' dictionary and turns the useful bits into Anki cards. Ask it to practise and it sends
-writing prompts through the day, grades your answers, remembers your repeated mistakes and
-steers the next prompts at them. Everything runs on your own machine in Docker; no paid model
-API.
+models. Given something the learner wants to say, it writes the Korean, checks the words in
+the learners' dictionary and turns the useful bits into Anki cards. In practice mode it sends
+writing prompts through the day, grades the answers, remembers repeated mistakes and steers
+the next prompts at them. Everything runs locally in Docker; no paid model API.
 
 - **What it does and how it works:** [docs/FEATURES.md](docs/FEATURES.md) (screen captures,
   diagrams, eval numbers, design notes)
@@ -17,7 +16,8 @@ API.
 Needs Docker (Compose 2.18+), git, and [Ollama](https://ollama.com) on the same computer.
 
 1. Create a bot with Telegram's [@BotFather](https://t.me/BotFather) (`/newbot`) and copy its
-   token. Get your numeric user ID (for example from @userinfobot): the bot answers only you.
+   token. Get the numeric Telegram user ID of the account that will use it (for example from
+   @userinfobot): the bot answers only that user.
 2. Pull the model once: `ollama pull gemma4:e4b`.
 3. Run:
 
@@ -29,7 +29,7 @@ docker compose up -d --build
 curl http://127.0.0.1:8005/health
 ```
 
-Send `/start` to your bot. After pulling changes, run `docker compose up -d --build` again
+Send `/start` to the bot. After pulling changes, run `docker compose up -d --build` again
 (plain, with no service name: `bot` and `mcp` share one image). Every service has
 `restart: unless-stopped`, so the stack comes back whenever Docker starts.
 
@@ -38,7 +38,7 @@ Send `/start` to your bot. After pulling changes, run `docker compose up -d --bu
 | Variable | Needed for | |
 |---|---|---|
 | `TELEGRAM_BOT_TOKEN` | everything | From @BotFather |
-| `TELEGRAM_ALLOWED_USER_ID` | everything | Your numeric Telegram ID; anyone else is ignored |
+| `TELEGRAM_ALLOWED_USER_ID` | everything | Numeric Telegram ID of the one allowed user; anyone else is ignored |
 | `KRDICT_API_KEY` | dictionary checks | Free at https://krdict.korean.go.kr/openApi/openApiInfo; unset = no checks |
 | `PRACTICE_TZ`, `PRACTICE_PINGS` | practice pings | IANA zone and local times (default UTC, 10:00, 13:00, 17:00, 21:00) |
 | `ANKI_DECK`, `ANKI_WORD_DECK` | Anki | Decks for chunk and word cards (created on first use) |
@@ -46,22 +46,22 @@ Send `/start` to your bot. After pulling changes, run `docker compose up -d --bu
 | `CAPTURE_MODEL`, `CAPTURE_MODEL_ID` | optional | Another Ollama model and its digest prefix (checked at startup) |
 | `POSTGRES_PASSWORD`, `BACKUP_DIR` | optional | Default `mbxchat`, `./backups`; the database listens on 127.0.0.1 only |
 
-The bot reaches Ollama at `host.docker.internal:11434`. If you also run MbxRead, its compose
-`ollama` service on that port works as is (that's how the author runs both, sharing one copy
-of the model).
+The bot reaches Ollama at `host.docker.internal:11434`. When MbxRead runs on the same
+machine, its compose `ollama` service on that port works as is, and both apps share one copy
+of the model.
 
 ## Optional parts
 
 - **Anki:** Anki desktop with the AnkiConnect add-on (code `2055492159`), open on the same
   computer. While Anki is closed, approved cards queue and are sent within a minute of it
   opening (`/queue` shows them).
-- **MbxRead:** with `MBXREAD_URL` set, captures also look for example sentences in your MbxRead
-  library, and practice can use the words you're learning there. Unset, both are off and the
+- **MbxRead:** with `MBXREAD_URL` set, captures also look for example sentences in the MbxRead
+  library, and practice can use the words being learned there. Unset, both are off and the
   rest works the same. Import saved terms on the host (the importer doesn't read `.env`):
   `MBXREAD_URL=http://127.0.0.1:8002 python -m mbxchat.importer`.
 - **Tracing:** Arize Phoenix at http://127.0.0.1:6006 shows every model and tool call.
 - **Monitoring:** Grafana at http://127.0.0.1:3005, Prometheus at http://127.0.0.1:9090. If the
-  bot stops or its polling stalls, Alertmanager sends a Telegram message to your chat within
+  bot stops or its polling stalls, Alertmanager sends a Telegram message to the allowed chat within
   about two minutes, and another when it recovers.
 - All web UIs listen on 127.0.0.1 only and have no login. Don't publish their ports.
 
@@ -111,13 +111,13 @@ Each was found in testing; the reason it's still there is technical.
 - **Spacing-only fixes still count as correct.** Grading compares sentences with spaces
   removed, so 집에가서 → 집에 가서 keeps a "Correct". The slip is still recorded in the mistake
   memory and shows in `/weak`.
-- **A pending ✏️ edit lives in memory:** restarting the bot while you're editing a chunk
-  forgets the edit; tap ✏️ again.
+- **A pending ✏️ edit lives in memory:** restarting the bot during a chunk edit forgets
+  the edit; tapping ✏️ again starts it over.
 
 ## Backups and moving machines
 
 The `backup` service writes `mbxchat-<date>.dump` (`pg_dump -Fc`) daily into `BACKUP_DIR` and
-keeps the newest 14 (`docker compose logs backup` shows each run). The database holds your
+keeps the newest 14 (`docker compose logs backup` shows each run). The database holds the
 captures, answers and mistake memory, which exist nowhere else, so copy the dumps off the
 machine.
 
@@ -141,7 +141,7 @@ docker compose up -d --wait db              # tests use it (127.0.0.1:5434)
 .venv/Scripts/python -m pytest tests -q     # offline: Telegram, models, krdict, Anki faked
 ```
 
-- Each test gets a throwaway database, so tests never touch your data.
+- Each test gets a throwaway database, so tests never touch real data.
 - To add a dependency: edit the `.in` file, recompile `requirements.txt`, then the dev and eval
   files (they're constrained by it).
 - Evals (`evals/`) score models on labeled sets and log runs to Phoenix; see
