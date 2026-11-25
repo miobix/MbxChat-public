@@ -375,6 +375,11 @@ Learner memory (Postgres, no extra model call):
   one plays its recording and greys the chip out; Reset brings them back. It calls no model and
   takes no free input; it says so, names what a replay leaves out (MbxRead examples, Anki) and
   shows how many recorded runs were kept.
+- **Layout:** three columns, the chat alone in the middle. Left: "1 Pick a feature" (the four
+  groups, each with a one-line description) over "2 Send a message" (the chips). Right: the
+  group's notes as shaded lines, then a plain "Notes" block shared by all groups. One column on
+  narrow screens. Light and dark themes, starting from the system setting, switchable by two
+  buttons. A group's `note` is a list of lines and may hold links (it is the repo's own text).
 - **Recording:** `demo/record.py` drives the real handlers (`build_app`) with a fake Bot API
   request that answers locally and logs every send, edit, tap, reaction and toast, with times.
   Scratch database `mbxchat_demo` (public pools only, plus two seeded 을/를 slips), its own MCP

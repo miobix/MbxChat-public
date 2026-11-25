@@ -138,7 +138,10 @@
  "groups": [
   {
    "title": "Grammar lookup",
-   "note": "Explanations come from the NIKL basic grammar list (KOGL type 1).",
+   "note": [
+    "The grammar list (336 points, levels 1-6) is from NIKL's international Korean curriculum, under KOGL type 1. <a href=\"https://www.korean.go.kr/front/reportData/reportDataView.do?mn_id=45&report_seq=932\">Source</a>",
+    "The explanations are original writing, served without a model call. Attribution in <a href=\"https://github.com/miobix/MbxChat-public/blob/main/docs/DATA.md\">DATA.md</a>."
+   ],
    "items": [
     {
      "label": "/grammar 는데",
@@ -302,7 +305,12 @@
   },
   {
    "title": "Capture a sentence",
-   "note": "Live, chunks also get example sentences from the user's MbxRead library, and approved cards go straight into Anki. Here Anki is closed, so the cards queue.",
+   "note": [
+    "Chunks are the reusable pieces of a sentence: a collocation, a set expression or a grammar pattern in use. They make better flashcards than whole sentences.",
+    "The capture agent drafts a casual and a polite version and checks rare words against <a href=\"https://krdict.korean.go.kr/eng\">krdict</a>, the learner dictionary of the National Institute of Korean Language. A critic model reviews both, then up to three chunks are picked. You approve, edit or skip each one.",
+    "On the live app, the critic also gets example sentences retrieved from the companion MbxRead library (hybrid search), as evidence of real usage.",
+    "Approved cards go into Anki if it is open, or queue until it is."
+   ],
    "items": [
     {
      "label": "I'm running ten minutes late // texting a friend",
@@ -1004,7 +1012,10 @@
   },
   {
    "title": "Capture a word",
-   "note": "Meanings and examples are checked against krdict. Anki is closed here, so cards queue.",
+   "note": [
+    "Meanings and examples are checked against <a href=\"https://krdict.korean.go.kr/eng\">krdict</a>, the learner dictionary of the National Institute of Korean Language.",
+    "Approved cards go into Anki if it is open, or queue until it is."
+   ],
    "items": [
     {
      "label": "postpone",
@@ -1598,7 +1609,11 @@
   },
   {
    "title": "Practice and memory",
-   "note": "Learner answers here were written by the model; in half of them the recorder then dropped a particle (을/를 or 이/가) to plant a beginner slip. Two earlier 을/를 slips were seeded, so practice has a weak point to steer at (🎯).",
+   "note": [
+    "The learner answers here were written by the model.",
+    "In half of them the recorder dropped a particle (을/를 or 이/가) to plant a beginner slip for the grader to catch.",
+    "Two earlier 을/를 slips were seeded, so practice has a weak point to steer at (🎯). Missed points come back sooner."
+   ],
    "items": [
     {
      "label": "Grammar: 을/를",

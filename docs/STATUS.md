@@ -34,6 +34,10 @@ this public repository (unit 11) are the public face. Each step's reasons are in
   "Cycle 3 hardening pass"). Checkpoints grow about 17 kB per capture, the largest unbounded
   one. Backups sit on the same disk as the database; copying them off the machine is the
   user's call.
+- **Idea for next cycle, unscoped (user): "how would a native reply to X".** Capture today is
+  "how do I say this"; this is the reverse: paste what a Korean speaker said (plus optionally
+  what the user replied) and get natural replies, as a post-conversation review ("I said A,
+  what would have gone better?"). May be out of scope; decide at cycle planning.
 - **Skill proposal, on hold:** `capture-smoke` (scratch-DB traced capture).
 
 ## Facts
