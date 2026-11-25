@@ -3,43 +3,43 @@
 *Reference doc: the project explainer. Setup and running are in the [README](../README.md);
 the contract is [SPEC.md](SPEC.md), the reasons are in [DECISIONS.md](DECISIONS.md).*
 
-MbxChat is a Telegram bot for practising written Korean. It does two jobs: **capture** (you
-say what you want to say, it writes the Korean and makes Anki cards from it) and **practice**
-(it sends writing prompts, grades your answers and remembers your repeated mistakes). It runs
-on your own machine in Docker, with a local 4B model through Ollama and no paid API.
+MbxChat is a Telegram bot for practising written Korean. It does two jobs: **capture** (the
+learner says what they want to say, the bot writes the Korean and makes Anki cards from it)
+and **practice** (it sends writing prompts, grades the answers and remembers repeated
+mistakes). It runs locally in Docker, with a 4B model through Ollama and no paid API.
 
 **Try it:** [recorded demo](https://miobix.github.io/MbxChat-public/). These are replays of
 real bot runs, recorded from the bot's own code; nothing there calls a model.
 
 ## Capture: from "how do I say…" to Anki cards
 
-Send any text. The bot asks whether to capture it; after `//` you can add the situation
-(`can we push the meeting // to my boss`).
+Any text sent to the bot is a capture candidate, and the bot asks before capturing it. A
+situation can follow `//` (`can we push the meeting // to my boss`).
 
-<img src="img/demo-capture-sentence.png" width="420" alt="A sentence capture in the demo: polite and casual Korean, then two chunk cards approved">
+<img src="img/demo-capture-sentence.png" width="720" alt="A sentence capture in the demo: polite and casual Korean, then two chunk cards approved">
 
 A tool-calling agent decides what kind of capture it is and checks its words:
 
 ```mermaid
 flowchart TD
-  msg[Your message + optional situation] --> agent{Agent: gemma4:e4b with tools}
+  msg[Learner's message + optional situation] --> agent{Agent: gemma4:e4b with tools}
   agent -->|krdict_lookup| krdict[(krdict: learners' dictionary, cached, 1 request / 3 s)]
   agent -->|library_examples| mbxread[(MbxRead library, optional)]
-  agent -->|known_items| db[(Your known grammar and saved terms)]
+  agent -->|known_items| db[(Known grammar and saved terms)]
   agent -->|submit_word| word[Word card: lemma, meaning, examples whose stem matches]
   agent -->|submit_sentence| draft[Draft: polite + casual + a note]
   draft --> lookup[Check content words in krdict]
   lookup --> critic[Critic pass]
   critic --> chunks[Pick reusable chunks]
-  chunks --> review{{You: approve / edit / skip, one chunk at a time}}
+  chunks --> review{{Learner: approve / edit / skip, one chunk at a time}}
   word --> review
   review -->|approved| anki[Anki via AnkiConnect, queued while Anki is closed]
 ```
 
 - **Grounded, not trusted:** word cards use dictionary examples whose stem actually matches
-  the word, and every example says where it came from (krdict, your library, or "model-written,
+  the word, and every example says where it came from (krdict, the MbxRead library, or "model-written,
   unchecked").
-- **Human in the loop:** the graph stops at each chunk (`interrupt()`) and waits for your tap.
+- **Human in the loop:** the graph stops at each chunk (`interrupt()`) and waits for a tap.
   LangGraph re-runs a node from its start after an interrupt, so nothing before it has side
   effects; checkpoints live in Postgres, so a restart doesn't lose a capture.
 - **Tools behind MCP:** the read-only tools run in a separate MCP server (same image, compose
@@ -48,15 +48,15 @@ flowchart TD
   word prompts, it matched on sentences and won on words (0.8 to 1.9 s and 2 model calls, a real
   dictionary card instead of an echo).
 
-<img src="img/demo-capture-word.png" width="420" alt="A word capture in the demo: 미루다 with krdict meanings and examples">
+<img src="img/demo-capture-word.png" width="720" alt="A word capture in the demo: 미루다 with krdict meanings and examples">
 
 ## Grammar lookup
 
 `/grammar 는데` explains a grammar point from the NIKL basic grammar list, with level, register,
-short examples and, where it matters, the contrast with a look-alike form. Points you mark as
+short examples and, where it matters, the contrast with a look-alike form. Points marked as
 known are skipped.
 
-<img src="img/demo-grammar.png" width="420" alt="Grammar lookup in the demo">
+<img src="img/demo-grammar.png" width="720" alt="Grammar lookup in the demo">
 
 ## Practice: prompts, grading, memory
 
@@ -64,11 +64,11 @@ known are skipped.
 either "write a sentence with this grammar" or "say this in Korean", and each answer is graded
 with a word-level diff of the correction.
 
-<img src="img/demo-practice.png" width="420" alt="Practice in the demo: a 🎯 prompt steered at a weak point, a missing particle caught">
+<img src="img/demo-practice.png" width="720" alt="Practice in the demo: a 🎯 prompt steered at a weak point, a missing particle caught">
 
 ```mermaid
 flowchart LR
-  prompt[Prompt] --> answer[Your answer]
+  prompt[Prompt] --> answer[Learner's answer]
   answer --> t0{Equals the reference?}
   t0 -->|yes| ok[Correct, no model call]
   t0 -->|no| llm[Grader: gemma4:e4b, structured output]
@@ -88,7 +88,7 @@ flowchart LR
   and aligned; the tags on the fixed side decide the category (particle, ending, spelling,
   spacing, other). It's free, instant and testable offline. Full rewrites become "other" and
   are never steered.
-- **Memory that changes what you see:** the same grammar point (or misspelt word) missed twice
+- **Memory that changes what the learner sees:** the same grammar point (or misspelt word) missed twice
   in 30 days becomes a weak point, and at most one prompt in three is steered at it, with a
   visible 🎯 line saying why. `/weak` lists them. Two SQL queries do this; a graph memory
   (Graphiti) was considered and found too heavy for one learner.
@@ -155,15 +155,13 @@ flowchart LR
 The bot serves `/metrics`: grades per grader tier, model call latency and errors per model,
 errors reported in the chat, and the time of the last completed Telegram long poll.
 
-<img src="img/grafana.png" width="720" alt="The MbxChat Grafana dashboard (a fresh start: the model panels fill as the bot is used)">
-
-*The dashboard right after a restart: the model panels fill as the bot is used.*
+<img src="img/grafana.png" width="720" alt="The MbxChat Grafana dashboard after the first days of real use">
 
 - **Liveness is measured where the work happens:** the poll timestamp is stamped by the
   `getUpdates` request itself, so an idle bot (no messages) doesn't look stalled, but a hung
   polling loop does.
 - **Alert `BotDown`:** the scrape fails, or no completed poll for 90 s, for 1 minute.
-  Alertmanager sends it to your Telegram chat through the Bot API, which works while the bot is
+  Alertmanager sends it to the allowed Telegram chat through the Bot API, which works while the bot is
   down. Measured: the alert arrives 83 to 88 s after stopping the bot, the "resolved" message
   about 60 s after starting it.
 - **The rule has unit tests:** `promtool test rules` checks stopped, stalled and healthy
@@ -191,7 +189,7 @@ that kept praising an answer after the verdict was lowered. Both are fixed.
 ## Delivery
 
 - **Tests run offline:** Telegram, the model, krdict, AnkiConnect and MbxRead are faked; each
-  test gets a throwaway Postgres database. 151 tests.
+  test gets a throwaway Postgres database. 153 tests.
 - **CI on every pull request:** the test suite, the alert rule tests, the image build and the
   demo build; the demo deploys to GitHub Pages from `main`.
 - **Pinned inputs:** Docker images by digest, GitHub Actions by commit SHA, Python dependencies

@@ -4,9 +4,7 @@
 from here is shaped by that use. No unit is planned. New work starts as a SPEC change plus a
 branch and PR on this repository.
 
-**For the user, later:** retake `docs/img/grafana.png` after a few days of real use (the
-current one is from a fresh restart: model panels empty). Proofread g67-g84 in
-`evals/grader_set.md`.
+**For the user, later:** proofread g67-g84 in `evals/grader_set.md`.
 
 **On hold until there is more real-use data (user):** grader and model work.
 
@@ -39,6 +37,11 @@ this public repository (unit 11) are the public face. Each step's reasons are in
   what the user replied) and get natural replies, as a post-conversation review ("I said A,
   what would have gone better?"). May be out of scope; decide at cycle planning.
 - **Skill proposal, on hold:** `capture-smoke` (scratch-DB traced capture).
+- **Spacing corrections feel like noise (user, from real use).** Look at real graded examples
+  after the trailing-punctuation diff fix has been in use for a while: part of the noise may
+  have been that display bug. Then decide: stricter, explained, or shown apart.
+- **Screenshots:** `docs/img/` is taken with headless Chrome (commands in DECISIONS
+  2026-11-25 "Real-use fixes"); retake after a demo page change.
 
 ## Facts
 - Remote: `miobix/MbxChat-public`, public. The private `miobix/MbxChat` is a read-only archive
@@ -81,7 +84,7 @@ this public repository (unit 11) are the public face. Each step's reasons are in
 - Evals: on the host (`requirements-eval.txt`, `PYTHONUTF8=1` when output goes to a file):
   `evals.grader_eval`, `evals.capture_side_by_side`, `evals.tool_calling`; needing `mcp`: the
   `eval-in-container` skill (`evals.capture_ab`). Results in `evals/results/`.
-- Tests: 152 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 153 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model, krdict HTTP and MbxRead faked.
 - Content: one `item` table (kinds grammar, sentence, word, term). Public pools (`data/`) are
   upserted at every bot start; MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002
