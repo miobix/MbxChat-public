@@ -283,12 +283,43 @@ def practice_run(slip: bool):
     return run
 
 
+KRDICT = '<a href="https://krdict.korean.go.kr/eng">krdict</a>'
+ANKI = "Approved cards go into Anki if it is open, or queue until it is."
+NOTES_GRAMMAR = [
+    "The grammar list (336 points, levels 1-6) is from NIKL's international Korean curriculum, under KOGL "
+    'type 1. <a href="https://www.korean.go.kr/front/reportData/reportDataView.do?mn_id=45&report_seq=932">Source</a>',
+    "The explanations are original writing, served without a model call. Attribution in "
+    '<a href="https://github.com/miobix/MbxChat-public/blob/main/docs/DATA.md">DATA.md</a>.',
+]
+NOTES_SENTENCE = [
+    "Chunks are the reusable pieces of a sentence: a collocation, a set expression or a grammar pattern in "
+    "use. They make better flashcards than whole sentences.",
+    f"The capture agent drafts a casual and a polite version and checks rare words against {KRDICT}, the "
+    "learner dictionary of the National Institute of Korean Language. A critic model reviews both, then up "
+    "to three chunks are picked. You approve, edit or skip each one.",
+    "On the live app, the critic also gets example sentences retrieved from the companion MbxRead library "
+    "(hybrid search), as evidence of real usage.",
+    ANKI,
+]
+NOTES_WORD = [
+    f"Meanings and examples are checked against {KRDICT}, the learner dictionary of the National Institute "
+    "of Korean Language.",
+    ANKI,
+]
+NOTES_PRACTICE = [
+    "The learner answers here were written by the model.",
+    "In half of them the recorder dropped a particle (을/를 or 이/가) to plant a beginner slip for the grader "
+    "to catch.",
+    "Two earlier 을/를 slips were seeded, so practice has a weak point to steer at (🎯). Missed points come "
+    "back sooner.",
+]
+
+
 GROUPS = [
-    ("Grammar lookup", "Explanations come from the NIKL basic grammar list (KOGL type 1).",
+    ("Grammar lookup", NOTES_GRAMMAR,
      [grammar_run(f) for f in ("는데", "아서", "거든요", "(으)니까", "(으)면서", "기로 하다")]),
     ("Capture a sentence",
-     "Live, chunks also get example sentences from the user's MbxRead library, and approved cards go "
-     "straight into Anki. Here Anki is closed, so the cards queue.",
+     NOTES_SENTENCE,
      [capture_run(t, "sentence") for t in (
          "can we push the meeting to next week? // to my team lead",
          "I'm running ten minutes late // texting a friend",
@@ -303,12 +334,10 @@ GROUPS = [
          "sorry, I didn't catch that // on the phone",
          "the printer isn't working again // to a coworker",
      )]),
-    ("Capture a word", "Meanings and examples are checked against krdict. Anki is closed here, so cards queue.",
+    ("Capture a word", NOTES_WORD,
      [capture_run(w, "word") for w in ("postpone", "umbrella", "receipt", "colleague", "to be tired", "schedule")]),
     ("Practice and memory",
-     "Learner answers here were written by the model; in half of them the recorder then dropped a particle "
-     "(을/를 or 이/가) to plant a beginner slip. Two earlier 을/를 slips were seeded, so practice has a weak "
-     "point to steer at (🎯).",
+     NOTES_PRACTICE,
      [practice_run(slip) for slip in [True, False] * 7]),
 ]
 
