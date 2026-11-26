@@ -23,7 +23,7 @@ CAPTURE_MODE = os.getenv("CAPTURE_MODE", "agent").strip() or "agent"
 
 # AnkiConnect on the desktop (compose: host.docker.internal). Chunk cards go to ANKI_DECK.
 ANKI_URL = os.getenv("ANKI_URL", "http://127.0.0.1:8765").strip()
-ANKI_DECK = os.getenv("ANKI_DECK", "MbxChat").strip()
+ANKI_DECK = os.getenv("ANKI_DECK", "MbxChat::Chunks").strip()
 ANKI_WORD_DECK = os.getenv("ANKI_WORD_DECK", "MbxChat::Words").strip()
 ANKI_RETRY_SECONDS = 60
 

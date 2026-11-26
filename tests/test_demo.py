@@ -1,5 +1,13 @@
+import functools
+import http.server
 import json
+import os
+import shutil
+import subprocess
+import threading
 from pathlib import Path
+
+import pytest
 
 DEMO = json.loads((Path(__file__).parents[1] / "demo" / "conversations.json").read_text(encoding="utf-8"))
 
@@ -42,3 +50,30 @@ def test_counts_add_up_and_no_kept_run_carries_a_failure():
     assert DEMO["kept"] == sum(len(g["items"]) for g in DEMO["groups"])
     for name, events in _items():
         assert not any("⚠️" in e.get("html", "") for e in events), name
+
+
+def _chrome() -> str | None:
+    found = shutil.which("google-chrome") or shutil.which("chrome")
+    win = Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe")
+    return found or (str(win) if win.exists() else None)
+
+
+def test_every_scene_renders_in_a_browser(tmp_path):
+    chrome = _chrome()
+    if not chrome:
+        assert not os.environ.get("CI"), "CI needs Chrome for the demo smoke test"
+        pytest.skip("no Chrome")
+    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=Path(__file__).parents[1] / "demo")
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        for n in range(len(DEMO["groups"])):
+            dom = subprocess.run(
+                [chrome, "--headless=new", "--no-sandbox", "--force-prefers-reduced-motion",
+                 f"--user-data-dir={tmp_path}", "--virtual-time-budget=8000", "--dump-dom",
+                 f"http://127.0.0.1:{server.server_port}/#{n}"],
+                capture_output=True, text=True, encoding="utf-8", timeout=60,
+            ).stdout
+            assert dom.count('class="bubble"') >= 2, f"scene {n} rendered no chat"
+    finally:
+        server.shutdown()

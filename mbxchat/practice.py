@@ -331,6 +331,20 @@ class Route(BaseModel):
 
 class Explanation(BaseModel):
     text: str = Field(description="The answer in English, with short Korean examples where useful; at most 120 words")
+    word: str = Field(
+        description="The one Korean word the question asks about, in Hangul and dictionary form, no romanization: "
+        "what a Korean word means (미루다), or the Korean for an English word (patience: 인내). Empty when the question "
+        "is about grammar, register, or compares words"
+    )
+
+    def card(self, question: str) -> str | None:
+        """The word to offer as a card, or None. The model names a word for most questions, so a Korean
+        question must be about exactly that one word; an English one (the Korean for X) trusts the model."""
+        m = re.match(r"\s*([가-힣]+)", self.word)
+        asked = re.findall(r"[가-힣]+", question)
+        if not m or len(asked) > 1 or asked and asked[0][0] != m[1][0]:  # first syllable: 꿈꿔요 asks about 꿈꾸다
+            return None
+        return m[1]
 
 
 ROUTE_SYSTEM = "A learner is doing a Korean writing drill. Classify their message against the current task."
@@ -349,8 +363,8 @@ def route(p: dict, text: str) -> str:
     return ask(Route, ROUTE_SYSTEM, f"Current task: {task(p)}\nMessage: {text}").kind
 
 
-def explain(p: dict, question: str) -> str:
-    return ask(Explanation, EXPLAIN_SYSTEM, f"Current task: {task(p)}\nQuestion: {question}").text
+def explain(p: dict, question: str) -> Explanation:
+    return ask(Explanation, EXPLAIN_SYSTEM, f"Current task: {task(p)}\nQuestion: {question}")
 
 
 def schedule(step: int, verdict: str, today: date) -> tuple[int, date]:

@@ -1,8 +1,10 @@
 # STATUS (living state: rewrite in place, prune finished steps)
 
-**Phase:** all SPEC §8 units are done (cycles 1-3, units 0-11). The bot is in use; work
-from here is shaped by that use. No unit is planned. New work starts as a SPEC change plus a
-branch and PR on this repository.
+**Phase:** SPEC §8 units 0-11 are done (cycles 1-3), unit 12 is in review. The bot is in use; work
+from here is shaped by that use. New work starts as a SPEC change plus a branch and PR on this repository.
+
+**Unit 12 (real-use notes, SPEC §7i) is in review.** Phone check: on a grammar prompt with a
+word, tap 🔤 and approve the card; ask "what's X in Korean?", tap 💬 Answer it, then ➕ Save.
 
 **For the user, later:** proofread g67-g84 in `evals/grader_set.md`.
 
@@ -72,7 +74,7 @@ this public repository (unit 11) are the public face. Each step's reasons are in
 - Capture: workflow (SPEC §7c) and agent (SPEC §7e, default). A pending ✏️ edit lives in memory
   (a restart forgets it). Model `gemma4:e4b` (ID `dc35e8d9c606`, checked at startup) on
   MbxRead's Ollama :11434, GPU.
-- Anki (SPEC §7): chunks → deck `MbxChat`, note type `MbxChat Chunk`; words →
+- Anki (SPEC §7): chunks → deck `MbxChat::Chunks`, note type `MbxChat Chunk`; words →
   `ANKI_WORD_DECK`, note type `MbxChat Word` (template changes in code do not reach an existing
   note type). AnkiConnect at `host.docker.internal:8765`; both outboxes retried every 60 s.
 - Shutdown: `post_stop` cancels the two background loops and `main` closes the checkpointer
@@ -84,7 +86,7 @@ this public repository (unit 11) are the public face. Each step's reasons are in
 - Evals: on the host (`requirements-eval.txt`, `PYTHONUTF8=1` when output goes to a file):
   `evals.grader_eval`, `evals.capture_side_by_side`, `evals.tool_calling`; needing `mcp`: the
   `eval-in-container` skill (`evals.capture_ab`). Results in `evals/results/`.
-- Tests: 153 passing (`.venv/Scripts/python -m pytest tests -q`), need
+- Tests: 158 passing (`.venv/Scripts/python -m pytest tests -q`), need
   `docker compose up -d --wait db`; Telegram, Anki, model, krdict HTTP and MbxRead faked.
 - Content: one `item` table (kinds grammar, sentence, word, term). Public pools (`data/`) are
   upserted at every bot start; MbxRead terms via `MBXREAD_URL=http://127.0.0.1:8002

@@ -2,7 +2,7 @@
 
 A Telegram bot for practising written Korean, built as a LangGraph agent over local open
 models. Given something the learner wants to say, it writes the Korean, checks the words in
-the learners' dictionary and turns the useful bits into Anki cards. In practice mode it sends
+the learners' dictionary and turns the useful bits into [Anki](https://apps.ankiweb.net/) cards. In practice mode it sends
 writing prompts through the day, grades the answers, remembers repeated mistakes and steers
 the next prompts at them. Everything runs locally in Docker; no paid model API.
 
