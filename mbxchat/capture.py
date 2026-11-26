@@ -1,6 +1,7 @@
 """Capture workflow (SPEC §7c): draft → lookup → critic → chunks → review (interrupts) → save."""
 import json
 import logging
+import re
 import urllib.error
 import urllib.request
 from functools import cache
@@ -78,13 +79,35 @@ def ask(schema: type[BaseModel], system: str, user: str, model: str | None = Non
         callbacks=[metrics.MODEL],
     ).with_structured_output(schema, method="json_schema")
     try:
-        return llm.invoke([("system", system), ("human", user)])
+        return _clean(schema, llm.invoke([("system", system), ("human", user)]))
     except (OutputParserException, ValidationError):
         log.warning("invalid %s from the model, retrying once", schema.__name__)
     try:
-        return llm.invoke([("system", system), ("human", user)])
+        return _clean(schema, llm.invoke([("system", system), ("human", user)]))
     except (OutputParserException, ValidationError) as e:
         raise CaptureError(f"the model returned an invalid {schema.__name__} twice") from e
+
+
+LATEX = {r"\rightarrow": "→", r"\Rightarrow": "⇒", r"\to": "→", r"\leftarrow": "←", r"\times": "×"}
+_LATEX = re.compile(r"\$\s*(\\[A-Za-z]+)\s*\$|(\\[A-Za-z]+)")
+
+
+def plain(text: str) -> str:
+    """Model text without LaTeX: known commands become their symbol, `$…$` delimiters around them go."""
+    return _LATEX.sub(lambda m: LATEX.get(m[1] or m[2], m[0]), text)
+
+
+def _clean(schema: type[BaseModel], result: BaseModel) -> BaseModel:
+    def walk(v):
+        if isinstance(v, str):
+            return plain(v)
+        if isinstance(v, list):
+            return [walk(x) for x in v]
+        if isinstance(v, dict):
+            return {k: walk(x) for k, x in v.items()}
+        return v
+
+    return schema.model_validate(walk(result.model_dump()))
 
 
 # --- lookups -------------------------------------------------------------------------------

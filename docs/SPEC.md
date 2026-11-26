@@ -163,7 +163,8 @@ sentences.
 - Approve/Edit/Skip works per chunk. Shape is provisional: adjust after real use.
 
 **Delivery (unit 4).** Note type `MbxChat Chunk` (fields Gloss, Blanked, Chunk, Sentence,
-Register; created if missing, never modified after) in deck `ANKI_DECK` (default `MbxChat`),
+Register; created if missing, never modified after) in deck `ANKI_DECK` (default
+`MbxChat::Chunks` since unit 12, a sibling of the words deck; the parent `MbxChat` held them before),
 through AnkiConnect (`ANKI_URL`). The `chunk` table is the outbox: `anki_note_id` stays null
 until Anki has the note. A push runs after each approval, on `/queue`, and every 60 s; Anki
 closed → everything stays queued, quietly. Each note is tagged `mbxchat-<chunk uid>` and a push
@@ -399,6 +400,33 @@ Learner memory (Postgres, no extra model call):
   the repo is public. `tests/test_demo.py` replays the events against what was on screen (every
   tap hits a button that existed).
 
+## 7i. Words from practice (unit 12)
+
+Real use: a grammar prompt's word was unknown (its MbxRead gloss was too short to help),
+and translate prompts send the learner asking "what's <English word> in Korean?" through
+"Answer it", which can't save anything. Both now end in the §7e word path (krdict check, card
+proposal, `ANKI_WORD_DECK`), with no new lookup or Anki code.
+
+- **`[🔤 <word>]` on grammar prompts that carry a word**, next to `[📖 Grammar]`: runs a capture
+  of the bare Korean word (the term without its gloss), the same input as a single Korean word
+  typed in a session. The prompt stays waiting.
+- **Card offer after "Answer it":** `Explanation` gains a required `word`, the Korean word the
+  question is about (its meaning, or the Korean for an English word), empty otherwise. The
+  model fills it for most questions, so code decides (`Explanation.card`): the word's leading
+  Hangul run; an English question trusts it, a Korean question must name exactly one Korean
+  word sharing its first syllable (꿈꿔요 → 꿈꾸다), two or more (a comparison) get none. When
+  there is a word, the answer carries `[➕ Save <word> as a card]`, which runs the same capture.
+- **No LaTeX in replies:** `ask()` cleans every string field the model returns: common LaTeX
+  arrows and symbols (`\rightarrow`, `\to`, `\leftarrow`, `\times`) become their Unicode
+  characters and leftover `$` math delimiters are dropped (a live explanation showed
+  `$\rightarrow$`).
+- **Decks:** chunks (phrases) and words are separate study decks. Chunks moved from the parent
+  `MbxChat` (which Anki studies together with its subdecks) to `MbxChat::Chunks`; the 13
+  existing chunk notes are moved once with AnkiConnect `changeDeck`, words stay in
+  `MbxChat::Words`.
+- **Demo:** a headless-Chrome test loads each demo scene and checks the chat renders (it skips
+  without Chrome locally, fails without it in CI); README and demo link Anki.
+
 ## 8. Units
 
 Each unit is a branch and a PR, ends green in CI, and updates the docs.
@@ -418,6 +446,7 @@ Each unit is a branch and a PR, ends green in CI, and updates the docs.
 | 9 | **Monitoring:** `/metrics`, Prometheus + Grafana, dashboard (calls per tier, latency, errors), alert on stalled polling | stop the bot, the alert fires |
 | 10 | **Public demo:** Pages replay of seeded conversations; notes which features are not live (MbxRead examples, Anki) | demo built in CI; the deploy job runs once the repo is public (unit 11), since GitHub Free serves Pages from public repos only |
 | 11 | **Go public:** history and content sweep, README + FEATURES, a sanitized public copy (`miobix/MbxChat-public`, made with filter-repo; this repo stays private) | sweep finds nothing personal; public repo live; demo deployed and linked |
+| 12 | **Real-use notes** (§7i): `[🔤 word]` on grammar prompts and a card offer after "Answer it", both through the §7e word path; LaTeX cleaned from model text; chunks to `MbxChat::Chunks`; demo browser smoke test, Anki links | tapping 🔤 on a prompt and saving a word asked about in "Answer it" each land a card in `MbxChat::Words`; no chunk left in the parent deck; a broken demo replay fails CI |
 
 At the end of each cycle (after units 4, 8 and 11): hardening pass and doc roll-up.
 

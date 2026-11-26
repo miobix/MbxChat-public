@@ -311,10 +311,52 @@ def test_a_question_in_a_session_is_offered_not_graded(pool, monkeypatch):
     q = update.callback_query
     q.answer, q.edit_message_text = AsyncMock(), AsyncMock()
     q.data, q.message.reply_to_message = f"ask:{p['id']}", msg
-    monkeypatch.setattr(practice, "explain", lambda p, question: "는데 sets up background.")
+    monkeypatch.setattr(practice, "explain", lambda p, question: practice.Explanation(text="는데 sets up background.", word=""))
     asyncio.run(bot.on_ask(update, context))
     assert q.edit_message_text.await_args.args[0].startswith("는데 sets up background.")
     assert "still waiting" in q.edit_message_text.await_args.args[0]
+    assert q.edit_message_text.await_args.kwargs["reply_markup"] is None
+
+
+def test_an_answer_about_a_word_offers_it_as_a_card(pool, monkeypatch):
+    context = _context()
+    p = _session_prompt(context)
+    update = MagicMock()
+    q = update.callback_query
+    q.answer, q.edit_message_text, q.edit_message_reply_markup = AsyncMock(), AsyncMock(), AsyncMock()
+    q.data, q.message.reply_to_message.text = f"ask:{p['id']}", "what's patience in Korean?"
+    monkeypatch.setattr(practice, "explain", lambda p, question: practice.Explanation(text="인내.", word="인내 (innae)"))
+    asyncio.run(bot.on_ask(update, context))
+    button = q.edit_message_text.await_args.kwargs["reply_markup"].inline_keyboard[0][0]
+    assert (button.text, button.callback_data) == ("➕ Save 인내 as a card", "sv:인내")
+
+    started = []
+    monkeypatch.setattr(bot, "_capture", AsyncMock(side_effect=lambda ctx, chat, text: started.append(text)))
+    q.data = "sv:인내"
+    asyncio.run(bot.on_save(update, context))
+    assert started == ["인내"]
+    q.edit_message_reply_markup.assert_awaited_with(None)
+
+
+def test_a_grammar_prompt_with_a_word_offers_its_card(pool, monkeypatch):
+    context = _context()
+    with psycopg.connect(config.DATABASE_URL) as conn:
+        importer.replace(conn, "term", [("term", "미루다", None, "미루다", "put off", {"status": "learning"})])
+    p = _session_prompt(context)
+    assert p["kind"] == "grammar" and p["word"] == "미루다 (put off)"
+    row = context.bot.send_message.await_args.kwargs["reply_markup"].inline_keyboard[0]
+    word = "미루다"
+    assert (row[1].text, row[1].callback_data) == (f"🔤 {word}", f"pr:{p['id']}:wd")
+
+    started = []
+    monkeypatch.setattr(bot, "_capture", AsyncMock(side_effect=lambda ctx, chat, text: started.append(text)))
+    update = MagicMock()
+    q = update.callback_query
+    q.answer = AsyncMock()
+    q.data = f"pr:{p['id']}:wd"
+    asyncio.run(bot.on_prompt(update, context))
+    assert started == [word]
+    assert practice.waiting(practice.current_session())["id"] == p["id"]  # still waiting
 
 
 def test_a_capture_in_a_session_offers_capture_or_grading(pool, monkeypatch):
@@ -339,3 +381,17 @@ def test_a_routing_failure_falls_back_to_grading(pool, monkeypatch):
 def test_a_register_reads_as_words():
     p = {"kind": "translate", "en": "x", "situation": "", "register": "office_speech", "reference": None, "word": None}
     assert "<i>office speech</i>" in bot._prompt_html(p)
+
+
+def test_a_card_is_offered_only_for_the_word_the_question_is_about():
+    cases = [  # raw model outputs from the live check (DECISIONS, unit 12)
+        ("what does 미루다 mean?", "미루다 (miruda)", "미루다"),
+        ("whats patience in korean?", "인내", "인내"),
+        ("what's the meaning of 인지 here?", "미루다", None),
+        ("is it 인간 or 사람 here?", "사람 (saram)", None),
+        ("should this be polite or casual?", "Polite (Formal/Standard): ~ㅂ니다/습니다", None),
+        ("what does 꿈꾸다 mean exactly", "to dream", None),
+        ("what does 꿈꿔요 mean", "꿈꾸다", "꿈꾸다"),
+    ]
+    for question, word, want in cases:
+        assert practice.Explanation(text="", word=word).card(question) == want, question

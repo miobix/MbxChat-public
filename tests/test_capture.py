@@ -135,10 +135,19 @@ class _FlakyLLM:
 
 def test_invalid_model_output_is_retried_once(monkeypatch):
     monkeypatch.setattr(capture, "ChatOllama", lambda **kw: _FlakyLLM(1))
-    assert capture.ask(capture.Draft, "s", "u") is DRAFT
+    assert capture.ask(capture.Draft, "s", "u") == DRAFT
     monkeypatch.setattr(capture, "ChatOllama", lambda **kw: _FlakyLLM(2))
     with pytest.raises(capture.CaptureError, match="invalid Draft twice"):
         capture.ask(capture.Draft, "s", "u")
+
+
+def test_latex_in_model_text_becomes_plain_symbols(monkeypatch):
+    assert capture.plain(r"가다 $\rightarrow$ 가요, A \to B") == "가다 → 가요, A → B"
+    assert capture.plain(r"$x$ costs \today, \unknown") == r"$x$ costs \today, \unknown"
+    llm = _FlakyLLM(0)
+    llm.invoke = lambda messages: DRAFT.model_copy(update={"note": r"어 $\rightarrow$ 요"})
+    monkeypatch.setattr(capture, "ChatOllama", lambda **kw: llm)
+    assert capture.ask(capture.Draft, "s", "u").note == "어 → 요"
 
 
 # --- the chat flow ----------------------------------------------------------------------------

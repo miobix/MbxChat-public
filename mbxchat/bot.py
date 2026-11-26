@@ -79,11 +79,15 @@ async def on_capture(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     await query.answer()
     shown = f"➕ <i>{esc(text)}</i>" + (f"\n📍 {esc(situation)}" if situation else "")
     await query.edit_message_text(shown, parse_mode=ParseMode.HTML)
+    await _capture(context, query.message.chat_id, text, situation)
+
+
+async def _capture(context, chat_id: int, text: str, situation: str = "") -> None:
     capture_id = await asyncio.to_thread(capture.new_capture, text, situation)
-    progress = Progress(context.bot, query.message.chat_id)
+    progress = Progress(context.bot, chat_id)
     await progress.start("Drafting…")
     try:
-        await _run(context, query.message.chat_id, capture_id, {"text": text, "situation": situation}, progress)
+        await _run(context, chat_id, capture_id, {"text": text, "situation": situation}, progress)
     except Exception as e:
         log.exception("capture %s failed", capture_id)
         await progress.done(f"⚠️ Capture failed: <code>{esc(type(e).__name__)}: {esc(str(e)[:200])}</code>")
@@ -231,7 +235,13 @@ async def _send_prompt(bot, chat_id: int, session: int, lead: str = "") -> None:
     row = [("⏭ Skip", f"{key}:sk"), ("⏹ Stop", f"{key}:st")]
     if p["grammar_id"]:
         row.insert(0, ("📖 Grammar", f"{key}:gr"))
+    if p["kind"] == "grammar" and p["word"]:
+        row.insert(1, (f"🔤 {_bare_word(p)}", f"{key}:wd"))
     await bot.send_message(chat_id, lead + _prompt_html(p), parse_mode=ParseMode.HTML, reply_markup=keyboard(row))
+
+
+def _bare_word(p: dict) -> str:
+    return p["word"].split(" (")[0]
 
 
 def _graded(answer: str, g: practice.Grade) -> str:
@@ -296,13 +306,25 @@ async def on_ask(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
     await query.answer()
     await query.edit_message_text("💬 Thinking…")
+    markup = None
     try:
-        text = await asyncio.to_thread(practice.explain, p, original.text)
+        e = await asyncio.to_thread(practice.explain, p, original.text)
+        text = e.text
+        word = e.card(original.text)
+        if word and len(f"sv:{word}".encode()) <= 64:  # Telegram's callback_data limit
+            markup = keyboard([(f"➕ Save {word} as a card", f"sv:{word}")])
     except Exception as e:
         log.exception("explaining failed")
         text = f"⚠️ Could not answer: {type(e).__name__}: {str(e)[:200]}"
     waiting = "" if p["answered_at"] or p["skipped"] else "\n\n<i>The prompt above is still waiting for your answer.</i>"
-    await query.edit_message_text(esc(text) + waiting, parse_mode=ParseMode.HTML)
+    await query.edit_message_text(esc(text) + waiting, parse_mode=ParseMode.HTML, reply_markup=markup)
+
+
+async def on_save(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_reply_markup(None)
+    await _capture(context, query.message.chat_id, query.data.removeprefix("sv:"))
 
 
 async def practice_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -341,6 +363,10 @@ async def on_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await query.answer()
         if point:
             await query.message.reply_html(grammar.explainer(point))
+        return
+    if action == "wd":
+        await query.answer()
+        await _capture(context, query.message.chat_id, _bare_word(p))
         return
     session = await asyncio.to_thread(practice.current_session)
     if p["answered_at"] or p["skipped"] or session != p["session_id"]:
@@ -643,9 +669,10 @@ def build_app(token: str, graph=None) -> Application:
     app.add_handler(CommandHandler("stop", stop_cmd, filters=private))
     app.add_handler(CommandHandler("pause", pause_cmd, filters=private))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & private, free_text, block=False))  # grading
-    app.add_handler(CallbackQueryHandler(on_prompt, pattern=r"^pr:\d+:(sk|st|gr)$"))
+    app.add_handler(CallbackQueryHandler(on_prompt, pattern=r"^pr:\d+:(sk|st|gr|wd)$"))
     app.add_handler(CallbackQueryHandler(on_late, pattern=r"^late:\d+$", block=False))
     app.add_handler(CallbackQueryHandler(on_ask, pattern=r"^ask:\d+$", block=False))
+    app.add_handler(CallbackQueryHandler(on_save, pattern=r"^sv:", block=False))
     app.add_handler(CallbackQueryHandler(on_capture, pattern=r"^cap:", block=False))  # long on CPU
     app.add_handler(CallbackQueryHandler(on_chunk, pattern=r"^ch:\d+:\d+:(ok|ed|sk)$"))
     app.add_handler(CallbackQueryHandler(on_word, pattern=r"^wd:\d+:(ok|sk)$"))

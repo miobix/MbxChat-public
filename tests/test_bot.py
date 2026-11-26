@@ -134,7 +134,7 @@ def test_post_stop_cancels_the_background_loops():
 def test_build_app_registers_handlers_without_network():
     app = bot.build_app("123:fake")
     assert [type(h).__name__ for h in app.handlers[-1]] == ["TypeHandler"]  # gate runs first
-    assert len(app.handlers[0]) == 17
+    assert len(app.handlers[0]) == 18
     assert app.error_handlers
 
 
